@@ -35,7 +35,10 @@ class JupyterLabSqlWidget extends Widget {
       .then(response => response.json())
       .then(data => {
         const { result } = data;
-        this.elem.innerHTML = result;
+        const { keys } = result;
+        const keysParagraph = document.createElement("p")
+        keysParagraph.innerHTML = `keys: ${keys.join()}`;
+        this.elem.appendChild(keysParagraph);
       })
   }
 }
