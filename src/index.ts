@@ -2,7 +2,22 @@ import {
   JupyterLab, JupyterLabPlugin
 } from '@jupyterlab/application';
 
+import { Widget } from '@phosphor/widgets';
+
 import '../style/index.css';
+
+
+class JupyterLabSqlWidget extends Widget {
+  constructor() {
+    super();
+    console.log('starting jupyterlab sql extension');
+  }
+}
+
+
+function activate(app: JupyterLab) {
+  new JupyterLabSqlWidget()
+}
 
 
 /**
@@ -11,9 +26,7 @@ import '../style/index.css';
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-sql',
   autoStart: true,
-  activate: (app: JupyterLab) => {
-    console.log('JupyterLab extension jupyterlab-sql is activated!');
-  }
+  activate,
 };
 
 export default extension;
