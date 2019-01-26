@@ -7,17 +7,54 @@ import {
 } from '@jupyterlab/apputils';
 
 import {
-  Widget
+  Panel
 } from '@phosphor/widgets';
 
 import {
   Message
 } from '@phosphor/messaging';
 
+import {
+  DataModel, DataGrid
+} from '@phosphor/datagrid';
+
 import '../style/index.css';
 
 
-class JupyterLabSqlWidget extends Widget {
+class SqlDataModel extends DataModel {
+  constructor(keys: any, data: any) {
+    super()
+    this._data = data
+    this._keys = keys
+  }
+
+  readonly _data: any
+  readonly _keys: any
+
+  rowCount(region: DataModel.RowRegion): number {
+    return region === 'body' ? this._data.length : 1
+  }
+
+  columnCount(region: DataModel.ColumnRegion): number {
+    return region === 'body' ? this._keys.length : 1
+  }
+
+  data(region: DataModel.CellRegion, row: number, column: number): any {
+    if (region === "row-header") {
+      return row;
+    }
+    if (region === "column-header") {
+      return this._keys[column];
+    }
+    if (region === "corner-header") {
+      return "c";
+    }
+    return this._data[row][column];
+  }
+}
+
+
+class JupyterLabSqlWidget extends Panel {
   constructor() {
     super();
 
@@ -35,10 +72,11 @@ class JupyterLabSqlWidget extends Widget {
       .then(response => response.json())
       .then(data => {
         const { result } = data;
-        const { keys } = result;
-        const keysParagraph = document.createElement("p")
-        keysParagraph.innerHTML = `keys: ${keys.join()}`;
-        this.elem.appendChild(keysParagraph);
+        const { keys, rows } = result;
+        const model = new SqlDataModel(keys, rows)
+        const grid = new DataGrid()
+        grid.model = model;
+        this.insertWidget(1, grid);
       })
   }
 }
