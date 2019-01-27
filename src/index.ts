@@ -72,6 +72,7 @@ class JupyterLabSqlWidget extends SplitPanel {
     this.addWidget(editorWidget);
     this.grid = new DataGrid();
     this.addWidget(this.grid);
+    this.setRelativeSizes([1, 3]);
   }
 
   // readonly elem: HTMLElement
