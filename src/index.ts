@@ -7,11 +7,11 @@ import {
 } from '@jupyterlab/apputils';
 
 import {
-  IEditorFactoryService, CodeEditor, IEditorServices
+  IEditorFactoryService, IEditorServices
 } from '@jupyterlab/codeeditor';
 
 import {
-  SplitPanel, Widget
+  SplitPanel
 } from '@phosphor/widgets';
 
 import {
@@ -21,6 +21,10 @@ import {
 import {
   DataModel, DataGrid
 } from '@phosphor/datagrid';
+
+import {
+  Editor
+} from './Editor';
 
 import '../style/index.css';
 
@@ -65,10 +69,7 @@ class JupyterLabSqlWidget extends SplitPanel {
     this.id = "jupyterlab-sql";
     this.title.label = "SQL";
     this.title.closable = true;
-    this.editorFactory = editorFactory;
-    const editorWidget = new Widget();
-    const model = new CodeEditor.Model();
-    this.editorFactory.newInlineEditor({model, host: editorWidget.node});
+    const editorWidget = new Editor(editorFactory);
     this.addWidget(editorWidget);
     this.grid = new DataGrid();
     this.addWidget(this.grid);
