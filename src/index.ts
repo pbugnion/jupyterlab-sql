@@ -22,6 +22,10 @@ import {
   Editor
 } from './Editor';
 
+
+import { ServerConnection } from '@jupyterlab/services';
+import { URLExt } from '@jupyterlab/coreutils';
+
 import '../style/index.css';
 
 
@@ -73,15 +77,22 @@ class JupyterLabSqlWidget extends SplitPanel {
     editorWidget.executeRequest.connect((sender, value) => {
       this.updateGrid(value);
     })
+    this.settings = ServerConnection.makeSettings();
   }
 
   // readonly elem: HTMLElement
   readonly editorFactory: IEditorFactoryService
+  readonly settings: ServerConnection.ISettings
   grid: null | DataGrid
 
   updateGrid(sql: string): void {
     console.log(sql)
-    fetch("/jupyterlab_sql")
+    const url = URLExt.join(this.settings.baseUrl, "/jupyterlab_sql");
+    const request: RequestInit = {
+      method: 'POST',
+      body: JSON.stringify({"query": sql})
+    }
+    ServerConnection.makeRequest(url, request, this.settings)
       .then(response => response.json())
       .then(data => {
         const { result } = data;
