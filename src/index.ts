@@ -15,10 +15,6 @@ import {
 } from '@phosphor/widgets';
 
 import {
-  Message
-} from '@phosphor/messaging';
-
-import {
   DataModel, DataGrid
 } from '@phosphor/datagrid';
 
@@ -75,7 +71,7 @@ class JupyterLabSqlWidget extends SplitPanel {
     this.addWidget(this.grid);
     this.setRelativeSizes([1, 3]);
     editorWidget.executeRequest.connect((sender, value) => {
-      console.log(value)
+      this.updateGrid(value);
     })
   }
 
@@ -83,7 +79,8 @@ class JupyterLabSqlWidget extends SplitPanel {
   readonly editorFactory: IEditorFactoryService
   grid: null | DataGrid
 
-  onUpdateRequest(message: Message): void {
+  updateGrid(sql: string): void {
+    console.log(sql)
     fetch("/jupyterlab_sql")
       .then(response => response.json())
       .then(data => {
