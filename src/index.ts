@@ -70,7 +70,8 @@ class JupyterLabSqlWidget extends SplitPanel {
     const model = new CodeEditor.Model();
     this.editorFactory.newInlineEditor({model, host: editorWidget.node});
     this.addWidget(editorWidget);
-    this.grid = null;
+    this.grid = new DataGrid();
+    this.addWidget(this.grid);
   }
 
   // readonly elem: HTMLElement
@@ -83,13 +84,8 @@ class JupyterLabSqlWidget extends SplitPanel {
       .then(data => {
         const { result } = data;
         const { keys, rows } = result;
-        if (this.grid !== null) {
-          this.grid.dispose()
-        }
         const model = new SqlDataModel(keys, rows)
-        this.grid = new DataGrid()
         this.grid.model = model;
-        this.addWidget(this.grid);
       })
   }
 }
