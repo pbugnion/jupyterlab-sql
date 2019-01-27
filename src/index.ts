@@ -75,7 +75,7 @@ class JupyterLabSqlWidget extends SplitPanel {
     this.addWidget(this.grid);
     this.setRelativeSizes([1, 3]);
     editorWidget.executeRequest.connect((sender, value) => {
-      console.log("hello slot")
+      console.log(value)
     })
   }
 
