@@ -7,7 +7,11 @@ import {
 } from '@jupyterlab/apputils';
 
 import {
-  Panel
+  IEditorFactoryService, CodeEditor, IEditorServices
+} from '@jupyterlab/codeeditor';
+
+import {
+  SplitPanel, Widget
 } from '@phosphor/widgets';
 
 import {
@@ -54,18 +58,24 @@ class SqlDataModel extends DataModel {
 }
 
 
-class JupyterLabSqlWidget extends Panel {
-  constructor() {
-    super();
+class JupyterLabSqlWidget extends SplitPanel {
+  constructor(editorFactory: IEditorFactoryService) {
+    super({orientation: 'vertical'});
 
     this.id = "jupyterlab-sql";
     this.title.label = "SQL";
     this.title.closable = true;
-    this.elem = document.createElement("div");
-    this.node.appendChild(this.elem);
+    this.editorFactory = editorFactory;
+    const editorWidget = new Widget();
+    const model = new CodeEditor.Model();
+    this.editorFactory.newInlineEditor({model, host: editorWidget.node});
+    this.addWidget(editorWidget);
+    this.grid = null;
   }
 
-  readonly elem: HTMLElement
+  // readonly elem: HTMLElement
+  readonly editorFactory: IEditorFactoryService
+  grid: null | DataGrid
 
   onUpdateRequest(message: Message): void {
     fetch("/jupyterlab_sql")
@@ -73,17 +83,20 @@ class JupyterLabSqlWidget extends Panel {
       .then(data => {
         const { result } = data;
         const { keys, rows } = result;
+        if (this.grid !== null) {
+          this.grid.dispose()
+        }
         const model = new SqlDataModel(keys, rows)
-        const grid = new DataGrid()
-        grid.model = model;
-        this.insertWidget(1, grid);
+        this.grid = new DataGrid()
+        this.grid.model = model;
+        this.addWidget(this.grid);
       })
   }
 }
 
 
-function activate(app: JupyterLab, palette: ICommandPalette) {
-  const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget()
+function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEditorServices) {
+  const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(editorServices.factoryService)
 
   const command: string = "jupyterlab-sql:open";
   app.commands.addCommand(command, {
@@ -107,7 +120,7 @@ function activate(app: JupyterLab, palette: ICommandPalette) {
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-sql',
   autoStart: true,
-  requires: [ICommandPalette],
+  requires: [ICommandPalette, IEditorServices],
   activate,
 };
 
