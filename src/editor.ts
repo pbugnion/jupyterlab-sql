@@ -2,7 +2,7 @@ import {
   IEditorFactoryService, CodeEditor
 } from '@jupyterlab/codeeditor';
 
-import { CommandRegistry } from '@phosphor/commands';
+import { ISignal, Signal } from '@phosphor/signaling';
 
 import {
   Widget
@@ -17,13 +17,18 @@ export class Editor extends Widget {
     editor.addKeydownHandler((_, evt) => this._onKeydown(evt))
   }
 
-  readonly commands: CommandRegistry
+  get executeRequest(): ISignal<this, any> {
+    return this._executeRequest;
+  }
 
   _onKeydown(event: KeyboardEvent): boolean {
     if (event.shiftKey && event.key === "Enter") {
       console.log("trigger")
+      this._executeRequest.emit(67);
       return true
     }
     return false
   }
+
+  private _executeRequest = new Signal<this, any>(this);
 }
