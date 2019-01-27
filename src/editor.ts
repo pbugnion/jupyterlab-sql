@@ -23,7 +23,7 @@ export class Editor extends Widget {
   readonly model: CodeEditor.IModel;
   private _value: IObservableString;
 
-  get executeRequest(): ISignal<this, any> {
+  get executeRequest(): ISignal<this, string> {
     return this._executeRequest;
   }
 
@@ -35,5 +35,5 @@ export class Editor extends Widget {
     return false
   }
 
-  private _executeRequest = new Signal<this, any>(this);
+  private _executeRequest = new Signal<this, string>(this);
 }
