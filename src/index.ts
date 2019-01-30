@@ -11,7 +11,7 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
-  SplitPanel
+  BoxPanel
 } from '@phosphor/widgets';
 
 import {
@@ -62,22 +62,24 @@ class SqlDataModel extends DataModel {
 }
 
 
-class JupyterLabSqlWidget extends SplitPanel {
+class JupyterLabSqlWidget extends BoxPanel {
   constructor(editorFactory: IEditorFactoryService) {
-    super({orientation: 'vertical'});
-
+    super();
     this.id = "jupyterlab-sql";
     this.title.label = "SQL";
     this.title.closable = true;
+
     const editorWidget = new Editor(editorFactory);
-    this.addWidget(editorWidget);
     this.grid = new DataGrid();
-    this.addWidget(this.grid);
-    this.setRelativeSizes([1, 3]);
     editorWidget.executeRequest.connect((sender, value) => {
       this.updateGrid(value);
     })
     this.settings = ServerConnection.makeSettings();
+
+    this.addWidget(editorWidget);
+    this.addWidget(this.grid);
+    BoxPanel.setStretch(editorWidget, 1);
+    BoxPanel.setStretch(this.grid, 3);
   }
 
   // readonly elem: HTMLElement
