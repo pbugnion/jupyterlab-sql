@@ -11,7 +11,7 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
-  BoxPanel
+  BoxPanel, Widget
 } from '@phosphor/widgets';
 
 import {
@@ -62,12 +62,24 @@ class SqlDataModel extends DataModel {
 }
 
 
+class ConnectionInformation extends Widget {
+  constructor() {
+    super();
+    const div = document.createElement("div");
+    div.innerHTML = "<pre>postgres://some-connection</pre>"
+    this.node.appendChild(div);
+  }
+}
+
+
 class JupyterLabSqlWidget extends BoxPanel {
   constructor(editorFactory: IEditorFactoryService) {
     super();
     this.id = "jupyterlab-sql";
     this.title.label = "SQL";
     this.title.closable = true;
+
+    const connectionWidget = new ConnectionInformation()
 
     const editorWidget = new Editor(editorFactory);
     this.grid = new DataGrid();
@@ -76,8 +88,10 @@ class JupyterLabSqlWidget extends BoxPanel {
     })
     this.settings = ServerConnection.makeSettings();
 
+    this.addWidget(connectionWidget);
     this.addWidget(editorWidget);
     this.addWidget(this.grid);
+    BoxPanel.setSizeBasis(connectionWidget, 30);
     BoxPanel.setStretch(editorWidget, 1);
     BoxPanel.setStretch(this.grid, 3);
   }
