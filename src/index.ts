@@ -11,7 +11,7 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
-  BoxPanel, Widget
+  BoxPanel
 } from '@phosphor/widgets';
 
 import {
@@ -21,6 +21,10 @@ import {
 import {
   Editor
 } from './Editor';
+
+import {
+  ConnectionInformation
+} from './connectionInformation';
 
 
 import { ServerConnection } from '@jupyterlab/services';
@@ -58,16 +62,6 @@ class SqlDataModel extends DataModel {
       return "c";
     }
     return this._data[row][column];
-  }
-}
-
-
-class ConnectionInformation extends Widget {
-  constructor() {
-    super();
-    const div = document.createElement("div");
-    div.innerHTML = "<pre>postgres://some-connection</pre>"
-    this.node.appendChild(div);
   }
 }
 
