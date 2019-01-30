@@ -23,7 +23,7 @@ import {
 } from './Editor';
 
 import {
-  ConnectionInformation
+  ConnectionInformation, ConnectionInformationModel
 } from './connectionInformation';
 
 
@@ -73,7 +73,9 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.title.label = "SQL";
     this.title.closable = true;
 
-    const connectionWidget = new ConnectionInformation()
+    const connectionInformationModel = new ConnectionInformationModel();
+    const connectionWidget = new ConnectionInformation();
+    connectionWidget.model = connectionInformationModel;
 
     const editorWidget = new Editor(editorFactory);
     this.grid = new DataGrid();

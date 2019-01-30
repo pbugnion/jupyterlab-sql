@@ -6,10 +6,19 @@ import {
 import * as React from 'react';
 
 export class ConnectionInformationModel extends VDomModel {
+  constructor() {
+    super()
+    this.connectionString = "postgres://someconnection"
+  }
+
+  connectionString: string
 }
 
 export class ConnectionInformation extends VDomRenderer<ConnectionInformationModel> {
   render(): React.ReactElement<any> {
-    return <pre>postgres://some-connection</pre>;
+    if (!this.model) {
+      return null
+    }
+    return <pre>{this.model.connectionString}</pre>;
   }
 }
