@@ -1,0 +1,24 @@
+
+.p-Sql-ConnectionInformation-input-wrapper {
+    height: 20px;
+    border: 1px solid var(--jp-border-color0);
+    width: 200px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.p-Sql-ConnectionInformation-input-text {
+    width: 200px;
+    font-size: var(--jp-ui-font-size1);
+    color: var(--jp-ui-font-color1);
+    font-weight: 400;
+}
+
+.p-Sql-ConnectionInformation-edit-button {
+    background-image: var(--jp-icon-edit);
+    border: 1px solid var(--jp-border-color0);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}

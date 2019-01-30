@@ -19,6 +19,13 @@ export class ConnectionInformation extends VDomRenderer<ConnectionInformationMod
     if (!this.model) {
       return null
     }
-    return <pre>{this.model.connectionString}</pre>;
+    return (
+      <div>
+        <div className="p-Sql-ConnectionInformation-input-wrapper">
+          <div className="p-Sql-ConnectionInformation-input-text">{this.model.connectionString}</div>
+        </div>
+        <div className="p-Sql-ConnectionInformation-edit-button"></div>
+      </div>
+    )
   }
 }

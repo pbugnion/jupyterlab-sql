@@ -87,7 +87,7 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.addWidget(connectionWidget);
     this.addWidget(editorWidget);
     this.addWidget(this.grid);
-    BoxPanel.setSizeBasis(connectionWidget, 30);
+    BoxPanel.setSizeBasis(connectionWidget, 50);
     BoxPanel.setStretch(editorWidget, 1);
     BoxPanel.setStretch(this.grid, 3);
   }
