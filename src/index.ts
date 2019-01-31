@@ -23,7 +23,7 @@ import {
 } from './Editor';
 
 import {
-  ConnectionInformation, ConnectionInformationModel
+  ConnectionInformationContainer, ConnectionInformationModel
 } from './connectionInformation';
 
 
@@ -74,7 +74,7 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.title.closable = true;
 
     const connectionInformationModel = new ConnectionInformationModel();
-    const connectionWidget = new ConnectionInformation();
+    const connectionWidget = new ConnectionInformationContainer();
     connectionWidget.model = connectionInformationModel;
 
     const editorWidget = new Editor(editorFactory);
