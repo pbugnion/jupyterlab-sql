@@ -11,7 +11,7 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
-  BoxPanel
+  BoxPanel, SingletonLayout, Widget
 } from '@phosphor/widgets';
 
 import {
@@ -33,6 +33,7 @@ import { URLExt } from '@jupyterlab/coreutils';
 import '../style/index.css';
 
 
+// @ts-ignore
 class SqlDataModel extends DataModel {
   constructor(keys: any, data: any) {
     super()
@@ -66,6 +67,42 @@ class SqlDataModel extends DataModel {
 }
 
 
+class ErrorResponseWidget extends Widget {
+  constructor() {
+    super();
+    const element = document.createElement("div")
+    this._pre = document.createElement("pre")
+    element.appendChild(this._pre);
+    this.node.appendChild(element);
+  }
+
+  private _pre: HTMLElement
+
+  setValue(newValue: string): void {
+    this._pre.innerHTML = newValue;
+  }
+}
+
+
+class ResponseWidget extends Widget {
+  constructor() {
+    super();
+    this.gridWidget = new DataGrid();
+    this.errorResponseWidget = new ErrorResponseWidget();
+    this.layout = new SingletonLayout();
+  }
+
+  // @ts-ignore
+  private readonly gridWidget: DataGrid;
+  // @ts-ignore
+  private readonly errorResponseWidget: ErrorResponseWidget;
+
+  setResponse(response: any) {
+    console.log(response);
+  }
+}
+
+
 class JupyterLabSqlWidget extends BoxPanel {
   constructor(editorFactory: IEditorFactoryService) {
     super();
@@ -78,7 +115,8 @@ class JupyterLabSqlWidget extends BoxPanel {
     connectionWidget.model = connectionInformationModel;
 
     const editorWidget = new Editor(editorFactory);
-    this.grid = new DataGrid();
+    this.responseWidget = new ResponseWidget()
+    
     editorWidget.executeRequest.connect((_, value) => {
       const connectionString = connectionInformationModel.connectionString;
       this.updateGrid(connectionString, value);
@@ -87,16 +125,15 @@ class JupyterLabSqlWidget extends BoxPanel {
 
     this.addWidget(connectionWidget);
     this.addWidget(editorWidget);
-    this.addWidget(this.grid);
+    this.addWidget(this.responseWidget);
     BoxPanel.setSizeBasis(connectionWidget, 50);
     BoxPanel.setStretch(editorWidget, 1);
-    BoxPanel.setStretch(this.grid, 3);
+    BoxPanel.setStretch(this.responseWidget, 3);
   }
 
-  // readonly elem: HTMLElement
   readonly editorFactory: IEditorFactoryService
   readonly settings: ServerConnection.ISettings
-  grid: null | DataGrid
+  readonly responseWidget: ResponseWidget
 
   updateGrid(connectionString: string, sql: string): void {
     console.log(sql)
@@ -108,10 +145,11 @@ class JupyterLabSqlWidget extends BoxPanel {
     ServerConnection.makeRequest(url, request, this.settings)
       .then(response => response.json())
       .then(data => {
-        const { result } = data;
-        const { keys, rows } = result;
-        const model = new SqlDataModel(keys, rows)
-        this.grid.model = model;
+        // const { result } = data;
+        // const { keys, rows } = result;
+        // const model = new SqlDataModel(keys, rows)
+        // this.grid.model = model;
+        this.responseWidget.setResponse(data);
       })
   }
 }
