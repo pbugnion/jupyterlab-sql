@@ -9,13 +9,14 @@ from sqlalchemy import create_engine
 
 class SqlHandler(IPythonHandler):
     def __init__(self, *args, **kwargs):
-        self.engine = create_engine("postgres://localhost:5432/postgres")
         super(SqlHandler, self).__init__(*args, **kwargs)
 
     def post(self):
         data = json_decode(self.request.body)
         query = data["query"]
-        connection = self.engine.connect()
+        connection_string = data["connectionString"]
+        engine = create_engine(connection_string)
+        connection = engine.connect()
         result = connection.execute(query)
         keys = result.keys()
         rows = [tuple(row) for row in result]
