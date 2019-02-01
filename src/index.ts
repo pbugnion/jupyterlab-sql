@@ -97,29 +97,28 @@ class ResponseWidget extends Widget {
   private readonly errorResponseWidget: ErrorResponseWidget;
   readonly layout: SingletonLayout;
 
+  setCurrentWidget(widget: Widget) {
+    this.layout.widget.parent = null
+    this.layout.widget = widget
+    const item = new LayoutItem(this.layout.widget);
+    item.update(
+      0, 0,
+      this.parent!.node.offsetWidth,
+      this.parent!.node.offsetHeight
+    );
+  }
+
   setResponse(response: any) {
     const { responseType, responseData } = response;
     if (responseType === "error") {
       const { message } = responseData;
       this.errorResponseWidget.setValue(message);
-      this.layout.widget = this.errorResponseWidget;
-      const item = new LayoutItem(this.layout.widget);
-      item.update(
-        0, 0,
-        this.parent!.node.offsetWidth,
-        this.parent!.node.offsetHeight
-      );
+      this.setCurrentWidget(this.errorResponseWidget);
     } else if (responseType === "success") {
       const { keys, rows } = responseData;
       const model = new SqlDataModel(keys, rows)
       this.gridWidget.model = model;
-      this.layout.widget = this.gridWidget;
-      const item = new LayoutItem(this.layout.widget);
-      item.update(
-        0, 0,
-        this.parent!.node.offsetWidth,
-        this.parent!.node.offsetHeight
-      );
+      this.setCurrentWidget(this.gridWidget);
     }
   }
 }
