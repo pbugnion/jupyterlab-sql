@@ -6,30 +6,52 @@ import {
 import * as React from 'react';
 
 interface ConnectionInformationProps {
-  connectionString: string
+  connectionString: string;
+  onConnectionStringChanged: (newString: string) => void;
 }
 
 interface ConnectionInformationState {
-  editing: boolean,
+  editing: boolean;
   value: string
 }
 
 export class ConnectionInformationModel extends VDomModel {
   constructor() {
     super()
-    this.connectionString = "postgres://someconnection"
+    this._connectionString = "postgres://someconnection"
   }
 
-  connectionString: string
+  private _connectionString: string
+
+  get connectionString(): string {
+    return this._connectionString
+  }
+
+  set connectionString(newString: string) {
+    this._connectionString = newString;
+    this.stateChanged.emit(void 0);
+  }
 }
 
 export class ConnectionInformationContainer extends VDomRenderer<ConnectionInformationModel> {
+  onConnectionStringChanged(newString: string) {
+    if (!this.model) {
+      return
+    }
+    this.model.connectionString = newString;
+  }
+
   render(): React.ReactElement<any> {
     if (!this.model) {
       return null
     } else {
       const connectionString = this.model.connectionString;
-      return <ConnectionInformation connectionString={connectionString} />;
+      return (
+        <ConnectionInformation
+          connectionString={connectionString}
+          onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
+        />
+      )
     }
   }
 }
@@ -47,7 +69,6 @@ export class ConnectionInformation extends React.Component<ConnectionInformation
   }
 
   onEditChange(event: any) {
-    console.log(event);
     this.setState({ value: event.target.value });
   }
 
@@ -61,7 +82,9 @@ export class ConnectionInformation extends React.Component<ConnectionInformation
   }
 
   saveEditing() {
-    console.log("save")
+    this.setState({ editing: false }, () => {
+      this.props.onConnectionStringChanged(this.state.value)
+    });
   }
 
   cancelEditing() {
