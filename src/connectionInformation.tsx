@@ -18,7 +18,7 @@ interface ConnectionInformationState {
 export class ConnectionInformationModel extends VDomModel {
   constructor() {
     super()
-    this._connectionString = "postgres://someconnection"
+    this._connectionString = "postgres://localhost:5432/postgres"
   }
 
   private _connectionString: string
