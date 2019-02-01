@@ -88,7 +88,7 @@ export class ConnectionInformation extends React.Component<ConnectionInformation
   }
 
   cancelEditing() {
-    console.log("cancel")
+    this.setState({ editing: false });
   }
 
   renderDisplaying() {
