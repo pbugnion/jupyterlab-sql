@@ -79,8 +79,9 @@ class JupyterLabSqlWidget extends BoxPanel {
 
     const editorWidget = new Editor(editorFactory);
     this.grid = new DataGrid();
-    editorWidget.executeRequest.connect((sender, value) => {
-      this.updateGrid(value);
+    editorWidget.executeRequest.connect((_, value) => {
+      const connectionString = connectionInformationModel.connectionString;
+      this.updateGrid(connectionString, value);
     })
     this.settings = ServerConnection.makeSettings();
 
@@ -97,12 +98,12 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly settings: ServerConnection.ISettings
   grid: null | DataGrid
 
-  updateGrid(sql: string): void {
+  updateGrid(connectionString: string, sql: string): void {
     console.log(sql)
     const url = URLExt.join(this.settings.baseUrl, "/jupyterlab_sql");
     const request: RequestInit = {
       method: 'POST',
-      body: JSON.stringify({"query": sql})
+      body: JSON.stringify({connectionString, "query": sql})
     }
     ServerConnection.makeRequest(url, request, this.settings)
       .then(response => response.json())
