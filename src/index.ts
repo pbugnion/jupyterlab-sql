@@ -90,15 +90,17 @@ class ResponseWidget extends Widget {
     this.gridWidget = new DataGrid();
     this.errorResponseWidget = new ErrorResponseWidget();
     this.layout = new SingletonLayout();
+    this.layout.widget = this.errorResponseWidget;
   }
 
   // @ts-ignore
   private readonly gridWidget: DataGrid;
   // @ts-ignore
   private readonly errorResponseWidget: ErrorResponseWidget;
+  readonly layout: SingletonLayout;
 
   setResponse(response: any) {
-    console.log(response);
+    this.errorResponseWidget.setValue(JSON.stringify(response));
   }
 }
 
