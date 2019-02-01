@@ -11,7 +11,7 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
-  BoxPanel, SingletonLayout, Widget
+  BoxPanel, SingletonLayout, Widget, LayoutItem
 } from '@phosphor/widgets';
 
 import {
@@ -100,7 +100,21 @@ class ResponseWidget extends Widget {
   readonly layout: SingletonLayout;
 
   setResponse(response: any) {
-    this.errorResponseWidget.setValue(JSON.stringify(response));
+    const { responseType, responseData } = response;
+    if (responseType === "error") {
+      this.errorResponseWidget.setValue(JSON.stringify(response))
+    } else if (responseType === "success") {
+      const { keys, rows } = responseData;
+      const model = new SqlDataModel(keys, rows)
+      this.gridWidget.model = model;
+      this.layout.widget = this.gridWidget;
+      const item = new LayoutItem(this.layout.widget);
+      item.update(
+        0, 0,
+        this.parent!.node.offsetWidth,
+        this.parent!.node.offsetHeight
+      );
+    }
   }
 }
 
@@ -147,10 +161,6 @@ class JupyterLabSqlWidget extends BoxPanel {
     ServerConnection.makeRequest(url, request, this.settings)
       .then(response => response.json())
       .then(data => {
-        // const { result } = data;
-        // const { keys, rows } = result;
-        // const model = new SqlDataModel(keys, rows)
-        // this.grid.model = model;
         this.responseWidget.setResponse(data);
       })
   }
