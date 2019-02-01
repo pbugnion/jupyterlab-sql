@@ -93,16 +93,22 @@ class ResponseWidget extends Widget {
     this.layout.widget = this.errorResponseWidget;
   }
 
-  // @ts-ignore
   private readonly gridWidget: DataGrid;
-  // @ts-ignore
   private readonly errorResponseWidget: ErrorResponseWidget;
   readonly layout: SingletonLayout;
 
   setResponse(response: any) {
     const { responseType, responseData } = response;
     if (responseType === "error") {
-      this.errorResponseWidget.setValue(JSON.stringify(response))
+      const { message } = responseData;
+      this.errorResponseWidget.setValue(message);
+      this.layout.widget = this.errorResponseWidget;
+      const item = new LayoutItem(this.layout.widget);
+      item.update(
+        0, 0,
+        this.parent!.node.offsetWidth,
+        this.parent!.node.offsetHeight
+      );
     } else if (responseType === "success") {
       const { keys, rows } = responseData;
       const model = new SqlDataModel(keys, rows)
