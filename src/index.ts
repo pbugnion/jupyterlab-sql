@@ -33,7 +33,6 @@ import { URLExt } from '@jupyterlab/coreutils';
 import '../style/index.css';
 
 
-// @ts-ignore
 class SqlDataModel extends DataModel {
   constructor(keys: any, data: any) {
     super()
