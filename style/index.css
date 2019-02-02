@@ -32,3 +32,9 @@
 .p-Sql-Editor .CodeMirror {
     background: transparent;
 }
+
+.p-Sql-Editor.jp-mod-focused {
+    border: var(--jp-border-width) solid var(--jp-cell-editor-active-border-color);
+    background: var(--jp-cell-editor-active-background);
+    box-shadow: var(--jp-input-box-shadow);
+}

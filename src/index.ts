@@ -26,6 +26,8 @@ import {
   ConnectionInformationContainer, ConnectionInformationModel
 } from './connectionInformation';
 
+import { Message } from '@phosphor/messaging';
+
 
 import { ServerConnection } from '@jupyterlab/services';
 import { URLExt } from '@jupyterlab/coreutils';
