@@ -115,10 +115,17 @@ class ResponseWidget extends Widget {
       this.errorResponseWidget.setValue(message);
       this.setCurrentWidget(this.errorResponseWidget);
     } else if (responseType === "success") {
-      const { keys, rows } = responseData;
-      const model = new SqlDataModel(keys, rows)
-      this.gridWidget.model = model;
-      this.setCurrentWidget(this.gridWidget);
+      const { hasRows } = responseData;
+      if (hasRows) {
+        const { keys, rows } = responseData;
+        const model = new SqlDataModel(keys, rows)
+        this.gridWidget.model = model;
+        this.setCurrentWidget(this.gridWidget);
+      } else {
+        const message = "Command executed successfully";
+        this.errorResponseWidget.setValue(message);
+        this.setCurrentWidget(this.errorResponseWidget);
+      }
     }
   }
 }

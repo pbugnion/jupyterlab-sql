@@ -19,15 +19,24 @@ class SqlHandler(IPythonHandler):
         connection = engine.connect()
         try:
             result = connection.execute(query)
-            keys = result.keys()
-            rows = [tuple(row) for row in result]
-            response = {
-                "responseType": "success",
-                "responseData": {
-                    "keys": keys,
-                    "rows": rows
+            if result.returns_rows:
+                keys = result.keys()
+                rows = [tuple(row) for row in result]
+                response = {
+                    "responseType": "success",
+                    "responseData": {
+                        "hasRows": True,
+                        "keys": keys,
+                        "rows": rows
+                    }
                 }
-            }
+            else:
+                response = {
+                    "responseType": "success",
+                    "responseData": {
+                        "hasRows": False
+                    }
+                }
         except Exception as e:
             response = {
                 "responseType": "error",
