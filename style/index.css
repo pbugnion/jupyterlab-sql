@@ -22,3 +22,13 @@
     display: inline-block;
     vertical-align: middle;
 }
+
+.p-Sql-Editor {
+    border: var(--jp-border-width) solid var(--jp-cell-editor-border-color);
+    border-radius: 0px;
+    background: var(--jp-cell-editor-background);
+}
+
+.p-Sql-Editor .CodeMirror {
+    background: transparent;
+}

@@ -11,6 +11,7 @@ export class Editor extends CodeEditorWrapper {
       factory: editorFactory.newInlineEditor,
     })
     this.editor.addKeydownHandler((_, evt) => this._onKeydown(evt))
+    this.addClass("p-Sql-Editor");
   }
 
   get executeRequest(): ISignal<this, string> {
