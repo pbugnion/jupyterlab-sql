@@ -131,24 +131,25 @@ class JupyterLabSqlWidget extends BoxPanel {
     const connectionWidget = new ConnectionInformationContainer();
     connectionWidget.model = connectionInformationModel;
 
-    const editorWidget = new Editor(editorFactory);
+    this.editorWidget = new Editor(editorFactory);
     this.responseWidget = new ResponseWidget()
     
-    editorWidget.executeRequest.connect((_, value) => {
+    this.editorWidget.executeRequest.connect((_, value) => {
       const connectionString = connectionInformationModel.connectionString;
       this.updateGrid(connectionString, value);
     })
     this.settings = ServerConnection.makeSettings();
 
     this.addWidget(connectionWidget);
-    this.addWidget(editorWidget);
+    this.addWidget(this.editorWidget);
     this.addWidget(this.responseWidget);
     BoxPanel.setSizeBasis(connectionWidget, 50);
-    BoxPanel.setStretch(editorWidget, 1);
+    BoxPanel.setStretch(this.editorWidget, 1);
     BoxPanel.setStretch(this.responseWidget, 3);
   }
 
   readonly editorFactory: IEditorFactoryService
+  readonly editorWidget: Editor
   readonly settings: ServerConnection.ISettings
   readonly responseWidget: ResponseWidget
 
@@ -164,6 +165,10 @@ class JupyterLabSqlWidget extends BoxPanel {
       .then(data => {
         this.responseWidget.setResponse(data);
       })
+  }
+
+  onActivateRequest(msg: Message) {
+    this.editorWidget.activate()
   }
 }
 
