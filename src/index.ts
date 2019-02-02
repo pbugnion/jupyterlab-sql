@@ -59,7 +59,7 @@ class SqlDataModel extends DataModel {
       return this._keys[column];
     }
     if (region === "corner-header") {
-      return "c";
+      return "";
     }
     return this._data[row][column];
   }
