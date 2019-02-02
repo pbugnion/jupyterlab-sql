@@ -67,19 +67,14 @@ class SqlDataModel extends DataModel {
 }
 
 
-class ErrorResponseWidget extends Widget {
-  constructor() {
+class TextResponseWidget extends Widget {
+  constructor(message: string) {
     super();
     const element = document.createElement("div")
-    this._pre = document.createElement("pre")
-    element.appendChild(this._pre);
+    const pre = document.createElement("pre")
+    pre.innerHTML = message
+    element.appendChild(pre);
     this.node.appendChild(element);
-  }
-
-  private _pre: HTMLElement
-
-  setValue(newValue: string): void {
-    this._pre.innerHTML = newValue;
   }
 }
 
@@ -106,8 +101,7 @@ class ResponseWidget extends Widget {
     const { responseType, responseData } = response;
     if (responseType === "error") {
       const { message } = responseData;
-      const errorResponseWidget = new ErrorResponseWidget()
-      errorResponseWidget.setValue(message);
+      const errorResponseWidget = new TextResponseWidget(message);
       this.setCurrentWidget(errorResponseWidget);
     } else if (responseType === "success") {
       const { hasRows } = responseData;
@@ -119,8 +113,7 @@ class ResponseWidget extends Widget {
         this.setCurrentWidget(gridWidget);
       } else {
         const message = "Command executed successfully";
-        const errorResponseWidget = new ErrorResponseWidget()
-        errorResponseWidget.setValue(message);
+        const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
       }
     }
