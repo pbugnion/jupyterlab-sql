@@ -17,14 +17,34 @@ class SqlHandler(IPythonHandler):
         connection_string = data["connectionString"]
         engine = create_engine(connection_string)
         connection = engine.connect()
-        result = connection.execute(query)
-        keys = result.keys()
-        rows = [tuple(row) for row in result]
-        response = {
-            "keys": keys,
-            "rows": rows
-        }
-        self.finish(json.dumps({"result": response}))
+        try:
+            result = connection.execute(query)
+            if result.returns_rows:
+                keys = result.keys()
+                rows = [tuple(row) for row in result]
+                response = {
+                    "responseType": "success",
+                    "responseData": {
+                        "hasRows": True,
+                        "keys": keys,
+                        "rows": rows
+                    }
+                }
+            else:
+                response = {
+                    "responseType": "success",
+                    "responseData": {
+                        "hasRows": False
+                    }
+                }
+        except Exception as e:
+            response = {
+                "responseType": "error",
+                "responseData": {
+                    "message": str(e)
+                }
+            }
+        self.finish(json.dumps(response))
 
 
 def register_handlers(nbapp):
