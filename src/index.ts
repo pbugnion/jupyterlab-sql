@@ -87,18 +87,12 @@ class ErrorResponseWidget extends Widget {
 class ResponseWidget extends Widget {
   constructor() {
     super();
-    this.gridWidget = new DataGrid();
-    this.errorResponseWidget = new ErrorResponseWidget();
     this.layout = new SingletonLayout();
-    this.layout.widget = this.errorResponseWidget;
   }
 
-  private readonly gridWidget: DataGrid;
-  private readonly errorResponseWidget: ErrorResponseWidget;
   readonly layout: SingletonLayout;
 
   setCurrentWidget(widget: Widget) {
-    this.layout.widget.parent = null
     this.layout.widget = widget
     const item = new LayoutItem(this.layout.widget);
     item.update(
@@ -112,19 +106,22 @@ class ResponseWidget extends Widget {
     const { responseType, responseData } = response;
     if (responseType === "error") {
       const { message } = responseData;
-      this.errorResponseWidget.setValue(message);
-      this.setCurrentWidget(this.errorResponseWidget);
+      const errorResponseWidget = new ErrorResponseWidget()
+      errorResponseWidget.setValue(message);
+      this.setCurrentWidget(errorResponseWidget);
     } else if (responseType === "success") {
       const { hasRows } = responseData;
       if (hasRows) {
         const { keys, rows } = responseData;
         const model = new SqlDataModel(keys, rows)
-        this.gridWidget.model = model;
-        this.setCurrentWidget(this.gridWidget);
+        const gridWidget = new DataGrid();
+        gridWidget.model = model;
+        this.setCurrentWidget(gridWidget);
       } else {
         const message = "Command executed successfully";
-        this.errorResponseWidget.setValue(message);
-        this.setCurrentWidget(this.errorResponseWidget);
+        const errorResponseWidget = new ErrorResponseWidget()
+        errorResponseWidget.setValue(message);
+        this.setCurrentWidget(errorResponseWidget);
       }
     }
   }
