@@ -41,7 +41,7 @@ class SqlHandler(IPythonHandler):
             response = {
                 "responseType": "error",
                 "responseData": {
-                    "message": "bjlfdsklajfsla"
+                    "message": str(e)
                 }
             }
         self.finish(json.dumps(response))
