@@ -128,6 +128,7 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.id = "jupyterlab-sql";
     this.title.label = "SQL";
     this.title.closable = true;
+    this.addClass("p-Sql-MainContainer");
 
     const connectionInformationModel = new ConnectionInformationModel();
     const connectionWidget = new ConnectionInformationContainer();

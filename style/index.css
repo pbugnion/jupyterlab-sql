@@ -1,3 +1,7 @@
+.p-Sql-MainContainer {
+    padding-left: 10px;
+    padding-right: 10px;
+}
 
 .p-Sql-ConnectionInformation-input-wrapper {
     height: 20px;
