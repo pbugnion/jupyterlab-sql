@@ -19,6 +19,7 @@
 .p-Sql-ConnectionInformation-input-text {
     width: 200px;
     font-size: var(--jp-ui-font-size1);
+    line-height: 28px;
     color: var(--jp-ui-font-color1);
     font-weight: 400;
 }
