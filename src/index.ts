@@ -87,15 +87,26 @@ class ResponseWidget extends Widget {
   }
 
   readonly layout: SingletonLayout;
+  private item: LayoutItem
 
   setCurrentWidget(widget: Widget) {
     this.layout.widget = widget
-    const item = new LayoutItem(this.layout.widget);
-    item.update(
+    this.item = new LayoutItem(this.layout.widget);
+    this.item.update(
       0, 0,
-      this.parent!.node.offsetWidth,
-      this.parent!.node.offsetHeight
+      this.node.offsetWidth,
+      this.node.offsetHeight
     );
+  }
+
+  onResize(msg: Message) {
+    if (this.item) {
+      this.item.update(
+        0, 0,
+        this.node.offsetWidth,
+        this.node.offsetHeight
+      )
+    }
   }
 
   setResponse(response: any) {
