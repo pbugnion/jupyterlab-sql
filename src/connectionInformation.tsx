@@ -185,6 +185,7 @@ class ConnectionInformationEdit extends React.Component<
             ref={this.inputRef}
             onChange={event => this.onChange(event)}
             onKeyDown={event => this.onKeyDown(event)}
+            onBlur={() => this.cancel()}
           />
         </div>
       </div>
