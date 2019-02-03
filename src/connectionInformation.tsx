@@ -5,15 +5,6 @@ import {
 
 import * as React from 'react';
 
-interface ConnectionInformationProps {
-  connectionString: string;
-  onConnectionStringChanged: (newString: string) => void;
-}
-
-interface ConnectionInformationState {
-  editing: boolean;
-}
-
 export class ConnectionInformationModel extends VDomModel {
   constructor() {
     super()
@@ -55,9 +46,23 @@ export class ConnectionInformationContainer extends VDomRenderer<ConnectionInfor
   }
 }
 
-export class ConnectionInformation extends React.Component<ConnectionInformationProps, ConnectionInformationState> {
+namespace ConnectionInformation {
+  export interface Props {
+    connectionString: string,
+    onConnectionStringChanged: (newString: string) => void;
+  }
 
-  constructor(props: ConnectionInformationProps) {
+  export interface State {
+    editing: boolean
+  }
+}
+
+export class ConnectionInformation extends React.Component<
+  ConnectionInformation.Props,
+  ConnectionInformation.State
+> {
+
+  constructor(props: ConnectionInformation.Props) {
     super(props);
     this.state = { editing: false };
   }
