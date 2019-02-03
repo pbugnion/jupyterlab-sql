@@ -147,6 +147,8 @@ class ConnectionInformationEdit extends React.Component<
     this.state = { value: this.props.connectionString }
   }
 
+  private inputRef = React.createRef<HTMLInputElement>();
+
   onKeyDown(event: any) {
     if (event.key === "Enter") {
       this.finish()
@@ -168,6 +170,10 @@ class ConnectionInformationEdit extends React.Component<
     this.props.onCancelEdit();
   }
 
+  componentDidMount() {
+    this.inputRef.current!.focus();
+  }
+
   render() {
     const { value } = this.state;
     return (
@@ -176,6 +182,7 @@ class ConnectionInformationEdit extends React.Component<
           <input
             className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
             value={value}
+            ref={this.inputRef}
             onChange={event => this.onChange(event)}
             onKeyDown={event => this.onKeyDown(event)}
           />
