@@ -17,6 +17,11 @@
     padding-left: 8px;
 }
 
+.p-Sql-ConnectionInformation-input-wrapper.p-Sql-ConnectionInformation-input-wrapper-editing {
+    border: 1px solid var(--md-blue-500);
+    box-shadow: inset 0 0 4px var(--md-blue-300);
+}
+
 .p-Sql-ConnectionInformation-text {
     font-size: var(--jp-ui-font-size1);
     line-height: 28px;
@@ -42,6 +47,11 @@
     padding: 0;
     border: 0;
     width: 100%;
+    background: transparent;
+}
+
+.p-Sql-ConnectionInformation-input:focus {
+    outline: none;
 }
 
 .p-Sql-Editor {

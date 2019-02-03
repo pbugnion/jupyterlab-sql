@@ -172,7 +172,7 @@ class ConnectionInformationEdit extends React.Component<
     const { value } = this.state;
     return (
       <div className="p-Sql-ConnectionInformation-wrapper">
-        <div className="p-Sql-ConnectionInformation-input-wrapper">
+        <div className="p-Sql-ConnectionInformation-input-wrapper p-Sql-ConnectionInformation-input-wrapper-editing">
           <input
             className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
             value={value}
