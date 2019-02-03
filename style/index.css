@@ -11,9 +11,10 @@
 .p-Sql-ConnectionInformation-input-wrapper {
     height: 30px;
     border: 1px solid var(--jp-border-color0);
-    width: 200px;
+    width: 400px;
     display: inline-block;
     vertical-align: middle;
+    padding-left: 8px;
 }
 
 .p-Sql-ConnectionInformation-input-text {
@@ -29,7 +30,9 @@
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: center;
-    border: 1px solid var(--jp-border-color0);
+    border-right: 1px solid var(--jp-border-color0);
+    border-top: 1px solid var(--jp-border-color0);
+    border-bottom: 1px solid var(--jp-border-color0);
     width: 30px;
     height: 30px;
     display: inline-block;
