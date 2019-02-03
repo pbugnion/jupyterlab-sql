@@ -17,7 +17,7 @@
     padding-left: 8px;
 }
 
-.p-Sql-ConnectionInformation-input-text {
+.p-Sql-ConnectionInformation-text {
     font-size: var(--jp-ui-font-size1);
     line-height: 28px;
     color: var(--jp-ui-font-color1);

@@ -124,7 +124,7 @@ class ConnectionInformationDisplay extends React.Component<{
     return (
       <div className="p-Sql-ConnectionInformation-wrapper">
         <div className="p-Sql-ConnectionInformation-input-wrapper">
-          <div className="p-Sql-ConnectionInformation-input-text">
+          <div className="p-Sql-ConnectionInformation-text">
             {connectionString}
           </div>
         </div>
@@ -174,7 +174,7 @@ class ConnectionInformationEdit extends React.Component<
       <div className="p-Sql-ConnectionInformation-wrapper">
         <div className="p-Sql-ConnectionInformation-input-wrapper">
           <input
-            className="p-Sql-ConnectionInformation-input-text p-Sql-ConnectionInformation-input"
+            className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
             value={value}
             onChange={event => this.onChange(event)}
             onKeyDown={event => this.onKeyDown(event)}
