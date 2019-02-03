@@ -1,27 +1,18 @@
 import {
-  IEditorFactoryService, CodeEditor
+  IEditorFactoryService, CodeEditor, CodeEditorWrapper
 } from '@jupyterlab/codeeditor';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
-import { IObservableString } from '@jupyterlab/observables';
-
-import {
-  Widget
-} from '@phosphor/widgets';
-
-export class Editor extends Widget {
+export class Editor extends CodeEditorWrapper {
   constructor(editorFactory: IEditorFactoryService) {
-    super()
-    const model = new CodeEditor.Model();
-    this._value = model.value;
-    const editor = editorFactory.newInlineEditor({model, host: this.node});
-
-    editor.addKeydownHandler((_, evt) => this._onKeydown(evt))
+    super({
+      model: new CodeEditor.Model(),
+      factory: editorFactory.newInlineEditor,
+    })
+    this.editor.addKeydownHandler((_, evt) => this._onKeydown(evt))
+    this.addClass("p-Sql-Editor");
   }
-
-  readonly model: CodeEditor.IModel;
-  private _value: IObservableString;
 
   get executeRequest(): ISignal<this, string> {
     return this._executeRequest;
@@ -29,7 +20,7 @@ export class Editor extends Widget {
 
   _onKeydown(event: KeyboardEvent): boolean {
     if (event.shiftKey && event.key === "Enter") {
-      this._executeRequest.emit(this._value.text);
+      this._executeRequest.emit(this.model.value.text);
       return true
     }
     return false

@@ -26,6 +26,8 @@ import {
   ConnectionInformationContainer, ConnectionInformationModel
 } from './connectionInformation';
 
+import { Message } from '@phosphor/messaging';
+
 
 import { ServerConnection } from '@jupyterlab/services';
 import { URLExt } from '@jupyterlab/coreutils';
@@ -85,15 +87,26 @@ class ResponseWidget extends Widget {
   }
 
   readonly layout: SingletonLayout;
+  private item: LayoutItem
 
   setCurrentWidget(widget: Widget) {
     this.layout.widget = widget
-    const item = new LayoutItem(this.layout.widget);
-    item.update(
+    this.item = new LayoutItem(this.layout.widget);
+    this.fitCurrentWidget();
+  }
+
+  onResize(msg: Message) {
+    if (this.item) {
+      this.fitCurrentWidget()
+    }
+  }
+
+  fitCurrentWidget() {
+    this.item.update(
       0, 0,
-      this.parent!.node.offsetWidth,
-      this.parent!.node.offsetHeight
-    );
+      this.node.offsetWidth,
+      this.node.offsetHeight
+    )
   }
 
   setResponse(response: any) {
@@ -126,29 +139,31 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.id = "jupyterlab-sql";
     this.title.label = "SQL";
     this.title.closable = true;
+    this.addClass("p-Sql-MainContainer");
 
     const connectionInformationModel = new ConnectionInformationModel();
     const connectionWidget = new ConnectionInformationContainer();
     connectionWidget.model = connectionInformationModel;
 
-    const editorWidget = new Editor(editorFactory);
+    this.editorWidget = new Editor(editorFactory);
     this.responseWidget = new ResponseWidget()
     
-    editorWidget.executeRequest.connect((_, value) => {
+    this.editorWidget.executeRequest.connect((_, value) => {
       const connectionString = connectionInformationModel.connectionString;
       this.updateGrid(connectionString, value);
     })
     this.settings = ServerConnection.makeSettings();
 
     this.addWidget(connectionWidget);
-    this.addWidget(editorWidget);
+    this.addWidget(this.editorWidget);
     this.addWidget(this.responseWidget);
     BoxPanel.setSizeBasis(connectionWidget, 50);
-    BoxPanel.setStretch(editorWidget, 1);
+    BoxPanel.setStretch(this.editorWidget, 1);
     BoxPanel.setStretch(this.responseWidget, 3);
   }
 
   readonly editorFactory: IEditorFactoryService
+  readonly editorWidget: Editor
   readonly settings: ServerConnection.ISettings
   readonly responseWidget: ResponseWidget
 
@@ -164,6 +179,10 @@ class JupyterLabSqlWidget extends BoxPanel {
       .then(data => {
         this.responseWidget.setResponse(data);
       })
+  }
+
+  onActivateRequest(msg: Message) {
+    this.editorWidget.activate()
   }
 }
 
