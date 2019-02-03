@@ -3,8 +3,13 @@
     padding-right: 10px;
 }
 
+.p-Sql-ConnectionInformation-wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .p-Sql-ConnectionInformation-input-wrapper {
-    height: 20px;
+    height: 30px;
     border: 1px solid var(--jp-border-color0);
     width: 200px;
     display: inline-block;
@@ -21,8 +26,8 @@
 .p-Sql-ConnectionInformation-edit-button {
     background-image: var(--jp-icon-edit);
     border: 1px solid var(--jp-border-color0);
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     display: inline-block;
     vertical-align: middle;
 }

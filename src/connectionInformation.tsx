@@ -122,7 +122,7 @@ class ConnectionInformationDisplay extends React.Component<{
   render() {
     const { connectionString, onStartEditing } = this.props;
     return (
-      <React.Fragment>
+      <div className="p-Sql-ConnectionInformation-wrapper">
         <div className="p-Sql-ConnectionInformation-input-wrapper">
           <div className="p-Sql-ConnectionInformation-input-text">
             {connectionString}
@@ -132,7 +132,7 @@ class ConnectionInformationDisplay extends React.Component<{
           className="p-Sql-ConnectionInformation-edit-button"
           onClick={onStartEditing}>
         </div>
-      </React.Fragment>
+      </div>
     )
   }
 }
@@ -171,7 +171,7 @@ class ConnectionInformationEdit extends React.Component<
   render() {
     const { value } = this.state;
     return (
-      <React.Fragment>
+      <div className="p-Sql-ConnectionInformation-wrapper">
         <div className="p-Sql-ConnectionInformation-input-wrapper">
           <input
             className="p-Sql-ConnectionInformation-input-text"
@@ -180,7 +180,7 @@ class ConnectionInformationEdit extends React.Component<
             onKeyDown={event => this.onKeyDown(event)}
           />
         </div>
-      </React.Fragment>
+      </div>
     )
   }
 }
