@@ -84,27 +84,23 @@ export class ConnectionInformation extends React.Component<
   renderDisplaying() {
     const { connectionString } = this.props;
     return (
-      <div>
-        <ConnectionInformationDisplay
-          connectionString={connectionString}
-          onStartEditing={() => this.startEditing()}
-        />
-      </div>
+      <ConnectionInformationDisplay
+        connectionString={connectionString}
+        onStartEditing={() => this.startEditing()}
+      />
     )
   }
 
   renderEditing() {
     const { connectionString } = this.props;
     return (
-      <div>
-        <ConnectionInformationEdit
-          connectionString={connectionString}
-          onFinishEdit={
-            (newConnectionString: string) => this.saveEdit(newConnectionString)
-          }
-          onCancelEdit={() => this.cancelEdit()}
-        />
-      </div>
+      <ConnectionInformationEdit
+        connectionString={connectionString}
+        onFinishEdit={
+          (newConnectionString: string) => this.saveEdit(newConnectionString)
+        }
+        onCancelEdit={() => this.cancelEdit()}
+      />
     )
   }
 
