@@ -174,7 +174,7 @@ class ConnectionInformationEdit extends React.Component<
       <div className="p-Sql-ConnectionInformation-wrapper">
         <div className="p-Sql-ConnectionInformation-input-wrapper">
           <input
-            className="p-Sql-ConnectionInformation-input-text"
+            className="p-Sql-ConnectionInformation-input-text p-Sql-ConnectionInformation-input"
             value={value}
             onChange={event => this.onChange(event)}
             onKeyDown={event => this.onKeyDown(event)}

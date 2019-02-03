@@ -18,7 +18,6 @@
 }
 
 .p-Sql-ConnectionInformation-input-text {
-    width: 200px;
     font-size: var(--jp-ui-font-size1);
     line-height: 28px;
     color: var(--jp-ui-font-color1);
@@ -37,6 +36,12 @@
     height: 30px;
     display: inline-block;
     vertical-align: middle;
+}
+
+.p-Sql-ConnectionInformation-input {
+    padding: 0;
+    border: 0;
+    width: 100%;
 }
 
 .p-Sql-Editor {
