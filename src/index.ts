@@ -92,21 +92,21 @@ class ResponseWidget extends Widget {
   setCurrentWidget(widget: Widget) {
     this.layout.widget = widget
     this.item = new LayoutItem(this.layout.widget);
-    this.item.update(
-      0, 0,
-      this.node.offsetWidth,
-      this.node.offsetHeight
-    );
+    this.fitCurrentWidget();
   }
 
   onResize(msg: Message) {
     if (this.item) {
-      this.item.update(
-        0, 0,
-        this.node.offsetWidth,
-        this.node.offsetHeight
-      )
+      this.fitCurrentWidget()
     }
+  }
+
+  fitCurrentWidget() {
+    this.item.update(
+      0, 0,
+      this.node.offsetWidth,
+      this.node.offsetHeight
+    )
   }
 
   setResponse(response: any) {
