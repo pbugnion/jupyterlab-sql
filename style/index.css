@@ -3,28 +3,55 @@
     padding-right: 10px;
 }
 
-.p-Sql-ConnectionInformation-input-wrapper {
-    height: 20px;
-    border: 1px solid var(--jp-border-color0);
-    width: 200px;
-    display: inline-block;
-    vertical-align: middle;
+.p-Sql-ConnectionInformation-wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-.p-Sql-ConnectionInformation-input-text {
-    width: 200px;
+.p-Sql-ConnectionInformation-input-wrapper {
+    height: 30px;
+    border: 1px solid var(--jp-border-color0);
+    width: 400px;
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 8px;
+}
+
+.p-Sql-ConnectionInformation-input-wrapper.p-Sql-ConnectionInformation-input-wrapper-editing {
+    border: 1px solid var(--md-blue-500);
+    box-shadow: inset 0 0 4px var(--md-blue-300);
+}
+
+.p-Sql-ConnectionInformation-text {
     font-size: var(--jp-ui-font-size1);
+    line-height: 28px;
     color: var(--jp-ui-font-color1);
     font-weight: 400;
 }
 
 .p-Sql-ConnectionInformation-edit-button {
     background-image: var(--jp-icon-edit);
-    border: 1px solid var(--jp-border-color0);
-    width: 20px;
-    height: 20px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-right: 1px solid var(--jp-border-color0);
+    border-top: 1px solid var(--jp-border-color0);
+    border-bottom: 1px solid var(--jp-border-color0);
+    width: 30px;
+    height: 30px;
     display: inline-block;
     vertical-align: middle;
+}
+
+.p-Sql-ConnectionInformation-input {
+    padding: 0;
+    border: 0;
+    width: 100%;
+    background: transparent;
+}
+
+.p-Sql-ConnectionInformation-input:focus {
+    outline: none;
 }
 
 .p-Sql-Editor {

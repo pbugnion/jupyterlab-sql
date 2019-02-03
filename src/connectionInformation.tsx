@@ -5,16 +5,6 @@ import {
 
 import * as React from 'react';
 
-interface ConnectionInformationProps {
-  connectionString: string;
-  onConnectionStringChanged: (newString: string) => void;
-}
-
-interface ConnectionInformationState {
-  editing: boolean;
-  value: string
-}
-
 export class ConnectionInformationModel extends VDomModel {
   constructor() {
     super()
@@ -56,67 +46,61 @@ export class ConnectionInformationContainer extends VDomRenderer<ConnectionInfor
   }
 }
 
-export class ConnectionInformation extends React.Component<ConnectionInformationProps, ConnectionInformationState> {
+namespace ConnectionInformation {
+  export interface Props {
+    connectionString: string,
+    onConnectionStringChanged: (newString: string) => void;
+  }
 
-  constructor(props: ConnectionInformationProps) {
+  export interface State {
+    editing: boolean
+  }
+}
+
+export class ConnectionInformation extends React.Component<
+  ConnectionInformation.Props,
+  ConnectionInformation.State
+> {
+
+  constructor(props: ConnectionInformation.Props) {
     super(props);
-    this.state = { editing: false, value: '' };
+    this.state = { editing: false };
   }
 
   startEditing() {
-    const {connectionString} = this.props;
-    this.setState({ editing: true, value: connectionString });
+    this.setState({ editing: true });
   }
 
-  onEditChange(event: any) {
-    this.setState({ value: event.target.value });
-  }
-
-  onKeyDown(event: any) {
-    if (event.key === "Enter") {
-      this.saveEditing()
-    } else if (event.keyCode === 27) {
-      // ESC key
-      this.cancelEditing()
-    }
-  }
-
-  saveEditing() {
+  saveEdit(newConnectionString: string) {
     this.setState({ editing: false }, () => {
-      this.props.onConnectionStringChanged(this.state.value)
+      this.props.onConnectionStringChanged(newConnectionString)
     });
   }
 
-  cancelEditing() {
+  cancelEdit() {
     this.setState({ editing: false });
   }
 
   renderDisplaying() {
     const { connectionString } = this.props;
     return (
-      <div>
-        <div className="p-Sql-ConnectionInformation-input-wrapper">
-          <div className="p-Sql-ConnectionInformation-input-text">{connectionString}</div>
-        </div>
-        <div className="p-Sql-ConnectionInformation-edit-button" onClick={() => this.startEditing() }></div>
-      </div>
+      <ConnectionInformationDisplay
+        connectionString={connectionString}
+        onStartEditing={() => this.startEditing()}
+      />
     )
   }
 
   renderEditing() {
-    const { value } = this.state;
+    const { connectionString } = this.props;
     return (
-      <div>
-        <div className="p-Sql-ConnectionInformation-input-wrapper">
-          <input
-            className="p-Sql-ConnectionInformation-input-text"
-            value={value}
-            onChange={event => this.onEditChange(event)}
-            onKeyDown={event => this.onKeyDown(event)}
-          />
-        </div>
-        <div className="p-Sql-ConnectionInformation-edit-button" onClick={() => this.startEditing() }></div>
-      </div>
+      <ConnectionInformationEdit
+        connectionString={connectionString}
+        onFinishEdit={
+          (newConnectionString: string) => this.saveEdit(newConnectionString)
+        }
+        onCancelEdit={() => this.cancelEdit()}
+      />
     )
   }
 
@@ -127,5 +111,96 @@ export class ConnectionInformation extends React.Component<ConnectionInformation
     } else {
       return this.renderDisplaying()
     }
+  }
+}
+
+class ConnectionInformationDisplay extends React.Component<{
+  connectionString: string,
+  onStartEditing: () => void
+}, {}> {
+
+  render() {
+    const { connectionString, onStartEditing } = this.props;
+    return (
+      <div className="p-Sql-ConnectionInformation-wrapper">
+        <div className="p-Sql-ConnectionInformation-input-wrapper">
+          <div className="p-Sql-ConnectionInformation-text">
+            {connectionString}
+          </div>
+        </div>
+        <div
+          className="p-Sql-ConnectionInformation-edit-button"
+          onClick={onStartEditing}>
+        </div>
+      </div>
+    )
+  }
+}
+
+class ConnectionInformationEdit extends React.Component<
+  ConnectionInformationEdit.Props,
+  ConnectionInformationEdit.State
+> {
+
+  constructor(props: ConnectionInformationEdit.Props) {
+    super(props);
+    this.state = { value: this.props.connectionString }
+  }
+
+  private inputRef = React.createRef<HTMLInputElement>();
+
+  onKeyDown(event: any) {
+    if (event.key === "Enter") {
+      this.finish()
+    } else if (event.keyCode === 27) {
+      // ESC key
+      this.cancel()
+    }
+  }
+
+  onChange(event: any) {
+    this.setState({ value: event.target.value });
+  }
+
+  finish() {
+    this.props.onFinishEdit(this.state.value);
+  }
+
+  cancel() {
+    this.props.onCancelEdit();
+  }
+
+  componentDidMount() {
+    this.inputRef.current!.focus();
+  }
+
+  render() {
+    const { value } = this.state;
+    return (
+      <div className="p-Sql-ConnectionInformation-wrapper">
+        <div className="p-Sql-ConnectionInformation-input-wrapper p-Sql-ConnectionInformation-input-wrapper-editing">
+          <input
+            className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
+            value={value}
+            ref={this.inputRef}
+            onChange={event => this.onChange(event)}
+            onKeyDown={event => this.onKeyDown(event)}
+            onBlur={() => this.cancel()}
+          />
+        </div>
+      </div>
+    )
+  }
+}
+
+namespace ConnectionInformationEdit {
+  export interface Props {
+    connectionString: string;
+    onFinishEdit: (newConnectionString: string) => void;
+    onCancelEdit: () => void
+  }
+
+  export interface State {
+    value: string;
   }
 }
