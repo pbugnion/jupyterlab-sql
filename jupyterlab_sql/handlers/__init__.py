@@ -6,6 +6,8 @@ from tornado.escape import json_decode
 
 from sqlalchemy import create_engine
 
+from .serializer import make_row_serializable
+
 
 class SqlHandler(IPythonHandler):
     def __init__(self, *args, **kwargs):
@@ -21,7 +23,7 @@ class SqlHandler(IPythonHandler):
             result = connection.execute(query)
             if result.returns_rows:
                 keys = result.keys()
-                rows = [tuple(row) for row in result]
+                rows = [make_row_serializable(row) for row in result]
                 response = {
                     "responseType": "success",
                     "responseData": {
