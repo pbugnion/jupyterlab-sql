@@ -6,6 +6,7 @@ setuptools.setup(
     version="0.1.0",
     packages=setuptools.find_packages(),
     install_requires=[
-        "jupyterlab"
+        "jupyterlab",
+        "sqlalchemy"
     ]
 )
