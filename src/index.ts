@@ -63,7 +63,15 @@ class SqlDataModel extends DataModel {
     if (region === "corner-header") {
       return "";
     }
-    return this._data[row][column];
+    return this._serializeData(this._data[row][column]);
+  }
+
+  _serializeData(data: any): any {
+    const _type = typeof data
+    if (_type === "object") {
+      return JSON.stringify(data)
+    }
+    return data
   }
 }
 
