@@ -73,18 +73,16 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly settings: ServerConnection.ISettings
   readonly responseWidget: ResponseWidget
 
-  updateGrid(connectionString: string, sql: string): void {
+  async updateGrid(connectionString: string, sql: string): Promise<void> {
     console.log(sql)
     const url = URLExt.join(this.settings.baseUrl, "/jupyterlab-sql/query");
     const request: RequestInit = {
       method: 'POST',
       body: JSON.stringify({connectionString, "query": sql})
     }
-    ServerConnection.makeRequest(url, request, this.settings)
-      .then(response => response.json())
-      .then(data => {
-        this.responseWidget.setResponse(data);
-      })
+    const response = await ServerConnection.makeRequest(url, request, this.settings)
+    const data = await response.json()
+    this.responseWidget.setResponse(data);
   }
 
   onActivateRequest(msg: Message) {
