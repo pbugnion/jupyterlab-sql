@@ -3,6 +3,7 @@ import json
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado.escape import json_decode
+import tornado.ioloop
 
 from sqlalchemy import create_engine
 
@@ -13,14 +14,19 @@ class SqlHandler(IPythonHandler):
     def __init__(self, *args, **kwargs):
         super(SqlHandler, self).__init__(*args, **kwargs)
 
-    def post(self):
+    async def execute_query(self, connection, query):
+        ioloop = tornado.ioloop.IOLoop.current()
+        result = await ioloop.run_in_executor(None, connection.execute, query)
+        return result
+
+    async def post(self):
         data = json_decode(self.request.body)
         query = data["query"]
         connection_string = data["connectionString"]
         engine = create_engine(connection_string)
         connection = engine.connect()
         try:
-            result = connection.execute(query)
+            result = await self.execute_query(connection, query)
             if result.returns_rows:
                 keys = result.keys()
                 rows = [make_row_serializable(row) for row in result]
