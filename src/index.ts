@@ -1,3 +1,5 @@
+import * as uuid from "uuid";
+
 import {
   JupyterLab, JupyterLabPlugin
 } from '@jupyterlab/application';
@@ -72,19 +74,23 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly editorWidget: Editor
   readonly settings: ServerConnection.ISettings
   readonly responseWidget: ResponseWidget
+  private _lastRequestId: string
 
-  updateGrid(connectionString: string, sql: string): void {
-    console.log(sql)
+  async updateGrid(connectionString: string, sql: string): Promise<void> {
     const url = URLExt.join(this.settings.baseUrl, "/jupyterlab-sql/query");
     const request: RequestInit = {
       method: 'POST',
       body: JSON.stringify({connectionString, "query": sql})
     }
-    ServerConnection.makeRequest(url, request, this.settings)
-      .then(response => response.json())
-      .then(data => {
-        this.responseWidget.setResponse(data);
-      })
+    const thisRequestId = uuid.v4();
+    this._lastRequestId = thisRequestId;
+    const response = await ServerConnection.makeRequest(url, request, this.settings)
+    const data = await response.json()
+    if (this._lastRequestId === thisRequestId) {
+      // Only update the response widget if the current
+      // query is the last query that was dispatched.
+      this.responseWidget.setResponse(data);
+    }
   }
 
   onActivateRequest(msg: Message) {
