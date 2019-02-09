@@ -11,6 +11,10 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
+  ILauncher
+} from '@jupyterlab/launcher';
+
+import {
   BoxPanel
 } from '@phosphor/widgets';
 
@@ -89,7 +93,7 @@ class JupyterLabSqlWidget extends BoxPanel {
 }
 
 
-function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEditorServices) {
+function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher, editorServices: IEditorServices) {
   const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(editorServices.factoryService)
 
   const command: string = "jupyterlab-sql:open";
@@ -105,6 +109,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEd
   })
 
   palette.addItem({ command, category: "SQL" });
+  launcher.add({ command, category: "Other" })
 }
 
 
@@ -114,7 +119,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEd
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-sql',
   autoStart: true,
-  requires: [ICommandPalette, IEditorServices],
+  requires: [ICommandPalette, ILauncher, IEditorServices],
   activate,
 };
 
