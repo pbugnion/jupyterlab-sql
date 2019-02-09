@@ -54,7 +54,7 @@ def register_handlers(nbapp):
     host_pattern = ".*$"
     route_pattern = url_path_join(
         web_app.settings["base_url"],
-        "/jupyterlab_sql"
+        "/jupyterlab-sql/query"
     )
     handlers = [(route_pattern, SqlHandler)]
     web_app.add_handlers(host_pattern, handlers)

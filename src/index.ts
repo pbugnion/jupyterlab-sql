@@ -177,7 +177,7 @@ class JupyterLabSqlWidget extends BoxPanel {
 
   updateGrid(connectionString: string, sql: string): void {
     console.log(sql)
-    const url = URLExt.join(this.settings.baseUrl, "/jupyterlab_sql");
+    const url = URLExt.join(this.settings.baseUrl, "/jupyterlab-sql/query");
     const request: RequestInit = {
       method: 'POST',
       body: JSON.stringify({connectionString, "query": sql})
