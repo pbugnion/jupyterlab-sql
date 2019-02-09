@@ -74,7 +74,6 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly responseWidget: ResponseWidget
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
-    console.log(sql)
     const url = URLExt.join(this.settings.baseUrl, "/jupyterlab-sql/query");
     const request: RequestInit = {
       method: 'POST',
