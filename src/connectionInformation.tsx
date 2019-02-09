@@ -31,7 +31,7 @@ export class ConnectionInformationContainer extends VDomRenderer<ConnectionInfor
     this.model.connectionString = newString;
   }
 
-  render(): React.ReactElement<any> {
+  render() {
     if (!this.model) {
       return null
     } else {
@@ -149,7 +149,7 @@ class ConnectionInformationEdit extends React.Component<
 
   private inputRef = React.createRef<HTMLInputElement>();
 
-  onKeyDown(event: any) {
+  onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === "Enter") {
       this.finish()
     } else if (event.keyCode === 27) {
@@ -158,7 +158,7 @@ class ConnectionInformationEdit extends React.Component<
     }
   }
 
-  onChange(event: any) {
+  onChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ value: event.target.value });
   }
 
