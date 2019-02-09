@@ -93,7 +93,7 @@ class JupyterLabSqlWidget extends BoxPanel {
 }
 
 
-function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher, editorServices: IEditorServices) {
+function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher | null, editorServices: IEditorServices) {
   const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(editorServices.factoryService)
 
   const command: string = "jupyterlab-sql:open";
@@ -109,7 +109,10 @@ function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher
   })
 
   palette.addItem({ command, category: "SQL" });
-  launcher.add({ command, category: "Other" })
+
+  if (launcher) {
+    launcher.add({ command, category: "Other" })
+  }
 }
 
 
