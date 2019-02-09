@@ -11,8 +11,54 @@ import {
 } from '@phosphor/messaging';
 
 
+namespace Responses {
+  export type Type = ErrorResponse | SuccessResponse
+
+  interface ErrorResponse {
+    responseType: "error",
+    responseData: ErrorResponseData
+  }
+
+  interface SuccessResponse {
+    responseType: "success",
+    responseData: SuccessResponseData
+  }
+
+  interface ErrorResponseData {
+    message: string
+  }
+
+  type SuccessResponseData = {
+      hasRows: false
+    } | {
+      hasRows: true,
+      keys: Array<string>,
+      rows: Array<Array<any>>
+    }
+
+  export function match<U>(
+    response: Type,
+    onSuccessWithRows: (keys: Array<string>, rows: Array<Array<any>>) => U,
+    onSuccessNoRows: () => U,
+    onError: (_: ErrorResponseData) => U
+  ): U {
+    if (response.responseType === "error") {
+      return onError(response.responseData)
+    } else if (response.responseType === "success") {
+      const responseData = response.responseData
+      if (responseData.hasRows) {
+        const { keys, rows } = responseData
+        return onSuccessWithRows(keys, rows)
+      } else {
+        return onSuccessNoRows()
+      }
+    }
+  }
+}
+
+
 class SqlDataModel extends DataModel {
-  constructor(keys: any, data: any) {
+  constructor(keys: Array<string>, data: Array<Array<any>>) {
     super()
     this._data = data
     this._keys = keys
@@ -93,25 +139,24 @@ export class ResponseWidget extends Widget {
     )
   }
 
-  setResponse(response: any) {
-    const { responseType, responseData } = response;
-    if (responseType === "error") {
-      const { message } = responseData;
-      const errorResponseWidget = new TextResponseWidget(message);
-      this.setCurrentWidget(errorResponseWidget);
-    } else if (responseType === "success") {
-      const { hasRows } = responseData;
-      if (hasRows) {
-        const { keys, rows } = responseData;
+  setResponse(response: Responses.Type) {
+    Responses.match(
+      response,
+      (keys, rows) => {
         const model = new SqlDataModel(keys, rows)
         const gridWidget = new DataGrid();
         gridWidget.model = model;
         this.setCurrentWidget(gridWidget);
-      } else {
+      },
+      () => {
         const message = "Command executed successfully";
         const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
+      },
+      ({ message }) => {
+        const errorResponseWidget = new TextResponseWidget(message);
+        this.setCurrentWidget(errorResponseWidget);
       }
-    }
+    )
   }
 }
