@@ -1,3 +1,5 @@
+import * as uuid from "uuid";
+
 import {
   JupyterLab, JupyterLabPlugin
 } from '@jupyterlab/application';
@@ -72,6 +74,7 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly editorWidget: Editor
   readonly settings: ServerConnection.ISettings
   readonly responseWidget: ResponseWidget
+  private _lastRequestId: string
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
     const url = URLExt.join(this.settings.baseUrl, "/jupyterlab-sql/query");
@@ -79,9 +82,13 @@ class JupyterLabSqlWidget extends BoxPanel {
       method: 'POST',
       body: JSON.stringify({connectionString, "query": sql})
     }
+    const thisRequestId = uuid.v4();
+    this._lastRequestId = thisRequestId;
     const response = await ServerConnection.makeRequest(url, request, this.settings)
     const data = await response.json()
-    this.responseWidget.setResponse(data);
+    if (this._lastRequestId === thisRequestId) {
+      this.responseWidget.setResponse(data);
+    }
   }
 
   onActivateRequest(msg: Message) {

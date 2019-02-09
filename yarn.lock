@@ -105,6 +105,20 @@
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/widgets" "^1.6.0"
 
+"@jupyterlab/launcher@^0.19.1":
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/launcher/-/launcher-0.19.1.tgz#cab662ce42b7d0cbe65f9a0da75107677b6f01c7"
+  integrity sha512-bQpCSqcTbUWsKbxYkOBV1hPfV8Luzgf6XSPuoVwo8fx5mO/zN8BVAcls6exsi9pnJjKpgKv4skACyF9H5kMKBg==
+  dependencies:
+    "@jupyterlab/apputils" "^0.19.1"
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/commands" "^1.6.1"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/properties" "^1.1.2"
+    "@phosphor/widgets" "^1.6.0"
+    react "~16.4.2"
+
 "@jupyterlab/observables@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@jupyterlab/observables/-/observables-2.1.1.tgz#c5d8ad295c5b0bce914a607a342b0af4550b2187"
@@ -257,6 +271,11 @@
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/virtualdom" "^1.1.2"
 
+"@types/node@*":
+  version "10.12.24"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"
+  integrity sha512-GWWbvt+z9G5otRBW8rssOFgRY87J9N/qbhqfjMZ+gUuL6zoL+Hm6gP/8qQBG4jjimqdaNLCehcVapZ/Fs2WjCQ==
+
 "@types/prop-types@*":
   version "15.5.8"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.5.8.tgz#8ae4e0ea205fe95c3901a5a1df7f66495e3a56ce"
@@ -267,6 +286,13 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/uuid@^3.4.4":
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.4.4.tgz#7af69360fa65ef0decb41fd150bf4ca5c0cefdf5"
+  integrity sha512-tPIgT0GUmdJQNSHxp0X2jnpQfBSTfGxUMc/2CXBU2mnyTFVYVa2ojpoQ74w0U2yn2vw3jnC640+77lkFFpdVDw==
+  dependencies:
+    "@types/node" "*"
 
 ajv@~5.1.6:
   version "5.1.6"
@@ -691,6 +717,11 @@ url-parse@~1.4.3:
 util-deprecate@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
+
+uuid@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
+  integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
 whatwg-fetch@>=0.10.0:
   version "3.0.0"
