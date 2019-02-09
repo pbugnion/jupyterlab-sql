@@ -98,7 +98,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher
 
   const command: string = "jupyterlab-sql:open";
   app.commands.addCommand(command, {
-    label: "SQL",
+    label: ({ isPalette }) => isPalette ? "New SQL session" : "SQL",
     iconClass: "p-Sql-DatabaseIcon",
     execute: () => {
       if (!widget.isAttached) {
@@ -109,7 +109,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher
     }
   })
 
-  palette.addItem({ command, category: "SQL" });
+  palette.addItem({ command, category: "SQL", args: { isPalette: true }});
 
   if (launcher) {
     launcher.add({ command, category: "Other" })
