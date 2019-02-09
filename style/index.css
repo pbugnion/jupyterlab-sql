@@ -69,3 +69,7 @@
     background: var(--jp-cell-editor-active-background);
     box-shadow: var(--jp-input-box-shadow);
 }
+
+.p-Sql-DatabaseIcon {
+    background-image: url('./icons/database.svg');
+}

@@ -99,6 +99,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher
   const command: string = "jupyterlab-sql:open";
   app.commands.addCommand(command, {
     label: "SQL",
+    iconClass: "p-Sql-DatabaseIcon",
     execute: () => {
       if (!widget.isAttached) {
         app.shell.addToMainArea(widget);
