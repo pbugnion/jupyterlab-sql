@@ -64,8 +64,8 @@ class SqlDataModel extends DataModel {
     this._keys = keys
   }
 
-  readonly _data: any
-  readonly _keys: any
+  readonly _data: Array<Array<any>>
+  readonly _keys: Array<string>
 
   rowCount(region: DataModel.RowRegion): number {
     return region === 'body' ? this._data.length : 1
