@@ -11,6 +11,10 @@ import {
 } from '@jupyterlab/codeeditor';
 
 import {
+  ILauncher
+} from '@jupyterlab/launcher';
+
+import {
   BoxPanel
 } from '@phosphor/widgets';
 
@@ -89,12 +93,13 @@ class JupyterLabSqlWidget extends BoxPanel {
 }
 
 
-function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEditorServices) {
+function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher | null, editorServices: IEditorServices) {
   const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(editorServices.factoryService)
 
   const command: string = "jupyterlab-sql:open";
   app.commands.addCommand(command, {
-    label: "SQL",
+    label: ({ isPalette }) => isPalette ? "New SQL session" : "SQL",
+    iconClass: "p-Sql-DatabaseIcon",
     execute: () => {
       if (!widget.isAttached) {
         app.shell.addToMainArea(widget);
@@ -104,7 +109,11 @@ function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEd
     }
   })
 
-  palette.addItem({ command, category: "SQL" });
+  palette.addItem({ command, category: "SQL", args: { isPalette: true }});
+
+  if (launcher) {
+    launcher.add({ command, category: "Other" })
+  }
 }
 
 
@@ -114,7 +123,7 @@ function activate(app: JupyterLab, palette: ICommandPalette, editorServices: IEd
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-sql',
   autoStart: true,
-  requires: [ICommandPalette, IEditorServices],
+  requires: [ICommandPalette, ILauncher, IEditorServices],
   activate,
 };
 
