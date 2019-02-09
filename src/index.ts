@@ -87,6 +87,8 @@ class JupyterLabSqlWidget extends BoxPanel {
     const response = await ServerConnection.makeRequest(url, request, this.settings)
     const data = await response.json()
     if (this._lastRequestId === thisRequestId) {
+      // Only update the response widget if the current
+      // query is the last query that was dispatched.
       this.responseWidget.setResponse(data);
     }
   }
