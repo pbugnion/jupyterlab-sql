@@ -31,7 +31,7 @@ export class ConnectionInformationContainer extends VDomRenderer<ConnectionInfor
     this.model.connectionString = newString;
   }
 
-  render(): React.ReactElement<any> {
+  render() {
     if (!this.model) {
       return null
     } else {
