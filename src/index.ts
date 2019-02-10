@@ -49,15 +49,15 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.title.closable = true;
     this.addClass("p-Sql-MainContainer");
 
-    const connectionInformationModel = new ToolbarModel();
+    this.toolbarModel = new ToolbarModel();
     const connectionWidget = new ToolbarContainer();
-    connectionWidget.model = connectionInformationModel;
+    connectionWidget.model = this.toolbarModel;
 
     this.editorWidget = new Editor(editorFactory);
     this.responseWidget = new ResponseWidget()
     
     this.editorWidget.executeRequest.connect((_, value) => {
-      const connectionString = connectionInformationModel.connectionString;
+      const connectionString = this.toolbarModel.connectionString;
       this.updateGrid(connectionString, value);
     })
     this.settings = ServerConnection.makeSettings();
@@ -74,6 +74,7 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly editorWidget: Editor
   readonly settings: ServerConnection.ISettings
   readonly responseWidget: ResponseWidget
+  readonly toolbarModel: ToolbarModel
   private _lastRequestId: string
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
@@ -84,6 +85,7 @@ class JupyterLabSqlWidget extends BoxPanel {
     }
     const thisRequestId = uuid.v4();
     this._lastRequestId = thisRequestId;
+    this.toolbarModel.isLoading = true;
     const response = await ServerConnection.makeRequest(url, request, this.settings)
     const data = await response.json()
     if (this._lastRequestId === thisRequestId) {
@@ -91,6 +93,7 @@ class JupyterLabSqlWidget extends BoxPanel {
       // query is the last query that was dispatched.
       this.responseWidget.setResponse(data);
     }
+    this.toolbarModel.isLoading = false;
   }
 
   onActivateRequest(msg: Message) {

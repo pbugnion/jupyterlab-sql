@@ -7,14 +7,24 @@ import * as React from 'react';
 
 export class ToolbarModel extends VDomModel {
   private _connectionString: string = "postgres://localhost:5432/postgres"
+  private _isLoading: boolean = false
 
   get connectionString(): string {
     return this._connectionString
   }
 
+  get isLoading(): boolean {
+    return this._isLoading
+  }
+
   set connectionString(newString: string) {
     this._connectionString = newString;
     this.stateChanged.emit(void 0);
+  }
+
+  set isLoading(newValue: boolean) {
+    this._isLoading = newValue
+    this.stateChanged.emit(void 0)
   }
 }
 
@@ -31,13 +41,14 @@ export class ToolbarContainer extends VDomRenderer<ToolbarModel> {
       return null
     } else {
       const connectionString = this.model.connectionString;
+      const isLoading = this.model.isLoading
       return (
         <div className="p-Sql-Toolbar">
           <ConnectionInformation
             connectionString={connectionString}
             onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
           />
-          <LoadingIcon />
+          {isLoading && <LoadingIcon />}
         </div>
       )
     }
