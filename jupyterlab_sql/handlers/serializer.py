@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 
@@ -18,7 +19,12 @@ def _uuid_processor(uuid):
     return str(uuid)
 
 
+def _datetime_processor(dt):
+    return str(dt)
+
+
 DISPATCHER = {
-    uuid.UUID: _uuid_processor
+    uuid.UUID: _uuid_processor,
+    datetime.datetime: _datetime_processor
 }
 
