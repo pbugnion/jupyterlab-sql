@@ -3,6 +3,10 @@
     padding-right: 10px;
 }
 
+.p-Sql-Toolbar {
+    display: flex;
+}
+
 .p-Sql-ConnectionInformation-wrapper {
     padding-top: 10px;
     padding-bottom: 10px;

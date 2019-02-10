@@ -32,10 +32,13 @@ export class ToolbarContainer extends VDomRenderer<ToolbarModel> {
     } else {
       const connectionString = this.model.connectionString;
       return (
-        <ConnectionInformation
-          connectionString={connectionString}
-          onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
-        />
+        <div className="p-Sql-Toolbar">
+          <ConnectionInformation
+            connectionString={connectionString}
+            onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
+          />
+          <LoadingIcon />
+        </div>
       )
     }
   }
@@ -197,5 +200,11 @@ namespace ConnectionInformationEdit {
 
   export interface State {
     value: string;
+  }
+}
+
+class LoadingIcon extends React.Component<{}> {
+  render() {
+    return <div>Loading</div>;
   }
 }
