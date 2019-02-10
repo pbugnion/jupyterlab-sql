@@ -30,8 +30,8 @@ import {
 } from './Editor';
 
 import {
-  ConnectionInformationContainer, ConnectionInformationModel
-} from './connectionInformation';
+  ToolbarContainer, ToolbarModel
+} from './toolbar';
 
 import {
   ResponseWidget
@@ -49,8 +49,8 @@ class JupyterLabSqlWidget extends BoxPanel {
     this.title.closable = true;
     this.addClass("p-Sql-MainContainer");
 
-    const connectionInformationModel = new ConnectionInformationModel();
-    const connectionWidget = new ConnectionInformationContainer();
+    const connectionInformationModel = new ToolbarModel();
+    const connectionWidget = new ToolbarContainer();
     connectionWidget.model = connectionInformationModel;
 
     this.editorWidget = new Editor(editorFactory);

@@ -5,13 +5,8 @@ import {
 
 import * as React from 'react';
 
-export class ConnectionInformationModel extends VDomModel {
-  constructor() {
-    super()
-    this._connectionString = "postgres://localhost:5432/postgres"
-  }
-
-  private _connectionString: string
+export class ToolbarModel extends VDomModel {
+  private _connectionString: string = "postgres://localhost:5432/postgres"
 
   get connectionString(): string {
     return this._connectionString
@@ -23,7 +18,7 @@ export class ConnectionInformationModel extends VDomModel {
   }
 }
 
-export class ConnectionInformationContainer extends VDomRenderer<ConnectionInformationModel> {
+export class ToolbarContainer extends VDomRenderer<ToolbarModel> {
   onConnectionStringChanged(newString: string) {
     if (!this.model) {
       return
