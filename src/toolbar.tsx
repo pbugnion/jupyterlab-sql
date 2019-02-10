@@ -5,25 +5,30 @@ import {
 
 import * as React from 'react';
 
-export class ConnectionInformationModel extends VDomModel {
-  constructor() {
-    super()
-    this._connectionString = "postgres://localhost:5432/postgres"
-  }
-
-  private _connectionString: string
+export class ToolbarModel extends VDomModel {
+  private _connectionString: string = "postgres://localhost:5432/postgres"
+  private _isLoading: boolean = false
 
   get connectionString(): string {
     return this._connectionString
+  }
+
+  get isLoading(): boolean {
+    return this._isLoading
   }
 
   set connectionString(newString: string) {
     this._connectionString = newString;
     this.stateChanged.emit(void 0);
   }
+
+  set isLoading(newValue: boolean) {
+    this._isLoading = newValue
+    this.stateChanged.emit(void 0)
+  }
 }
 
-export class ConnectionInformationContainer extends VDomRenderer<ConnectionInformationModel> {
+export class ToolbarContainer extends VDomRenderer<ToolbarModel> {
   onConnectionStringChanged(newString: string) {
     if (!this.model) {
       return
@@ -36,11 +41,15 @@ export class ConnectionInformationContainer extends VDomRenderer<ConnectionInfor
       return null
     } else {
       const connectionString = this.model.connectionString;
+      const isLoading = this.model.isLoading
       return (
-        <ConnectionInformation
-          connectionString={connectionString}
-          onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
-        />
+        <div className="p-Sql-Toolbar">
+          <ConnectionInformation
+            connectionString={connectionString}
+            onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
+          />
+          {isLoading && <LoadingIcon />}
+        </div>
       )
     }
   }
@@ -202,5 +211,15 @@ namespace ConnectionInformationEdit {
 
   export interface State {
     value: string;
+  }
+}
+
+class LoadingIcon extends React.Component<{}> {
+  render() {
+    return (
+      <div className="p-Sql-LoadingIcon">
+        <div className="p-Sql-LoadingIcon-Spinner" />
+      </div>
+    );
   }
 }
