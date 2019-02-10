@@ -15,6 +15,7 @@
     display: inline-block;
     vertical-align: middle;
     padding-left: 8px;
+    padding-right: 8px;
 }
 
 .p-Sql-ConnectionInformation-input-wrapper.p-Sql-ConnectionInformation-input-wrapper-editing {
@@ -24,9 +25,11 @@
 
 .p-Sql-ConnectionInformation-text {
     font-size: var(--jp-ui-font-size1);
+    height: 28px;
     line-height: 28px;
     color: var(--jp-ui-font-color1);
     font-weight: 400;
+    overflow: hidden;
 }
 
 .p-Sql-ConnectionInformation-edit-button {
