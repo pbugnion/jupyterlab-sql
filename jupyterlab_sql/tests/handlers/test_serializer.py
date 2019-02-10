@@ -1,4 +1,5 @@
 
+import datetime
 import uuid
 
 import pytest
@@ -21,3 +22,11 @@ def test_serialize_uuid():
     uuid_str = '6e1d16e3-ca00-4e96-9735-95bf92a8c46c'
     row = (1, uuid.UUID(uuid_str))
     assert make_row_serializable(row) == (1, uuid_str)
+
+
+def test_serialize_datetime():
+    dt = datetime.datetime(2019, 2, 10, 11, 45, 22)
+    expected_str = "2019-02-10 11:45:22"
+    row = (1, dt)
+    assert make_row_serializable(row) == (1, expected_str)
+
