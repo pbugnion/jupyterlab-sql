@@ -43,7 +43,7 @@
   "devDependencies": {
     "rimraf": "^2.6.1",
     "typescript": "~3.1.1",
-    "@types/uuid": "^3.4.4",
+    "@types/uuid": "^3.4.4"
   },
   "jupyterlab": {
     "extension": true
