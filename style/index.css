@@ -5,6 +5,18 @@
 
 .p-Sql-Toolbar {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.p-Sql-LoadingIcon {
+    background-image: var(--jp-icon-edit);
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid var(--jp-border-color0);
+    width: 30px;
+    height: 30px;
 }
 
 .p-Sql-ConnectionInformation-wrapper {

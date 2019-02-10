@@ -205,6 +205,8 @@ namespace ConnectionInformationEdit {
 
 class LoadingIcon extends React.Component<{}> {
   render() {
-    return <div>Loading</div>;
+    return (
+      <div className="p-Sql-LoadingIcon" />
+    );
   }
 }
