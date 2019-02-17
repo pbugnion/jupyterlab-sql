@@ -103,16 +103,15 @@ class JupyterLabSqlWidget extends BoxPanel {
 
 
 function activate(app: JupyterLab, palette: ICommandPalette, launcher: ILauncher | null, editorServices: IEditorServices) {
-  const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(editorServices.factoryService)
 
   const command: string = "jupyterlab-sql:open";
   app.commands.addCommand(command, {
     label: ({ isPalette }) => isPalette ? "New SQL session" : "SQL",
     iconClass: "p-Sql-DatabaseIcon",
     execute: () => {
-      if (!widget.isAttached) {
-        app.shell.addToMainArea(widget);
-      }
+      const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(
+        editorServices.factoryService)
+      app.shell.addToMainArea(widget);
       widget.update();
       app.shell.activateById(widget.id);
     }
