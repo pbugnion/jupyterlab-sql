@@ -64,7 +64,7 @@
     padding-right: 8px;
 }
 
-.p-Sql-ConnectionInformation-input-wrapper.p-Sql-ConnectionInformation-input-wrapper-editing {
+.p-Sql-ConnectionInformation-input-wrapper.p-mod-focused {
     border: 1px solid var(--md-blue-500);
     box-shadow: inset 0 0 4px var(--md-blue-300);
 }
@@ -76,20 +76,6 @@
     color: var(--jp-ui-font-color1);
     font-weight: 400;
     overflow: hidden;
-}
-
-.p-Sql-ConnectionInformation-edit-button {
-    background-image: var(--jp-icon-edit);
-    background-size: 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-right: 1px solid var(--jp-border-color0);
-    border-top: 1px solid var(--jp-border-color0);
-    border-bottom: 1px solid var(--jp-border-color0);
-    width: 30px;
-    height: 30px;
-    display: inline-block;
-    vertical-align: middle;
 }
 
 .p-Sql-ConnectionInformation-input {
