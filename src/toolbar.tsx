@@ -5,6 +5,8 @@ import {
 
 import * as React from 'react';
 
+import classNames from 'classnames'
+
 export class ToolbarModel extends VDomModel {
   private _connectionString: string = "postgres://localhost:5432/postgres"
   private _isLoading: boolean = false
@@ -60,47 +62,19 @@ namespace ConnectionInformation {
     connectionString: string,
     onConnectionStringChanged: (newString: string) => void;
   }
-
-  export interface State {
-    editing: boolean
-  }
 }
 
-export class ConnectionInformation extends React.Component<
-  ConnectionInformation.Props,
-  ConnectionInformation.State
-> {
+export class ConnectionInformation extends React.Component<ConnectionInformation.Props> {
 
   constructor(props: ConnectionInformation.Props) {
     super(props);
-    this.state = { editing: false };
-  }
-
-  startEditing() {
-    this.setState({ editing: true });
   }
 
   saveEdit(newConnectionString: string) {
-    this.setState({ editing: false }, () => {
-      this.props.onConnectionStringChanged(newConnectionString)
-    });
+    this.props.onConnectionStringChanged(newConnectionString)
   }
 
-  cancelEdit() {
-    this.setState({ editing: false });
-  }
-
-  renderDisplaying() {
-    const { connectionString } = this.props;
-    return (
-      <ConnectionInformationDisplay
-        connectionString={connectionString}
-        onStartEditing={() => this.startEditing()}
-      />
-    )
-  }
-
-  renderEditing() {
+  render() {
     const { connectionString } = this.props;
     return (
       <ConnectionInformationEdit
@@ -108,40 +82,7 @@ export class ConnectionInformation extends React.Component<
         onFinishEdit={
           (newConnectionString: string) => this.saveEdit(newConnectionString)
         }
-        onCancelEdit={() => this.cancelEdit()}
       />
-    )
-  }
-
-  render() {
-    const { editing } = this.state
-    if (editing) {
-      return this.renderEditing();
-    } else {
-      return this.renderDisplaying()
-    }
-  }
-}
-
-class ConnectionInformationDisplay extends React.Component<{
-  connectionString: string,
-  onStartEditing: () => void
-}, {}> {
-
-  render() {
-    const { connectionString, onStartEditing } = this.props;
-    return (
-      <div className="p-Sql-ConnectionInformation-wrapper">
-        <div className="p-Sql-ConnectionInformation-input-wrapper">
-          <div className="p-Sql-ConnectionInformation-text">
-            {connectionString}
-          </div>
-        </div>
-        <div
-          className="p-Sql-ConnectionInformation-edit-button"
-          onClick={onStartEditing}>
-        </div>
-      </div>
     )
   }
 }
@@ -153,7 +94,10 @@ class ConnectionInformationEdit extends React.Component<
 
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
-    this.state = { value: this.props.connectionString }
+    this.state = {
+      value: this.props.connectionString,
+      focused: false
+    }
   }
 
   private inputRef = React.createRef<HTMLInputElement>();
@@ -176,7 +120,16 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   cancel() {
-    this.props.onCancelEdit();
+    this.setState({ value: this.props.connectionString })
+  }
+
+  onInputFocus() {
+    this.setState({ focused: true })
+  }
+
+  onInputBlur() {
+    this.setState({ focused: false })
+    this.finish()
   }
 
   componentDidMount() {
@@ -184,17 +137,26 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   render() {
-    const { value } = this.state;
+    const { value, focused } = this.state;
+    const wrapperClass = classNames(
+      'p-Sql-ConnectionInformation-wrapper',
+      { 'p-mod-focused': focused }
+    );
+    const inputWrapperClass = classNames(
+      'p-Sql-ConnectionInformation-input-wrapper',
+      { 'p-mod-focused': focused }
+    );
     return (
-      <div className="p-Sql-ConnectionInformation-wrapper">
-        <div className="p-Sql-ConnectionInformation-input-wrapper p-Sql-ConnectionInformation-input-wrapper-editing">
+      <div className={wrapperClass}>
+        <div className={inputWrapperClass}>
           <input
             className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
             value={value}
             ref={this.inputRef}
             onChange={event => this.onChange(event)}
             onKeyDown={event => this.onKeyDown(event)}
-            onBlur={() => this.cancel()}
+            onBlur={() => this.onInputBlur()}
+            onFocus={() => this.onInputFocus() }
           />
         </div>
       </div>
@@ -206,11 +168,11 @@ namespace ConnectionInformationEdit {
   export interface Props {
     connectionString: string;
     onFinishEdit: (newConnectionString: string) => void;
-    onCancelEdit: () => void
   }
 
   export interface State {
     value: string;
+    focused: boolean;
   }
 }
 
