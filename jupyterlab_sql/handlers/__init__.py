@@ -14,9 +14,9 @@ class SqlHandler(IPythonHandler):
     def __init__(self, *args, **kwargs):
         super(SqlHandler, self).__init__(*args, **kwargs)
 
-    async def execute_query(self, connection, query):
-        ioloop = tornado.ioloop.IOLoop.current()
-        result = await ioloop.run_in_executor(None, connection.execute, query)
+    def execute_query(self, engine, query):
+        connection = engine.connect()
+        result = connection.execute(query)
         return result
 
     async def post(self):
@@ -24,9 +24,10 @@ class SqlHandler(IPythonHandler):
         query = data["query"]
         connection_string = data["connectionString"]
         engine = create_engine(connection_string)
-        connection = engine.connect()
+        ioloop = tornado.ioloop.IOLoop.current()
         try:
-            result = await self.execute_query(connection, query)
+            result = await ioloop.run_in_executor(
+                None, self.execute_query, engine, query)
             if result.returns_rows:
                 keys = result.keys()
                 rows = [make_row_serializable(row) for row in result]
