@@ -2,6 +2,9 @@
 import os
 import sys
 import setuptools
+from setuptools.command.sdist import sdist
+from setuptools.command.build_py import build_py
+from setuptools.command.egg_info import egg_info
 from subprocess import check_call
 
 from pathlib import Path
@@ -18,6 +21,7 @@ NPM_PATH = [
 ]
 
 CLIENT_VERSION = "0.1.1-rc2"
+IS_REPO = (HERE / ".git").exists()
 
 
 def update_package_data(distribution):
@@ -26,8 +30,8 @@ def update_package_data(distribution):
     build_py.finalize_options()
 
 
-class NPM(setuptools.Command):
-    description = "Install package.json dependencies using NPM"
+class BuildJsExtension(setuptools.Command):
+    description = "Build application with npm"
     user_options = []
     node_modules = NODE_ROOT / "node_modules"
     targets = [
@@ -87,6 +91,30 @@ class NPM(setuptools.Command):
         update_package_data(self.distribution)
 
 
+def build_js_extension(command):
+    """decorator for building JS extension prior to another command"""
+    class DecoratedCommand(command):
+        def run(self):
+            jsextension_command = self.distribution.get_command_obj(
+                "jsextension")
+            all_targets_exist = all(
+                t.exists() for t in jsextension_command.targets
+            )
+            if not IS_REPO and all_targets_exist:
+                log.info("Skipping rebuilding JavaScript extension.")
+                command.run(self)
+                return
+
+            try:
+                self.distribution.run_command("jsextension")
+            except Exception as e:
+                log.error("Failed to build JavaScript extension")
+                raise e
+            command.run(self)
+            update_package_data(self.distribution)
+    return DecoratedCommand
+
+
 setuptools.setup(
     name="jupyterlab_sql",
     version="0.1.0",
@@ -98,6 +126,9 @@ setuptools.setup(
         "sqlalchemy"
     ],
     cmdclass={
-        "jsdeps": NPM
+        "jsextension": BuildJsExtension,
+        "build_py": build_js_extension(build_py),
+        "egg_info": build_js_extension(egg_info),
+        "sdist": build_js_extension(sdist),
     }
 )
