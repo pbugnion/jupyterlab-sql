@@ -20,8 +20,10 @@ NPM_PATH = [
     os.environ.get("PATH", os.defpath)
 ]
 
-CLIENT_VERSION = "0.1.1-rc2"
 IS_REPO = (HERE / ".git").exists()
+CLIENT_VERSION = "0.1.1-rc2"
+JS_EXTENSION = HERE / "labextension" / "jupyterlab-sql-{}.tgz".format(
+    CLIENT_VERSION)
 
 
 def update_package_data(distribution):
@@ -34,9 +36,7 @@ class BuildJsExtension(setuptools.Command):
     description = "Build application with npm"
     user_options = []
     node_modules = NODE_ROOT / "node_modules"
-    targets = [
-        HERE / "labextension" / "jupyterlab-sql-{}.tgz".format(CLIENT_VERSION)
-    ]
+    targets = [JS_EXTENSION]
 
     def initialize_options(self):
         pass
@@ -130,5 +130,8 @@ setuptools.setup(
         "build_py": build_js_extension(build_py),
         "egg_info": build_js_extension(egg_info),
         "sdist": build_js_extension(sdist),
-    }
+    },
+    data_files=[
+        ('share/jupyter/lab/extensions', [str(JS_EXTENSION)])
+    ]
 )
