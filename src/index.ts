@@ -27,7 +27,7 @@ import { URLExt } from '@jupyterlab/coreutils';
 
 import {
   Editor
-} from './Editor';
+} from './editor';
 
 import {
   ToolbarContainer, ToolbarModel

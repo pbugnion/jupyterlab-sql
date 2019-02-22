@@ -1,0 +1,2 @@
+recursive-include labextension *.*
+include LICENSE.txt
