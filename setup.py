@@ -10,6 +10,7 @@ from subprocess import check_call
 from pathlib import Path
 
 from distutils import log
+
 log.set_verbosity(log.DEBUG)
 
 
@@ -21,9 +22,25 @@ NPM_PATH = [
 ]
 
 IS_REPO = (HERE / ".git").exists()
-CLIENT_VERSION = "0.1.1-rc2"
-JS_EXTENSION = HERE / "labextension" / "jupyterlab-sql-{}.tgz".format(
-    CLIENT_VERSION)
+PYVERSION_PATH = HERE / "jupyterlab_sql" / "version.py"
+
+VERSION_TEMPLATE = """
+# This file is generated programatically.
+# Version of the Python package
+__version__ = '{}'
+"""
+
+
+def get_version():
+    version_ns = {}
+    with PYVERSION_PATH.open() as f:
+        exec(f.read(), {}, version_ns)
+
+    return version_ns["__version__"]
+
+
+VERSION = get_version()
+JS_EXTENSION = HERE / "labextension" / "jupyterlab-sql-{}.tgz".format(VERSION)
 
 
 def update_package_data(distribution):
@@ -91,6 +108,43 @@ class BuildJsExtension(setuptools.Command):
         update_package_data(self.distribution)
 
 
+class SetVersion(setuptools.Command):
+    description = "Set the version for both JS extension and server extension"
+    user_options = [("version=", "v", "version")]
+
+    def initialize_options(self):
+        self.version = None
+
+    def finalize_options(self):
+        if self.version is None:
+            raise ValueError("Parameter --version is missing")
+        self.version = self._normalize_version(self.version)
+
+    def _normalize_version(self, version):
+        import semver
+        version_info = semver.parse_version_info(version)
+        version_string = str(version_info)
+        return version_string
+
+    def _set_pyversion(self):
+        PYVERSION_PATH.write_text(VERSION_TEMPLATE.format(self.version))
+
+    def _set_jsversion(self):
+        package_json = NODE_ROOT / "package.json"
+        with package_json.open() as f:
+            lines = f.readlines()
+        for iline, line in enumerate(lines):
+            if '"version"' in line:
+                lines[iline] = '  "version": "{}",\n'.format(self.version)
+        with package_json.open("w") as f:
+            f.writelines(lines)
+
+    def run(self):
+        log.info("Using normalized version {}.".format(self.version))
+        self._set_pyversion()
+        self._set_jsversion()
+
+
 def build_js_extension(command):
     """decorator for building JS extension prior to another command"""
     class DecoratedCommand(command):
@@ -117,10 +171,8 @@ def build_js_extension(command):
 
 setuptools.setup(
     name="jupyterlab_sql",
-    version="0.1.0",
+    version=VERSION,
     packages=setuptools.find_packages(),
-    setup_requires=['setuptools_scm'],
-    use_scm_version={"version_scheme": "post-release"},
     install_requires=[
         "jupyterlab",
         "sqlalchemy"
@@ -130,6 +182,7 @@ setuptools.setup(
         "build_py": build_js_extension(build_py),
         "egg_info": build_js_extension(egg_info),
         "sdist": build_js_extension(sdist),
+        "set_version": SetVersion,
     },
     data_files=[
         ('share/jupyter/lab/extensions', [str(JS_EXTENSION)])
