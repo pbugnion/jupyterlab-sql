@@ -1,22 +1,19 @@
-import {
-  VDomModel,
-  VDomRenderer
-} from '@jupyterlab/apputils';
+import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
 
-import classNames from 'classnames'
+import classNames from 'classnames';
 
 export class ToolbarModel extends VDomModel {
-  private _connectionString: string = "postgres://localhost:5432/postgres"
-  private _isLoading: boolean = false
+  private _connectionString: string = 'postgres://localhost:5432/postgres';
+  private _isLoading: boolean = false;
 
   get connectionString(): string {
-    return this._connectionString
+    return this._connectionString;
   }
 
   get isLoading(): boolean {
-    return this._isLoading
+    return this._isLoading;
   }
 
   set connectionString(newString: string) {
@@ -25,53 +22,56 @@ export class ToolbarModel extends VDomModel {
   }
 
   set isLoading(newValue: boolean) {
-    this._isLoading = newValue
-    this.stateChanged.emit(void 0)
+    this._isLoading = newValue;
+    this.stateChanged.emit(void 0);
   }
 }
 
 export class ToolbarContainer extends VDomRenderer<ToolbarModel> {
   onConnectionStringChanged(newString: string) {
     if (!this.model) {
-      return
+      return;
     }
     this.model.connectionString = newString;
   }
 
   render() {
     if (!this.model) {
-      return null
+      return null;
     } else {
       const connectionString = this.model.connectionString;
-      const isLoading = this.model.isLoading
+      const isLoading = this.model.isLoading;
       return (
         <div className="p-Sql-Toolbar">
           <ConnectionInformation
             connectionString={connectionString}
-            onConnectionStringChanged={newString => this.onConnectionStringChanged(newString)}
+            onConnectionStringChanged={newString =>
+              this.onConnectionStringChanged(newString)
+            }
           />
           {isLoading && <LoadingIcon />}
         </div>
-      )
+      );
     }
   }
 }
 
 namespace ConnectionInformation {
   export interface Props {
-    connectionString: string,
+    connectionString: string;
     onConnectionStringChanged: (newString: string) => void;
   }
 }
 
-export class ConnectionInformation extends React.Component<ConnectionInformation.Props> {
-
+export class ConnectionInformation extends React.Component<
+  ConnectionInformation.Props
+> {
   constructor(props: ConnectionInformation.Props) {
     super(props);
   }
 
   saveEdit(newConnectionString: string) {
-    this.props.onConnectionStringChanged(newConnectionString)
+    this.props.onConnectionStringChanged(newConnectionString);
   }
 
   render() {
@@ -79,11 +79,11 @@ export class ConnectionInformation extends React.Component<ConnectionInformation
     return (
       <ConnectionInformationEdit
         connectionString={connectionString}
-        onFinishEdit={
-          (newConnectionString: string) => this.saveEdit(newConnectionString)
+        onFinishEdit={(newConnectionString: string) =>
+          this.saveEdit(newConnectionString)
         }
       />
-    )
+    );
   }
 }
 
@@ -91,23 +91,22 @@ class ConnectionInformationEdit extends React.Component<
   ConnectionInformationEdit.Props,
   ConnectionInformationEdit.State
 > {
-
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
       value: this.props.connectionString,
       focused: false
-    }
+    };
   }
 
   private inputRef = React.createRef<HTMLInputElement>();
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
-    if (event.key === "Enter") {
-      this.finish()
+    if (event.key === 'Enter') {
+      this.finish();
     } else if (event.keyCode === 27) {
       // ESC key
-      this.cancel()
+      this.cancel();
     }
   }
 
@@ -120,16 +119,16 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   cancel() {
-    this.setState({ value: this.props.connectionString })
+    this.setState({ value: this.props.connectionString });
   }
 
   onInputFocus() {
-    this.setState({ focused: true })
+    this.setState({ focused: true });
   }
 
   onInputBlur() {
-    this.setState({ focused: false })
-    this.finish()
+    this.setState({ focused: false });
+    this.finish();
   }
 
   componentDidMount() {
@@ -151,10 +150,10 @@ class ConnectionInformationEdit extends React.Component<
           onChange={event => this.onChange(event)}
           onKeyDown={event => this.onKeyDown(event)}
           onBlur={() => this.onInputBlur()}
-          onFocus={() => this.onInputFocus() }
+          onFocus={() => this.onInputFocus()}
         />
       </div>
-    )
+    );
   }
 }
 
