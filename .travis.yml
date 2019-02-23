@@ -4,15 +4,19 @@ dist: xenial
 
 matrix:
   include:
-    - python: 3.5
-      env: TOXENV=py35
     - python: 3.6
-      env: TOXENV=py36
+      env: GROUP=js SUBGROUP=lint
+    - python: 3.5
+      env: GROUP=python TOXENV=py35
+    - python: 3.6
+      env: GROUP=python TOXENV=py36
     - python: 3.7
-      env: TOXENV=py37
+      env: GROUP=python TOXENV=py37
 
 install:
-  - pip install tox
+  - "if [[ \"$GROUP\" == python ]] ; then pip install tox ; fi"
+  - "if [[ \"$GROUP\" == js ]] ; then npm install ; fi"
 
 script:
-  - tox
+  - "if [[ \"$GROUP\" == python ]] ; then tox ; fi"
+  - "if [[ \"$GROUP\" == js ]] && [[ \"$SUBGROUP\" == lint ]] ; then npm run prettier:check ; fi"
