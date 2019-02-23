@@ -31,6 +31,13 @@ def test_serialize_datetime():
     assert make_row_serializable(row) == (1, expected_str)
 
 
+def test_serialize_date():
+    dt = datetime.date(2019, 2, 10)
+    expected_str = "2019-02-10"
+    row = (1, dt)
+    assert make_row_serializable(row) == (1, expected_str)
+
+
 def test_serialize_uuid_array():
     uuid1_str = '1cfdc7b5-f320-4885-9b50-3cefc20a462a'
     uuid2_str = 'bfd96545-bd8b-41bb-b9fc-afb57f7d1328'
