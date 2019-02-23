@@ -1,4 +1,3 @@
-
 import os
 import sys
 import setuptools
@@ -18,7 +17,7 @@ HERE = Path(".")
 NODE_ROOT = HERE
 NPM_PATH = [
     NODE_ROOT / "node_modules" / ".bin",
-    os.environ.get("PATH", os.defpath)
+    os.environ.get("PATH", os.defpath),
 ]
 
 IS_REPO = (HERE / ".git").exists()
@@ -27,7 +26,7 @@ PYVERSION_PATH = HERE / "jupyterlab_sql" / "version.py"
 VERSION_TEMPLATE = """
 # This file is generated programatically.
 # Version of the Python package
-__version__ = '{}'
+__version__ = "{}"
 """
 
 
@@ -45,7 +44,7 @@ JS_EXTENSION = HERE / "labextension" / "jupyterlab-sql-{}.tgz".format(VERSION)
 
 def update_package_data(distribution):
     """update package_data to catch changes during setup"""
-    build_py = distribution.get_command_obj('build_py')
+    build_py = distribution.get_command_obj("build_py")
     build_py.finalize_options()
 
 
@@ -79,7 +78,7 @@ class BuildJsExtension(setuptools.Command):
                 "using sudo, make sure `npm` is available to sudo"
             )
         env = os.environ.copy()
-        env['PATH'] = NPM_PATH
+        env["PATH"] = NPM_PATH
 
         if self.should_run_npm_install():
             log.info("Installing build dependencies with npm.")
@@ -122,6 +121,7 @@ class SetVersion(setuptools.Command):
 
     def _normalize_version(self, version):
         import semver
+
         version_info = semver.parse_version_info(version)
         version_string = str(version_info)
         return version_string
@@ -147,10 +147,12 @@ class SetVersion(setuptools.Command):
 
 def build_js_extension(command):
     """decorator for building JS extension prior to another command"""
+
     class DecoratedCommand(command):
         def run(self):
             jsextension_command = self.distribution.get_command_obj(
-                "jsextension")
+                "jsextension"
+            )
             all_targets_exist = all(
                 t.exists() for t in jsextension_command.targets
             )
@@ -166,6 +168,7 @@ def build_js_extension(command):
                 raise e
             command.run(self)
             update_package_data(self.distribution)
+
     return DecoratedCommand
 
 
@@ -173,10 +176,7 @@ setuptools.setup(
     name="jupyterlab_sql",
     version=VERSION,
     packages=setuptools.find_packages(),
-    install_requires=[
-        "jupyterlab",
-        "sqlalchemy"
-    ],
+    install_requires=["jupyterlab", "sqlalchemy"],
     cmdclass={
         "jsextension": BuildJsExtension,
         "build_py": build_js_extension(build_py),
