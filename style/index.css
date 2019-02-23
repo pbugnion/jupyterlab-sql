@@ -14,6 +14,8 @@
     border: 1px solid var(--jp-border-color0);
     width: 30px;
     height: 30px;
+    margin-left: 2px;
+    flex: 0 0 auto;
 }
 
 .p-Sql-LoadingIcon-Spinner {
@@ -57,11 +59,11 @@
 .p-Sql-ConnectionInformation-input-wrapper {
     height: 30px;
     border: 1px solid var(--jp-border-color0);
-    width: 400px;
     display: inline-block;
     vertical-align: middle;
     padding-left: 8px;
     padding-right: 8px;
+    flex: 1 1 auto;
 }
 
 .p-Sql-ConnectionInformation-input-wrapper.p-mod-focused {
