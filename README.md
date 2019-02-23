@@ -34,3 +34,12 @@ on database URLs.
 
 Press `shift` + `enter` while in the main query area to dispatch the
 statement.
+
+## Issue reporting and contributing
+
+Report issues using the [issue
+tracker](https://github.com/pbugnion/jupyterlab-sql/issues).
+
+Contributions are welcome. If you have not developed JupyterLab
+extensions before, I recommend following [this
+tutorial](https://jupyterlab.readthedocs.io/en/stable/developer/xkcd_extension_tutorial.html).
