@@ -23,8 +23,12 @@ def _datetime_processor(dt):
     return str(dt)
 
 
+def _list_processor(l):
+    return [_make_value_serializable(value) for value in l]
+
+
 DISPATCHER = {
     uuid.UUID: _uuid_processor,
-    datetime.datetime: _datetime_processor
+    datetime.datetime: _datetime_processor,
+    list: _list_processor
 }
-
