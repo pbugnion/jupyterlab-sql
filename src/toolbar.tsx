@@ -138,27 +138,21 @@ class ConnectionInformationEdit extends React.Component<
 
   render() {
     const { value, focused } = this.state;
-    const wrapperClass = classNames(
-      'p-Sql-ConnectionInformation-wrapper',
-      { 'p-mod-focused': focused }
-    );
     const inputWrapperClass = classNames(
       'p-Sql-ConnectionInformation-input-wrapper',
       { 'p-mod-focused': focused }
     );
     return (
-      <div className={wrapperClass}>
-        <div className={inputWrapperClass}>
-          <input
-            className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
-            value={value}
-            ref={this.inputRef}
-            onChange={event => this.onChange(event)}
-            onKeyDown={event => this.onKeyDown(event)}
-            onBlur={() => this.onInputBlur()}
-            onFocus={() => this.onInputFocus() }
-          />
-        </div>
+      <div className={inputWrapperClass}>
+        <input
+          className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
+          value={value}
+          ref={this.inputRef}
+          onChange={event => this.onChange(event)}
+          onKeyDown={event => this.onKeyDown(event)}
+          onBlur={() => this.onInputBlur()}
+          onFocus={() => this.onInputFocus() }
+        />
       </div>
     )
   }
