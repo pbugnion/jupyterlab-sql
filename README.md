@@ -14,6 +14,8 @@ jupyter lab build
 
 You will then need to restart any running Jupyter servers.
 
+*jupyterlab-sql* only works with Python 3.5 and above.
+
 ## Usage
 
 ### Starting a new SQL session

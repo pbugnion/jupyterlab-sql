@@ -186,5 +186,6 @@ setuptools.setup(
     },
     data_files=[
         ('share/jupyter/lab/extensions', [str(JS_EXTENSION)])
-    ]
+    ],
+    python_requires=">=3.5"
 )
