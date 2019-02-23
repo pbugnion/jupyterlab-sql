@@ -23,8 +23,7 @@ NPM_PATH = [
 IS_REPO = (HERE / ".git").exists()
 PYVERSION_PATH = HERE / "jupyterlab_sql" / "version.py"
 
-VERSION_TEMPLATE = """
-# This file is generated programatically.
+VERSION_TEMPLATE = """# This file is generated programatically.
 # Version of the Python package
 __version__ = "{}"
 """
