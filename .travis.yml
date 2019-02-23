@@ -5,7 +5,9 @@ dist: xenial
 matrix:
   include:
     - python: 3.6
-      env: GROUP=js SUBGROUP=lint
+      env: GROUP=js-lint
+    - python: 3.6
+      env: GROUP=python-lint
     - python: 3.5
       env: GROUP=python TOXENV=py35
     - python: 3.6
@@ -14,9 +16,12 @@ matrix:
       env: GROUP=python TOXENV=py37
 
 install:
+  - "if [[ \"$GROUP\" == python-lint ]] ; then pip install flake8 black ; fi"
   - "if [[ \"$GROUP\" == python ]] ; then pip install tox ; fi"
-  - "if [[ \"$GROUP\" == js ]] ; then npm install ; fi"
+  - "if [[ \"$GROUP\" == js-lint ]] ; then npm install ; fi"
 
 script:
+  - "if [[ \"$GROUP\" == python-lint ]] ; then black --check setup.py jupyterlab_sql ; fi"
+  - "if [[ \"$GROUP\" == python-lint ]] ; then flake8 setup.py jupyterlab_sql ; fi"
   - "if [[ \"$GROUP\" == python ]] ; then tox ; fi"
-  - "if [[ \"$GROUP\" == js ]] && [[ \"$SUBGROUP\" == lint ]] ; then npm run prettier:check ; fi"
+  - "if [[ \"$GROUP\" == js-lint ]] ; then npm run prettier:check ; fi"

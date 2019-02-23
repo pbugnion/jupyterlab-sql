@@ -1,4 +1,3 @@
-
 import json
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
@@ -16,10 +15,8 @@ class SqlHandler(IPythonHandler):
 
     def execute_query(self, engine, query):
         connection = engine.connect()
-        result = (
-            connection
-            .execution_options(no_parameters=True)
-            .execute(query)
+        result = connection.execution_options(no_parameters=True).execute(
+            query
         )
         return result
 
@@ -31,7 +28,8 @@ class SqlHandler(IPythonHandler):
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             result = await ioloop.run_in_executor(
-                None, self.execute_query, engine, query)
+                None, self.execute_query, engine, query
+            )
             if result.returns_rows:
                 keys = result.keys()
                 rows = [make_row_serializable(row) for row in result]
@@ -40,22 +38,18 @@ class SqlHandler(IPythonHandler):
                     "responseData": {
                         "hasRows": True,
                         "keys": keys,
-                        "rows": rows
-                    }
+                        "rows": rows,
+                    },
                 }
             else:
                 response = {
                     "responseType": "success",
-                    "responseData": {
-                        "hasRows": False
-                    }
+                    "responseData": {"hasRows": False},
                 }
         except Exception as e:
             response = {
                 "responseType": "error",
-                "responseData": {
-                    "message": str(e)
-                }
+                "responseData": {"message": str(e)},
             }
         self.finish(json.dumps(response))
 
@@ -64,8 +58,7 @@ def register_handlers(nbapp):
     web_app = nbapp.web_app
     host_pattern = ".*$"
     route_pattern = url_path_join(
-        web_app.settings["base_url"],
-        "/jupyterlab-sql/query"
+        web_app.settings["base_url"], "/jupyterlab-sql/query"
     )
     handlers = [(route_pattern, SqlHandler)]
     web_app.add_handlers(host_pattern, handlers)
