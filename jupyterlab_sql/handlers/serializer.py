@@ -30,5 +30,6 @@ def _list_processor(l):
 DISPATCHER = {
     uuid.UUID: _uuid_processor,
     datetime.datetime: _datetime_processor,
+    datetime.date: _datetime_processor,
     list: _list_processor
 }
