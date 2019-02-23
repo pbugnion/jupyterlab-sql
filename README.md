@@ -2,7 +2,7 @@
 
 JupyterLab extension for interacting with SQL databases.
 
-![](./screenshot.png)
+![](./readme-images/screenshot.png)
 
 ## Installation
 
@@ -20,7 +20,7 @@ You will then need to restart any running Jupyter servers.
 
 There is a SQL icon in the launcher (*File* > *New Launcher*):
 
-![](./launcher.png)
+![](./readme-images/launcher.png)
 
 You can also launch a session from the command palette: search for *SQL*.
 
