@@ -25,10 +25,12 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:dist": "npm run prepare && rimraf labextension && mkdirp labextension && cd labextension && npm pack ..",
     "clean": "rimraf lib",
     "prepare": "npm run clean && npm run build",
-    "watch": "tsc -w",
-    "build:dist": "npm run prepare && rimraf labextension && mkdirp labextension && cd labextension && npm pack .."
+    "prettier": "prettier --write 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "prettier:check": "prettier --list-different 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "watch": "tsc -w"
   },
   "dependencies": {
     "@jupyterlab/application": "^0.19.1",
@@ -46,6 +48,7 @@
     "@types/classnames": "^2.2.7",
     "@types/uuid": "^3.4.4",
     "mkdirp": "^0.5.1",
+    "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
     "typescript": "~3.1.1"
   },
