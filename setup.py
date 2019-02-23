@@ -85,14 +85,14 @@ class BuildJsExtension(setuptools.Command):
             log.info("Installing build dependencies with npm.")
             check_call(
                 ["npm", "install"],
-                cwd=NODE_ROOT, stdout=sys.stdout, stderr=sys.stderr
+                cwd=str(NODE_ROOT), stdout=sys.stdout, stderr=sys.stderr
             )
-            os.utime(self.node_modules, None)
+            os.utime(str(self.node_modules), None)
 
         log.info("Building jupyterlab-sql.")
         check_call(
             ["npm", "run", "build:dist"],
-            cwd=NODE_ROOT, stdout=sys.stdout, stderr=sys.stderr
+            cwd=str(NODE_ROOT), stdout=sys.stdout, stderr=sys.stderr
         )
 
         for t in self.targets:
@@ -186,5 +186,6 @@ setuptools.setup(
     },
     data_files=[
         ('share/jupyter/lab/extensions', [str(JS_EXTENSION)])
-    ]
+    ],
+    python_requires=">=3.5"
 )

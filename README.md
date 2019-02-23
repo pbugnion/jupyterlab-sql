@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/pbugnion/jupyterlab-sql.svg?branch=master)](https://travis-ci.org/pbugnion/jupyterlab-sql)
+[![Latest version released on PyPi](https://img.shields.io/pypi/v/jupyterlab-sql.svg?style=flat-square&label=version)](https://pypi.python.org/pypi/jupyterlab-sql)
+
 # jupyterlab-sql
 
 JupyterLab extension for interacting with SQL databases.
@@ -13,6 +16,8 @@ jupyter lab build
 ```
 
 You will then need to restart any running Jupyter servers.
+
+*jupyterlab-sql* only works with Python 3.5 and above.
 
 ## Usage
 
