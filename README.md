@@ -16,6 +16,14 @@ You will then need to restart any running Jupyter servers.
 
 ## Usage
 
+### Starting a new SQL session
+
+There is a SQL icon in the launcher (*File* > *New Launcher*):
+
+![](./launcher.png)
+
+You can also launch a session from the command palette: search for *SQL*.
+
 ### Formulating the connection URL
 
 The connection URL needs to be a valid database URL. Follow the
