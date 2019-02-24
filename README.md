@@ -40,6 +40,14 @@ on database URLs.
 Press `shift` + `enter` while in the main query area to dispatch the
 statement.
 
+### Database support
+
+*jupyterlab-sql* has been extensively tested against PostgreSQL and
+MySQL databases.
+
+It does not currently work with SQLite databases (in memory or on
+disk).
+
 ## Issue reporting and contributing
 
 Report issues using the [issue
