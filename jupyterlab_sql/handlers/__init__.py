@@ -58,10 +58,7 @@ class SqlHandler(IPythonHandler):
                     "responseData": {"hasRows": False},
                 }
         except Exception as e:
-            response = {
-                "responseType": "error",
-                "responseData": {"message": str(e)},
-            }
+            response = self.error_response(str(e))
         self.finish(json.dumps(response))
 
 
