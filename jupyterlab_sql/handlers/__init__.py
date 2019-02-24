@@ -20,11 +20,22 @@ class SqlHandler(IPythonHandler):
         )
         return result
 
+    def error_response(self, message):
+        response = {
+            "responseType": "error",
+            "responseData": {"message": message},
+        }
+        return response
+
     async def post(self):
         data = json_decode(self.request.body)
         query = data["query"]
         connection_string = data["connectionString"]
-        engine = create_engine(connection_string)
+        try:
+            engine = create_engine(connection_string)
+        except Exception as e:
+            message = "Error creating database engine: \n{}".format(e)
+            return self.finish(self.error_response(message))
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             result = await ioloop.run_in_executor(
