@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 
-import { ICommandPalette } from '@jupyterlab/apputils';
+import { ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
 
 import { IEditorFactoryService, IEditorServices } from '@jupyterlab/codeeditor';
 
@@ -13,6 +13,7 @@ import { BoxPanel } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 
 import { ServerConnection } from '@jupyterlab/services';
+
 import { URLExt } from '@jupyterlab/coreutils';
 
 import { Editor } from './editor';
@@ -98,12 +99,11 @@ function activate(
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
     execute: () => {
-      const widget: JupyterLabSqlWidget = new JupyterLabSqlWidget(
+      const widget = new JupyterLabSqlWidget(
         editorServices.factoryService
       );
-      app.shell.addToMainArea(widget);
-      widget.update();
-      app.shell.activateById(widget.id);
+      const main = new MainAreaWidget({ content: widget })
+      app.shell.addToMainArea(main);
     }
   });
 
