@@ -1,8 +1,8 @@
 import * as uuid from 'uuid';
 
-import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
+import { JupyterLab, JupyterLabPlugin, ILayoutRestorer } from '@jupyterlab/application';
 
-import { ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
+import { ICommandPalette, MainAreaWidget, InstanceTracker } from '@jupyterlab/apputils';
 
 import { IEditorFactoryService, IEditorServices } from '@jupyterlab/codeeditor';
 
@@ -25,8 +25,9 @@ import { ResponseWidget } from './response';
 import '../style/index.css';
 
 class JupyterLabSqlWidget extends BoxPanel {
-  constructor(editorFactory: IEditorFactoryService) {
+  constructor(name: string, editorFactory: IEditorFactoryService) {
     super();
+    this.name = name;
     this.id = 'jupyterlab-sql';
     this.title.label = 'SQL';
     this.title.closable = true;
@@ -58,6 +59,7 @@ class JupyterLabSqlWidget extends BoxPanel {
   readonly settings: ServerConnection.ISettings;
   readonly responseWidget: ResponseWidget;
   readonly toolbarModel: ToolbarModel;
+  readonly name: string;
   private _lastRequestId: string;
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
@@ -92,18 +94,34 @@ function activate(
   app: JupyterLab,
   palette: ICommandPalette,
   launcher: ILauncher | null,
-  editorServices: IEditorServices
+  editorServices: IEditorServices,
+  restorer: ILayoutRestorer
 ) {
+  const namespace: string = 'jupyterlab-sql';
+
+  const tracker = new InstanceTracker<MainAreaWidget<JupyterLabSqlWidget>>({
+    namespace
+  });
+
   const command: string = 'jupyterlab-sql:open';
+
+  restorer.restore(tracker, {
+    command: command,
+    args: widget => ({ name: widget.content.name }),
+    name: widget => { console.log(widget.content.name); return widget.content.name }
+  });
+
   app.commands.addCommand(command, {
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
-    execute: () => {
+    execute: ({ name }) => {
+      const widgetName = <string>(name || uuid.v4());
       const widget = new JupyterLabSqlWidget(
-        editorServices.factoryService
+        widgetName, editorServices.factoryService
       );
       const main = new MainAreaWidget({ content: widget })
       app.shell.addToMainArea(main);
+      tracker.add(main)
     }
   });
 
@@ -120,7 +138,7 @@ function activate(
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-sql',
   autoStart: true,
-  requires: [ICommandPalette, ILauncher, IEditorServices],
+  requires: [ICommandPalette, ILauncher, IEditorServices, ILayoutRestorer],
   activate
 };
 
