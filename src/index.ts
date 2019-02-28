@@ -10,6 +10,8 @@ import { ILauncher } from '@jupyterlab/launcher';
 
 import { JupyterLabSqlWidget } from './widget';
 
+import { createTracker } from './tracker';
+
 import '../style/index.css';
 
 function activate(
@@ -19,12 +21,7 @@ function activate(
   editorServices: IEditorServices,
   restorer: ILayoutRestorer
 ) {
-  const namespace: string = 'jupyterlab-sql';
-
-  const tracker = new InstanceTracker<MainAreaWidget<JupyterLabSqlWidget>>({
-    namespace
-  });
-
+  const tracker: InstanceTracker<MainAreaWidget<JupyterLabSqlWidget>> = createTracker()
   const command: string = 'jupyterlab-sql:open';
 
   restorer.restore(tracker, {
