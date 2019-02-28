@@ -24,16 +24,23 @@ import { ResponseWidget } from './response';
 
 import '../style/index.css';
 
+namespace JupyterLabSqlWidget {
+  export interface Options {
+    name: string;
+    initialConnectionString: string;
+  }
+}
+
 class JupyterLabSqlWidget extends BoxPanel {
-  constructor(name: string, editorFactory: IEditorFactoryService) {
+  constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.Options) {
     super();
-    this.name = name;
+    this.name = options.name;
     this.id = 'jupyterlab-sql';
     this.title.label = 'SQL';
     this.title.closable = true;
     this.addClass('p-Sql-MainContainer');
 
-    this.toolbarModel = new ToolbarModel();
+    this.toolbarModel = new ToolbarModel(options.initialConnectionString);
     const connectionWidget = new ToolbarContainer();
     connectionWidget.model = this.toolbarModel;
 
@@ -117,7 +124,8 @@ function activate(
     execute: ({ name }) => {
       const widgetName = <string>(name || uuid.v4());
       const widget = new JupyterLabSqlWidget(
-        widgetName, editorServices.factoryService
+        editorServices.factoryService,
+        { name: widgetName, initialConnectionString: "postgres://localhost:5432/postgres" }
       );
       const main = new MainAreaWidget({ content: widget })
       app.shell.addToMainArea(main);

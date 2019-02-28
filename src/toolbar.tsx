@@ -5,7 +5,13 @@ import * as React from 'react';
 import classNames from 'classnames';
 
 export class ToolbarModel extends VDomModel {
-  private _connectionString: string = 'postgres://localhost:5432/postgres';
+
+  constructor(initialConnectionString: string) {
+    super();
+    this._connectionString = initialConnectionString;
+  }
+
+  private _connectionString: string;
   private _isLoading: boolean = false;
 
   get connectionString(): string {
