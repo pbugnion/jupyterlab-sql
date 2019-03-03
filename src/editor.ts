@@ -47,11 +47,11 @@ export class Editor implements IEditor {
   private _execute = new Signal<this, string>(this);
   private _valueChanged = new Signal<this, string>(this);
   private _widget: EditorWidget;
-  private _model: CodeEditor.Model;
+  private _model: CodeEditor.IModel;
 }
 
 export class EditorWidget extends CodeEditorWrapper {
-  constructor(model: CodeEditor.Model, editorFactory: IEditorFactoryService) {
+  constructor(model: CodeEditor.IModel, editorFactory: IEditorFactoryService) {
     super({
       model,
       factory: editorFactory.newInlineEditor
