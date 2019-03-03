@@ -1,4 +1,3 @@
-
 export namespace ResponseModel {
   export type Type = ErrorResponse | SuccessResponse;
 
