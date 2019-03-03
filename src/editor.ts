@@ -6,35 +6,71 @@ import {
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
-export class Editor extends CodeEditorWrapper {
+import { Widget } from '@phosphor/widgets';
+
+export interface IEditor {
+  readonly widget: Widget;
+
+  readonly value: string;
+  readonly execute: ISignal<this, string>;
+  readonly valueChanged: ISignal<this, string>;
+}
+
+export class Editor implements IEditor {
   constructor(initialValue: string, editorFactory: IEditorFactoryService) {
-    super({
-      model: new CodeEditor.Model({ value: initialValue }),
-      factory: editorFactory.newInlineEditor
+    this._model = new CodeEditor.Model({ value: initialValue });
+    this._widget = new EditorWidget(this._model, editorFactory);
+    this._model.value.changed.connect(() => {
+      this._valueChanged.emit(this.value);
     });
-    this.editor.addKeydownHandler((_, evt) => this._onKeydown(evt));
-    this.addClass('p-Sql-Editor');
-    this.model.value.changed.connect(() => {
-      this._valueChanged.emit(this.model.value.text);
+    this._widget.executeCurrent.connect(() => {
+      this._execute.emit(this.value)
     });
   }
 
-  get executeRequest(): ISignal<this, string> {
-    return this._executeRequest;
+  get value(): string {
+    return this._model.value.text
+  }
+
+  get widget(): Widget {
+    return this._widget;
+  }
+
+  get execute(): ISignal<this, string> {
+    return this._execute;
   }
 
   get valueChanged(): ISignal<this, string> {
     return this._valueChanged;
   }
 
+  private _execute = new Signal<this, string>(this);
+  private _valueChanged = new Signal<this, string>(this);
+  private _widget: EditorWidget;
+  private _model: CodeEditor.Model;
+}
+
+export class EditorWidget extends CodeEditorWrapper {
+  constructor(model: CodeEditor.Model, editorFactory: IEditorFactoryService) {
+    super({
+      model,
+      factory: editorFactory.newInlineEditor
+    });
+    this.editor.addKeydownHandler((_, evt) => this._onKeydown(evt));
+    this.addClass('p-Sql-Editor');
+  }
+
+  get executeCurrent(): ISignal<this, void> {
+    return this._executeCurrent;
+  }
+
   _onKeydown(event: KeyboardEvent): boolean {
     if (event.shiftKey && event.key === 'Enter') {
-      this._executeRequest.emit(this.model.value.text);
+      this._executeCurrent.emit(void 0);
       return true;
     }
     return false;
   }
 
-  private _executeRequest = new Signal<this, string>(this);
-  private _valueChanged = new Signal<this, string>(this);
+  private _executeCurrent = new Signal<this, void>(this);
 }

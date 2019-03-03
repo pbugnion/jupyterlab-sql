@@ -12,7 +12,7 @@ import { ToolbarContainer, ToolbarModel } from './toolbar';
 
 import { ResponseWidget } from './response';
 
-import { Editor } from './editor';
+import { Editor, IEditor } from './editor';
 
 import { Api } from './api';
 
@@ -44,27 +44,27 @@ export class JupyterLabSqlWidget extends BoxPanel {
       this._connectionStringChanged.emit(value);
     });
 
-    this.editorWidget = new Editor(options.initialSqlStatement, editorFactory);
+    this.editor = new Editor(options.initialSqlStatement, editorFactory);
     this.responseWidget = new ResponseWidget();
 
-    this.editorWidget.executeRequest.connect((_, value) => {
+    this.editor.execute.connect((_, value: string) => {
       const connectionString = this.toolbarModel.connectionString;
       this.updateGrid(connectionString, value);
     });
-    this.editorWidget.valueChanged.connect((_, value) => {
+    this.editor.valueChanged.connect((_, value) => {
       this._sqlStatementChanged.emit(value);
     });
 
     this.addWidget(connectionWidget);
-    this.addWidget(this.editorWidget);
+    this.addWidget(this.editor.widget);
     this.addWidget(this.responseWidget);
     BoxPanel.setSizeBasis(connectionWidget, 50);
-    BoxPanel.setStretch(this.editorWidget, 1);
+    BoxPanel.setStretch(this.editor.widget, 1);
     BoxPanel.setStretch(this.responseWidget, 3);
   }
 
   readonly editorFactory: IEditorFactoryService;
-  readonly editorWidget: Editor;
+  readonly editor: IEditor;
   readonly responseWidget: ResponseWidget;
   readonly toolbarModel: ToolbarModel;
   readonly name: string;
@@ -81,7 +81,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
   }
 
   get sqlStatementValue(): string {
-    return this.editorWidget.model.value.text;
+    return this.editor.value;
   }
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
@@ -98,6 +98,6 @@ export class JupyterLabSqlWidget extends BoxPanel {
   }
 
   onActivateRequest(msg: Message) {
-    this.editorWidget.activate();
+    this.editor.widget.activate();
   }
 }
