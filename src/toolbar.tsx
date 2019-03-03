@@ -6,7 +6,19 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 
-export class ToolbarModel extends VDomModel {
+export interface IToolbarModel {
+  readonly connectionString: string;
+  readonly connectionStringChanged: ISignal<this, string>;
+  isLoading: boolean;
+}
+
+export function newToolbar(model: ToolbarModel): ToolbarContainer {
+  const container = new ToolbarContainer();
+  container.model = model;
+  return container;
+}
+
+export class ToolbarModel extends VDomModel implements IToolbarModel {
   constructor(initialConnectionString: string) {
     super();
     this._connectionString = initialConnectionString;
@@ -40,7 +52,7 @@ export class ToolbarModel extends VDomModel {
   }
 }
 
-export class ToolbarContainer extends VDomRenderer<ToolbarModel> {
+class ToolbarContainer extends VDomRenderer<ToolbarModel> {
   onConnectionStringChanged(newString: string) {
     if (!this.model) {
       return;
@@ -76,7 +88,7 @@ namespace ConnectionInformation {
   }
 }
 
-export class ConnectionInformation extends React.Component<
+class ConnectionInformation extends React.Component<
   ConnectionInformation.Props
 > {
   constructor(props: ConnectionInformation.Props) {

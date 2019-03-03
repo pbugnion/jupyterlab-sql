@@ -8,9 +8,9 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
-import { ToolbarContainer, ToolbarModel } from './toolbar';
+import { newToolbar, IToolbarModel, ToolbarModel } from './toolbar';
 
-import { ResponseWidget } from './response';
+import { Response, IResponse } from './response';
 
 import { Editor, IEditor } from './editor';
 
@@ -36,16 +36,16 @@ export class JupyterLabSqlWidget extends BoxPanel {
     this.title.closable = true;
     this.addClass('p-Sql-MainContainer');
 
-    this.toolbarModel = new ToolbarModel(options.initialConnectionString);
-    const connectionWidget = new ToolbarContainer();
-    connectionWidget.model = this.toolbarModel;
+    const toolbarModel = new ToolbarModel(options.initialConnectionString);
+    this.toolbarModel = toolbarModel;
+    const connectionWidget = newToolbar(toolbarModel);
 
     this.toolbarModel.connectionStringChanged.connect((_, value: string) => {
       this._connectionStringChanged.emit(value);
     });
 
     this.editor = new Editor(options.initialSqlStatement, editorFactory);
-    this.responseWidget = new ResponseWidget();
+    this.response = new Response();
 
     this.editor.execute.connect((_, value: string) => {
       const connectionString = this.toolbarModel.connectionString;
@@ -57,16 +57,16 @@ export class JupyterLabSqlWidget extends BoxPanel {
 
     this.addWidget(connectionWidget);
     this.addWidget(this.editor.widget);
-    this.addWidget(this.responseWidget);
+    this.addWidget(this.response.widget);
     BoxPanel.setSizeBasis(connectionWidget, 50);
     BoxPanel.setStretch(this.editor.widget, 1);
-    BoxPanel.setStretch(this.responseWidget, 3);
+    BoxPanel.setStretch(this.response.widget, 3);
   }
 
   readonly editorFactory: IEditorFactoryService;
   readonly editor: IEditor;
-  readonly responseWidget: ResponseWidget;
-  readonly toolbarModel: ToolbarModel;
+  readonly response: IResponse;
+  readonly toolbarModel: IToolbarModel;
   readonly name: string;
   private _lastRequestId: string;
   private _connectionStringChanged = new Signal<this, string>(this);
@@ -92,7 +92,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
     if (this._lastRequestId === thisRequestId) {
       // Only update the response widget if the current
       // query is the last query that was dispatched.
-      this.responseWidget.setResponse(data);
+      this.response.setResponse(data);
     }
     this.toolbarModel.isLoading = false;
   }
