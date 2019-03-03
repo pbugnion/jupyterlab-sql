@@ -27,7 +27,10 @@ namespace JupyterLabSqlWidget {
 }
 
 export class JupyterLabSqlWidget extends BoxPanel {
-  constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.Options) {
+  constructor(
+    editorFactory: IEditorFactoryService,
+    options: JupyterLabSqlWidget.Options
+  ) {
     super();
     this.name = options.name;
     this.id = 'jupyterlab-sql';
@@ -40,8 +43,8 @@ export class JupyterLabSqlWidget extends BoxPanel {
     connectionWidget.model = this.toolbarModel;
 
     this.toolbarModel.connectionStringChanged.connect((_, value: string) => {
-      this._connectionStringChanged.emit(value)
-    })
+      this._connectionStringChanged.emit(value);
+    });
 
     this.editorWidget = new Editor(options.initialSqlStatement, editorFactory);
     this.responseWidget = new ResponseWidget();
@@ -52,7 +55,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
     });
     this.editorWidget.valueChanged.connect((_, value) => {
       this._sqlStatementChanged.emit(value);
-    })
+    });
     this.settings = ServerConnection.makeSettings();
 
     this.addWidget(connectionWidget);
@@ -74,11 +77,11 @@ export class JupyterLabSqlWidget extends BoxPanel {
   private _sqlStatementChanged = new Signal<this, string>(this);
 
   get connectionStringChanged(): ISignal<this, string> {
-    return this._connectionStringChanged
+    return this._connectionStringChanged;
   }
 
   get sqlStatementChanged(): ISignal<this, string> {
-    return this._sqlStatementChanged
+    return this._sqlStatementChanged;
   }
 
   get sqlStatementValue(): string {

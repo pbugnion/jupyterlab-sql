@@ -15,8 +15,8 @@ export class Editor extends CodeEditorWrapper {
     this.editor.addKeydownHandler((_, evt) => this._onKeydown(evt));
     this.addClass('p-Sql-Editor');
     this.model.value.changed.connect(() => {
-      this._valueChanged.emit(this.model.value.text)
-    })
+      this._valueChanged.emit(this.model.value.text);
+    });
   }
 
   get executeRequest(): ISignal<this, string> {

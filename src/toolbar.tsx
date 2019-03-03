@@ -7,7 +7,6 @@ import * as React from 'react';
 import classNames from 'classnames';
 
 export class ToolbarModel extends VDomModel {
-
   constructor(initialConnectionString: string) {
     super();
     this._connectionString = initialConnectionString;
