@@ -27,7 +27,7 @@ function activate(
   restorer.restore(tracker, {
     command: command,
     args: widget => ({ name: widget.content.name, connectionString: widget.content.toolbarModel.connectionString, sqlStatement: widget.content.sqlStatementValue }),
-    name: widget => { console.log(widget.content.name); return widget.content.name }
+    name: widget => widget.content.name
   });
 
   app.commands.addCommand(command, {
