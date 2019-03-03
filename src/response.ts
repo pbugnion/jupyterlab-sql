@@ -6,6 +6,53 @@ import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
 
+export class ResponseWidget extends Widget {
+  constructor() {
+    super();
+    this.layout = new SingletonLayout();
+  }
+
+  readonly layout: SingletonLayout;
+  private item: LayoutItem;
+
+  setCurrentWidget(widget: Widget) {
+    this.layout.widget = widget;
+    this.item = new LayoutItem(this.layout.widget);
+    this.fitCurrentWidget();
+  }
+
+  onResize(msg: Message) {
+    if (this.item) {
+      this.fitCurrentWidget();
+    }
+  }
+
+  fitCurrentWidget() {
+    this.item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
+  }
+
+  setResponse(response: ResponseModel.Type) {
+    ResponseModel.match(
+      response,
+      (keys, rows) => {
+        const model = new SqlDataModel(keys, rows);
+        const gridWidget = new DataGrid();
+        gridWidget.model = model;
+        this.setCurrentWidget(gridWidget);
+      },
+      () => {
+        const message = 'Command executed successfully';
+        const errorResponseWidget = new TextResponseWidget(message);
+        this.setCurrentWidget(errorResponseWidget);
+      },
+      ({ message }) => {
+        const errorResponseWidget = new TextResponseWidget(message);
+        this.setCurrentWidget(errorResponseWidget);
+      }
+    );
+  }
+}
+
 class SqlDataModel extends DataModel {
   constructor(keys: Array<string>, data: Array<Array<any>>) {
     super();
@@ -54,52 +101,5 @@ class TextResponseWidget extends Widget {
     pre.innerHTML = message;
     element.appendChild(pre);
     this.node.appendChild(element);
-  }
-}
-
-export class ResponseWidget extends Widget {
-  constructor() {
-    super();
-    this.layout = new SingletonLayout();
-  }
-
-  readonly layout: SingletonLayout;
-  private item: LayoutItem;
-
-  setCurrentWidget(widget: Widget) {
-    this.layout.widget = widget;
-    this.item = new LayoutItem(this.layout.widget);
-    this.fitCurrentWidget();
-  }
-
-  onResize(msg: Message) {
-    if (this.item) {
-      this.fitCurrentWidget();
-    }
-  }
-
-  fitCurrentWidget() {
-    this.item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
-  }
-
-  setResponse(response: ResponseModel.Type) {
-    ResponseModel.match(
-      response,
-      (keys, rows) => {
-        const model = new SqlDataModel(keys, rows);
-        const gridWidget = new DataGrid();
-        gridWidget.model = model;
-        this.setCurrentWidget(gridWidget);
-      },
-      () => {
-        const message = 'Command executed successfully';
-        const errorResponseWidget = new TextResponseWidget(message);
-        this.setCurrentWidget(errorResponseWidget);
-      },
-      ({ message }) => {
-        const errorResponseWidget = new TextResponseWidget(message);
-        this.setCurrentWidget(errorResponseWidget);
-      }
-    );
   }
 }
