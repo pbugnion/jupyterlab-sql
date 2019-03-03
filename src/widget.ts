@@ -8,15 +8,13 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
-import { ServerConnection } from '@jupyterlab/services';
-
-import { URLExt } from '@jupyterlab/coreutils';
-
 import { ToolbarContainer, ToolbarModel } from './toolbar';
 
 import { ResponseWidget } from './response';
 
 import { Editor } from './editor';
+
+import { Api } from './api';
 
 namespace JupyterLabSqlWidget {
   export interface Options {
@@ -56,7 +54,6 @@ export class JupyterLabSqlWidget extends BoxPanel {
     this.editorWidget.valueChanged.connect((_, value) => {
       this._sqlStatementChanged.emit(value);
     });
-    this.settings = ServerConnection.makeSettings();
 
     this.addWidget(connectionWidget);
     this.addWidget(this.editorWidget);
@@ -68,7 +65,6 @@ export class JupyterLabSqlWidget extends BoxPanel {
 
   readonly editorFactory: IEditorFactoryService;
   readonly editorWidget: Editor;
-  readonly settings: ServerConnection.ISettings;
   readonly responseWidget: ResponseWidget;
   readonly toolbarModel: ToolbarModel;
   readonly name: string;
@@ -89,20 +85,10 @@ export class JupyterLabSqlWidget extends BoxPanel {
   }
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
-    const url = URLExt.join(this.settings.baseUrl, '/jupyterlab-sql/query');
-    const request: RequestInit = {
-      method: 'POST',
-      body: JSON.stringify({ connectionString, query: sql })
-    };
     const thisRequestId = uuid.v4();
     this._lastRequestId = thisRequestId;
     this.toolbarModel.isLoading = true;
-    const response = await ServerConnection.makeRequest(
-      url,
-      request,
-      this.settings
-    );
-    const data = await response.json();
+    const data = await Api.getForQuery(connectionString, sql);
     if (this._lastRequestId === thisRequestId) {
       // Only update the response widget if the current
       // query is the last query that was dispatched.
