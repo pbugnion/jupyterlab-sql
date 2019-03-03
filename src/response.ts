@@ -6,6 +6,27 @@ import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
 
+export interface IResponse {
+  readonly widget: Widget;
+  setResponse(response: ResponseModel.Type): void
+}
+
+export class Response {
+  constructor() {
+    this._widget = new ResponseWidget();
+  }
+
+  get widget(): Widget {
+    return this._widget
+  }
+
+  setResponse(response: ResponseModel.Type): void {
+    this._widget.setResponse(response);
+  }
+
+  private readonly _widget: ResponseWidget;
+}
+
 export class ResponseWidget extends Widget {
   constructor() {
     super();

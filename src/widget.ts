@@ -10,7 +10,7 @@ import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
 import { ToolbarContainer, ToolbarModel } from './toolbar';
 
-import { ResponseWidget } from './response';
+import { Response, IResponse } from './response';
 
 import { Editor, IEditor } from './editor';
 
@@ -45,7 +45,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
     });
 
     this.editor = new Editor(options.initialSqlStatement, editorFactory);
-    this.responseWidget = new ResponseWidget();
+    this.response = new Response();
 
     this.editor.execute.connect((_, value: string) => {
       const connectionString = this.toolbarModel.connectionString;
@@ -57,15 +57,15 @@ export class JupyterLabSqlWidget extends BoxPanel {
 
     this.addWidget(connectionWidget);
     this.addWidget(this.editor.widget);
-    this.addWidget(this.responseWidget);
+    this.addWidget(this.response.widget);
     BoxPanel.setSizeBasis(connectionWidget, 50);
     BoxPanel.setStretch(this.editor.widget, 1);
-    BoxPanel.setStretch(this.responseWidget, 3);
+    BoxPanel.setStretch(this.response.widget, 3);
   }
 
   readonly editorFactory: IEditorFactoryService;
   readonly editor: IEditor;
-  readonly responseWidget: ResponseWidget;
+  readonly response: IResponse;
   readonly toolbarModel: ToolbarModel;
   readonly name: string;
   private _lastRequestId: string;
@@ -92,7 +92,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
     if (this._lastRequestId === thisRequestId) {
       // Only update the response widget if the current
       // query is the last query that was dispatched.
-      this.responseWidget.setResponse(data);
+      this.response.setResponse(data);
     }
     this.toolbarModel.isLoading = false;
   }
