@@ -22,6 +22,7 @@ namespace JupyterLabSqlWidget {
   export interface Options {
     name: string;
     initialConnectionString: string;
+    initialSqlStatement: string;
   }
 }
 
@@ -42,13 +43,16 @@ export class JupyterLabSqlWidget extends BoxPanel {
       this._connectionStringChanged.emit(value)
     })
 
-    this.editorWidget = new Editor(editorFactory);
+    this.editorWidget = new Editor(options.initialSqlStatement, editorFactory);
     this.responseWidget = new ResponseWidget();
 
     this.editorWidget.executeRequest.connect((_, value) => {
       const connectionString = this.toolbarModel.connectionString;
       this.updateGrid(connectionString, value);
     });
+    this.editorWidget.valueChanged.connect((_, value) => {
+      this._sqlStatementChanged.emit(value);
+    })
     this.settings = ServerConnection.makeSettings();
 
     this.addWidget(connectionWidget);
@@ -67,9 +71,18 @@ export class JupyterLabSqlWidget extends BoxPanel {
   readonly name: string;
   private _lastRequestId: string;
   private _connectionStringChanged = new Signal<this, string>(this);
+  private _sqlStatementChanged = new Signal<this, string>(this);
 
   get connectionStringChanged(): ISignal<this, string> {
     return this._connectionStringChanged
+  }
+
+  get sqlStatementChanged(): ISignal<this, string> {
+    return this._sqlStatementChanged
+  }
+
+  get sqlStatementValue(): string {
+    return this.editorWidget.model.value.text;
   }
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {

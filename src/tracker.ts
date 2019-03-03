@@ -19,6 +19,9 @@ export function createTracker(): InstanceTracker<MainAreaWidget<JupyterLabSqlWid
     widget.content.connectionStringChanged.connect(() => {
       tracker.save(widget)
     });
+    widget.content.sqlStatementChanged.connect(() => {
+      tracker.save(widget)
+    })
   })
 
   return tracker;
