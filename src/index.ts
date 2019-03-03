@@ -26,18 +26,19 @@ function activate(
 
   restorer.restore(tracker, {
     command: command,
-    args: widget => ({ name: widget.content.name }),
+    args: widget => ({ name: widget.content.name, connectionString: widget.content.toolbarModel.connectionString }),
     name: widget => { console.log(widget.content.name); return widget.content.name }
   });
 
   app.commands.addCommand(command, {
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
-    execute: ({ name }) => {
+    execute: ({ name, connectionString }) => {
       const widgetName = <string>(name || uuid.v4());
+      const initialConnectionString = <string>(connectionString || "postgres://localhost:5432/postgres")
       const widget = new JupyterLabSqlWidget(
         editorServices.factoryService,
-        { name: widgetName, initialConnectionString: "postgres://localhost:5432/postgres" }
+        { name: widgetName, initialConnectionString }
       );
       const main = new MainAreaWidget({ content: widget })
       app.shell.addToMainArea(main);
