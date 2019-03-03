@@ -4,6 +4,8 @@ import { BoxPanel } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
+import { ISignal, Signal } from '@phosphor/signaling';
+
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
 import { ServerConnection } from '@jupyterlab/services';
@@ -36,6 +38,11 @@ export class JupyterLabSqlWidget extends BoxPanel {
     const connectionWidget = new ToolbarContainer();
     connectionWidget.model = this.toolbarModel;
 
+    this.toolbarModel.stateChanged.connect(() => {
+      console.log("state changed")
+      this._connectionStringChanged.emit("hello")
+    })
+
     this.editorWidget = new Editor(editorFactory);
     this.responseWidget = new ResponseWidget();
 
@@ -60,6 +67,11 @@ export class JupyterLabSqlWidget extends BoxPanel {
   readonly toolbarModel: ToolbarModel;
   readonly name: string;
   private _lastRequestId: string;
+  private _connectionStringChanged = new Signal<this, string>(this);
+
+  get onConnectionStringChanged(): ISignal<this, string> {
+    return this._connectionStringChanged
+  }
 
   async updateGrid(connectionString: string, sql: string): Promise<void> {
     const url = URLExt.join(this.settings.baseUrl, '/jupyterlab-sql/query');
