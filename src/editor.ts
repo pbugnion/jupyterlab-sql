@@ -24,12 +24,12 @@ export class Editor implements IEditor {
       this._valueChanged.emit(this.value);
     });
     this._widget.executeCurrent.connect(() => {
-      this._execute.emit(this.value)
+      this._execute.emit(this.value);
     });
   }
 
   get value(): string {
-    return this._model.value.text
+    return this._model.value.text;
   }
 
   get widget(): Widget {
