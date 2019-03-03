@@ -8,7 +8,7 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
-import { ToolbarContainer, ToolbarModel } from './toolbar';
+import { newToolbar, IToolbarModel, ToolbarModel } from './toolbar';
 
 import { Response, IResponse } from './response';
 
@@ -36,9 +36,9 @@ export class JupyterLabSqlWidget extends BoxPanel {
     this.title.closable = true;
     this.addClass('p-Sql-MainContainer');
 
-    this.toolbarModel = new ToolbarModel(options.initialConnectionString);
-    const connectionWidget = new ToolbarContainer();
-    connectionWidget.model = this.toolbarModel;
+    const toolbarModel = new ToolbarModel(options.initialConnectionString);
+    this.toolbarModel = toolbarModel;
+    const connectionWidget = newToolbar(toolbarModel);
 
     this.toolbarModel.connectionStringChanged.connect((_, value: string) => {
       this._connectionStringChanged.emit(value);
@@ -66,7 +66,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
   readonly editorFactory: IEditorFactoryService;
   readonly editor: IEditor;
   readonly response: IResponse;
-  readonly toolbarModel: ToolbarModel;
+  readonly toolbarModel: IToolbarModel;
   readonly name: string;
   private _lastRequestId: string;
   private _connectionStringChanged = new Signal<this, string>(this);
