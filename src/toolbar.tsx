@@ -1,3 +1,5 @@
+import { ISignal, Signal } from '@phosphor/signaling';
+
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
@@ -5,8 +7,18 @@ import * as React from 'react';
 import classNames from 'classnames';
 
 export class ToolbarModel extends VDomModel {
-  private _connectionString: string = 'postgres://localhost:5432/postgres';
+  constructor(initialConnectionString: string) {
+    super();
+    this._connectionString = initialConnectionString;
+  }
+
+  private _connectionString: string;
   private _isLoading: boolean = false;
+  private _connectionStringChanged = new Signal<this, string>(this);
+
+  get connectionStringChanged(): ISignal<this, string> {
+    return this._connectionStringChanged;
+  }
 
   get connectionString(): string {
     return this._connectionString;
@@ -19,6 +31,7 @@ export class ToolbarModel extends VDomModel {
   set connectionString(newString: string) {
     this._connectionString = newString;
     this.stateChanged.emit(void 0);
+    this._connectionStringChanged.emit(newString);
   }
 
   set isLoading(newValue: boolean) {
