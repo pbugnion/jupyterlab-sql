@@ -38,9 +38,8 @@ export class JupyterLabSqlWidget extends BoxPanel {
     const connectionWidget = new ToolbarContainer();
     connectionWidget.model = this.toolbarModel;
 
-    this.toolbarModel.stateChanged.connect(() => {
-      console.log("state changed")
-      this._connectionStringChanged.emit("hello")
+    this.toolbarModel.connectionStringChanged.connect((_, value: string) => {
+      this._connectionStringChanged.emit(value)
     })
 
     this.editorWidget = new Editor(editorFactory);
@@ -69,7 +68,7 @@ export class JupyterLabSqlWidget extends BoxPanel {
   private _lastRequestId: string;
   private _connectionStringChanged = new Signal<this, string>(this);
 
-  get onConnectionStringChanged(): ISignal<this, string> {
+  get connectionStringChanged(): ISignal<this, string> {
     return this._connectionStringChanged
   }
 
