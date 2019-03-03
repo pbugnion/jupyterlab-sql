@@ -23,6 +23,7 @@ export class Editor implements IEditor {
     this._model.value.changed.connect(() => {
       this._valueChanged.emit(this.value);
     });
+    this._model.mimeType = 'text/x-sql';
     this._widget.executeCurrent.connect(() => {
       this._execute.emit(this.value);
     });
