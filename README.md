@@ -9,6 +9,8 @@ JupyterLab extension for interacting with SQL databases.
 
 ## Installation
 
+To install *jupyterlab-sql*, run the following commands:
+
 ```
 pip install jupyterlab_sql
 jupyter serverextension enable jupyterlab_sql --py --sys-prefix
