@@ -8,7 +8,7 @@ import { ResponseModel } from './responseModel';
 
 export interface IResponse {
   readonly widget: Widget;
-  setResponse(response: ResponseModel.Type): void
+  setResponse(response: ResponseModel.Type): void;
 }
 
 export class Response {
@@ -17,7 +17,7 @@ export class Response {
   }
 
   get widget(): Widget {
-    return this._widget
+    return this._widget;
   }
 
   setResponse(response: ResponseModel.Type): void {

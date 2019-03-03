@@ -9,11 +9,11 @@ import classNames from 'classnames';
 export interface IToolbarModel {
   readonly connectionString: string;
   readonly connectionStringChanged: ISignal<this, string>;
-  isLoading: boolean
+  isLoading: boolean;
 }
 
 export function newToolbar(model: ToolbarModel): ToolbarContainer {
-  const container = new ToolbarContainer()
+  const container = new ToolbarContainer();
   container.model = model;
   return container;
 }
