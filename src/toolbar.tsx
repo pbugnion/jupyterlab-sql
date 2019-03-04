@@ -2,6 +2,8 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
+import * as urlparse from 'url-parse';
+
 import * as React from 'react';
 
 import classNames from 'classnames';
@@ -119,7 +121,7 @@ class ConnectionInformationEdit extends React.Component<
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
-      value: "blurred",
+      value: this.sanitizeUrl(props.connectionString),
       focused: false
     };
   }
@@ -150,8 +152,14 @@ class ConnectionInformationEdit extends React.Component<
     this.props.onFinishEdit(this.state.value);
     this.setState({
       focused: false,
-      value: "blurred"
+      value: this.sanitizeUrl(this.state.value)
     });
+  }
+
+  sanitizeUrl(url: string): string {
+    const parsedUrl = urlparse(url);
+    parsedUrl.set('password', '•••••••');
+    return parsedUrl.href;
   }
 
   cancel() {

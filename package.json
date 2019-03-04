@@ -42,10 +42,12 @@
     "classnames": "^2.2.6",
     "react": "~16.4.2",
     "react-dom": "~16.4.2",
+    "url-parse": "^1.4.4",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.7",
+    "@types/url-parse": "^1.4.3",
     "@types/uuid": "^3.4.4",
     "mkdirp": "^0.5.1",
     "prettier": "^1.16.4",
