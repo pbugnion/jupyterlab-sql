@@ -119,7 +119,7 @@ class ConnectionInformationEdit extends React.Component<
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
-      value: this.props.connectionString,
+      value: "blurred",
       focused: false
     };
   }
@@ -139,8 +139,19 @@ class ConnectionInformationEdit extends React.Component<
     this.setState({ value: event.target.value });
   }
 
+  start() {
+    this.setState({
+      focused: true,
+      value: this.props.connectionString
+    })
+  }
+
   finish() {
     this.props.onFinishEdit(this.state.value);
+    this.setState({
+      focused: false,
+      value: "blurred"
+    });
   }
 
   cancel() {
@@ -148,11 +159,10 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   onInputFocus() {
-    this.setState({ focused: true });
+    this.start();
   }
 
   onInputBlur() {
-    this.setState({ focused: false });
     this.finish();
   }
 
