@@ -30,7 +30,8 @@
     "prepare": "npm run clean && npm run build",
     "prettier": "prettier --write 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
     "prettier:check": "prettier --list-different 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "test": "jest"
   },
   "dependencies": {
     "@jupyterlab/application": "^0.19.1",
@@ -47,11 +48,14 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.7",
+    "@types/jest": "^24.0.9",
     "@types/url-parse": "^1.4.3",
     "@types/uuid": "^3.4.4",
+    "jest": "^24.1.0",
     "mkdirp": "^0.5.1",
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
+    "ts-jest": "^24.0.0",
     "typescript": "~3.1.1"
   },
   "jupyterlab": {
