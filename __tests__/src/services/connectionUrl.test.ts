@@ -1,5 +1,5 @@
 
-import { ConnectionUrl } from "../../../src/services/connectionUrl";
+import { ConnectionUrl } from "../../../src/services";
 
 describe("sanitize", () => {
   it("without password", () => {
