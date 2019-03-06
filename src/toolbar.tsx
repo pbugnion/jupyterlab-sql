@@ -145,7 +145,7 @@ class ConnectionInformationEdit extends React.Component<
     this.setState({
       focused: true,
       value: this.props.connectionString
-    })
+    });
   }
 
   finish() {
