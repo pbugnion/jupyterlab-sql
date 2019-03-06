@@ -28,8 +28,8 @@
     "build:dist": "npm run prepare && rimraf labextension && mkdirp labextension && cd labextension && npm pack ..",
     "clean": "rimraf lib",
     "prepare": "npm run clean && npm run build",
-    "prettier": "prettier --write 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
-    "prettier:check": "prettier --list-different 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "prettier": "prettier --write '{src,__tests__}/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "prettier:check": "prettier --list-different '{src,__tests__}/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
     "watch": "tsc -w",
     "test": "jest"
   },
