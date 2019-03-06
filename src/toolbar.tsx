@@ -6,6 +6,8 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 
+import { ConnectionUrl } from './services';
+
 export interface IToolbarModel {
   readonly connectionString: string;
   readonly connectionStringChanged: ISignal<this, string>;
@@ -119,7 +121,7 @@ class ConnectionInformationEdit extends React.Component<
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
-      value: this.props.connectionString,
+      value: ConnectionUrl.sanitize(props.connectionString),
       focused: false
     };
   }
@@ -139,8 +141,19 @@ class ConnectionInformationEdit extends React.Component<
     this.setState({ value: event.target.value });
   }
 
+  start() {
+    this.setState({
+      focused: true,
+      value: this.props.connectionString
+    });
+  }
+
   finish() {
     this.props.onFinishEdit(this.state.value);
+    this.setState({
+      focused: false,
+      value: ConnectionUrl.sanitize(this.state.value)
+    });
   }
 
   cancel() {
@@ -148,11 +161,10 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   onInputFocus() {
-    this.setState({ focused: true });
+    this.start();
   }
 
   onInputBlur() {
-    this.setState({ focused: false });
     this.finish();
   }
 

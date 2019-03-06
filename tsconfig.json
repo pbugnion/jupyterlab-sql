@@ -7,7 +7,6 @@
     "noEmitOnError": true,
     "noUnusedLocals": true,
     "outDir": "lib",
-    "rootDir": "src",
     "strict": true,
     "strictNullChecks": false,
     "target": "es2015",
