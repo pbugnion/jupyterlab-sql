@@ -66,7 +66,7 @@ export class EditorWidget extends CodeEditorWrapper {
   }
 
   _onKeydown(event: KeyboardEvent): boolean {
-    if (event.shiftKey && event.key === 'Enter') {
+    if ((event.shiftKey || event.ctrlKey) && event.key === 'Enter') {
       this._executeCurrent.emit(void 0);
       return true;
     }
