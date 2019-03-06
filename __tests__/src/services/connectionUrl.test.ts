@@ -1,16 +1,17 @@
+import { ConnectionUrl } from '../../../src/services';
 
-import { ConnectionUrl } from "../../../src/services";
-
-describe("sanitize", () => {
-  it("without password", () => {
+describe('sanitize', () => {
+  it('without password', () => {
     expect(
-      ConnectionUrl.sanitize("postgres://localhost:5432/postgres")
-    ).toEqual("postgres://localhost:5432/postgres")
-  })
+      ConnectionUrl.sanitize('postgres://localhost:5432/postgres')
+    ).toEqual('postgres://localhost:5432/postgres');
+  });
 
-  it("with password", () => {
+  it('with password', () => {
     expect(
-      ConnectionUrl.sanitize("postgres://awsuser:password@some.hostname.com/dbname")
-    ).toEqual("postgres://awsuser:•••••••@some.hostname.com/dbname")
-  })
-})
+      ConnectionUrl.sanitize(
+        'postgres://awsuser:password@some.hostname.com/dbname'
+      )
+    ).toEqual('postgres://awsuser:•••••••@some.hostname.com/dbname');
+  });
+});
