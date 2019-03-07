@@ -39,8 +39,8 @@ on database URLs.
 
 ### Executing statements
 
-Press `shift` + `enter` while in the main query area to dispatch the
-statement.
+Press `shift` + `enter` or `ctrl` + `enter` while in the main query
+area to dispatch the statement.
 
 ### Database support
 
