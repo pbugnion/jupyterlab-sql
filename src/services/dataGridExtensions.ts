@@ -2,36 +2,54 @@ import { DataGrid } from '@phosphor/datagrid';
 
 export namespace DataGridExtensions {
 
-  export type RowSection = 'outside' | 'row-header' | 'row'
+  export type RowSection = 'outside' | 'column-header' | 'row'
+  export type ColumnSection = 'outside' | 'row-header' | 'column'
+
+  export interface Row {
+    section: RowSection;
+    index: number | null
+  }
+
+  export interface Column {
+    section: ColumnSection;
+  }
 
   export interface ClickEvent {
-    rowSection: RowSection,
-    row: number | null,
+    row: Row
+    column: Column
   }
 
   export function addClickEventListener(grid: DataGrid, listener: (row: ClickEvent) => void): void {
-    grid.node.addEventListener('click', ({ clientY }) => {
-      const { rowSection, row } = getRow(grid, clientY);
-      return listener({ rowSection, row });
+    grid.node.addEventListener('click', ({ clientX, clientY }) => {
+      const row = getRow(grid, clientY);
+      const column = getColumn(grid, clientX);
+      return listener({ row, column });
     })
   }
 
-  function getRow(grid: DataGrid, clientY: number): { rowSection: RowSection, row: number | null } {
+  function getRow(grid: DataGrid, clientY: number): Row {
     const { top } = grid.node.getBoundingClientRect();
     const y = clientY - top;
-    let rowSection: RowSection;
-    let row: number;
+    let section: RowSection;
+    let index: number;
     if (y > grid.totalHeight) {
-      rowSection = 'outside';
-      row = null;
+      section = 'outside';
+      index = null;
     } else if (y <= grid.headerHeight) {
-      rowSection = 'row-header';
-      row = 1;
+      section = 'column-header';
+      index = 1;
     } else {
-      rowSection = 'row';
+      section = 'row';
       const absY = y + grid.scrollY - grid.headerHeight;
-      row = Math.floor(absY / grid.baseRowSize);
+      index = Math.floor(absY / grid.baseRowSize);
     }
-    return { rowSection, row }
+    return { section, index }
+  }
+
+  function getColumn(grid: DataGrid, clientX: number): Column {
+    //const { left } = grid.node.getBoundingClientRect();
+    //const x = clientX - left;
+    let section: ColumnSection = 'row-header';
+    return { section };
   }
 }
