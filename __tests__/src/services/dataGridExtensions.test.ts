@@ -79,4 +79,28 @@ describe('dataGridExtensions.addClickEventListener', () => {
     const { column } = testEvent(event);
     expect(column).toEqual({ section: 'outside', index: null });
   })
+
+  it('return that a column section is the first column', () => {
+    const event = new MouseEvent('click', { clientX: 66, clientY: 100 });
+    const { column } = testEvent(event);
+    expect(column).toEqual({ section: 'column', index: 0 });
+  })
+
+  it('return that a column section is an intermediate column', () => {
+    const event = new MouseEvent('click', { clientX: (64 * 5) + 2, clientY: 100 });
+    const { column } = testEvent(event);
+    expect(column).toEqual({ section: 'column', index: 4 });
+  })
+
+  it('return that a column section is the last column', () => {
+    const event = new MouseEvent('click', { clientX: (64 * 10) + 2, clientY: 100 });
+    const { column } = testEvent(event);
+    expect(column).toEqual({ section: 'column', index: 9 });
+  })
+
+  it('return that a column section is the last column when click is towards right of column', () => {
+    const event = new MouseEvent('click', { clientX: (64 * 11) - 2, clientY: 100 });
+    const { column } = testEvent(event);
+    expect(column).toEqual({ section: 'column', index: 9 });
+  })
 })

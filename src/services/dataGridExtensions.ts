@@ -58,6 +58,18 @@ export namespace DataGridExtensions {
     } else if (x <= grid.headerWidth) {
       section = 'row-header';
       index = null;
+    } else {
+      const absX = x + grid.scrollX - grid.headerWidth;
+      let currentColumn = 0;
+      let currentLeft = 0;
+      let nextLeft = currentLeft + grid.sectionSize('column', currentColumn);
+      while (nextLeft < absX) {
+        currentColumn++;
+        currentLeft = nextLeft;
+        nextLeft = currentLeft + grid.sectionSize('column', currentColumn);
+      }
+      index = currentColumn;
+      section = 'column';
     }
     return { section, index };
   }
