@@ -1,3 +1,4 @@
+import { IDisposable, DisposableDelegate } from '@phosphor/disposable';
 import { DataGrid } from '@phosphor/datagrid';
 
 export namespace DataGridExtensions {
@@ -20,11 +21,15 @@ export namespace DataGridExtensions {
     column: Column
   }
 
-  export function addClickEventListener(grid: DataGrid, listener: (row: ClickEvent) => void): void {
-    grid.node.addEventListener('click', ({ clientX, clientY }) => {
+  export function addClickEventListener(grid: DataGrid, listener: (row: ClickEvent) => void): IDisposable {
+    const handler = ({ clientX, clientY }: MouseEventInit) => {
       const row = getRow(grid, clientY);
       const column = getColumn(grid, clientX);
       return listener({ row, column });
+    }
+    grid.node.addEventListener('click', handler)
+    return new DisposableDelegate(() => {
+      grid.node.removeEventListener('click', handler)
     })
   }
 

@@ -54,10 +54,9 @@ describe('dataGridExtensions.addClickEventListener', () => {
   }
 
   it('register an event listener', () => {
-    testEvent(
-      Fixtures.grid(),
-      Fixtures.clickEvent({ clientX: 10, clientY: 5 })
-    );
+    const grid = Fixtures.grid()
+    const event = Fixtures.clickEvent({ clientX: 10, clientY: 5 })
+    testEvent(grid, event);
   })
 
   it.each([
@@ -129,6 +128,16 @@ describe('dataGridExtensions.addClickEventListener', () => {
     const event = Fixtures.clickEvent({ clientX: 3 * 64 + 200 + 2, clientY: 5 })
     const { column } = testEvent(grid, event);
     expect(column).toEqual({ section: 'column', index: 3 })
+  })
+
+  it('remove the event listener', () => {
+    const grid = Fixtures.grid()
+    const mockListener = jest.fn()
+    const disposable = DataGridExtensions.addClickEventListener(grid, mockListener)
+    disposable.dispose()
+    const event = Fixtures.clickEvent({ clientX: 10, clientY: 5 })
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(0);
   })
 
 })
