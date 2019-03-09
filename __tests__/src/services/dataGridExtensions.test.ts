@@ -63,7 +63,10 @@ describe('dataGridExtensions.addClickEventListener', () => {
   it.each([
     [5, { section: 'column-header', index: null }],
     [20 * 101 + 1, { section: 'outside', index: null }],
-    [20 * 50 + 2, { section: 'row', index: 49 }]
+    [20 * 101, { section: 'outside', index: null }], // boundary with last row
+    [20 * 50 + 2, { section: 'row', index: 49 }],
+    [20 * 50, { section: 'row', index: 49 }], // boundary between two rows
+    [20, { section: 'row', index: 0 }], // boundary with header
   ])("row position %#: clientY: %i", (clientY, expected) => {
     const grid = Fixtures.grid()
     const event = Fixtures.clickEvent({ clientX: 10, clientY })

@@ -33,10 +33,10 @@ export namespace DataGridExtensions {
     const y = clientY - top;
     let section: RowSection;
     let index: number;
-    if (y > grid.totalHeight) {
+    if (y >= grid.totalHeight) {
       section = 'outside';
       index = null;
-    } else if (y <= grid.headerHeight) {
+    } else if (y < grid.headerHeight) {
       section = 'column-header';
       index = null;
     } else {
