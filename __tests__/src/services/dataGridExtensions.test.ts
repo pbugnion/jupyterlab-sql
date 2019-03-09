@@ -59,4 +59,9 @@ describe('dataGridExtensions.addClickEventListener', () => {
     const event = new MouseEvent('click', { clientX: 10, clientY: 20 * 101 + 1 });
     expect(testEvent(event)).toEqual({ rowSection: 'outside' });
   })
+
+  it('return a RowSection that is a row', () => {
+    const event = new MouseEvent('click', { clientX: 10, clientY: 20 * 50 });
+    expect(testEvent(event)).toEqual({ rowSection: 'row' });
+  })
 })
