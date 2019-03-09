@@ -62,8 +62,8 @@ describe('dataGridExtensions.addClickEventListener', () => {
 
   it.each([
     [5, { section: 'column-header', index: null }],
-    [20*101 + 1, { section: 'outside', index: null }],
-    [20*50 + 2, { section: 'row', index: 49 }]
+    [20 * 101 + 1, { section: 'outside', index: null }],
+    [20 * 50 + 2, { section: 'row', index: 49 }]
   ])("row position %#: clientY: %i", (clientY, expected) => {
     const grid = Fixtures.grid()
     const event = Fixtures.clickEvent({ clientX: 10, clientY })
@@ -73,8 +73,8 @@ describe('dataGridExtensions.addClickEventListener', () => {
 
   it.each([
     [5, { section: 'row-header', index: null }],
-    [11 * 64 + 1, { section: 'outside', index: null }],
-    [66, { section: 'column', index: 0 }],
+    [64 * 11 + 1, { section: 'outside', index: null }],
+    [64 + 2, { section: 'column', index: 0 }],
     [64 * 5 + 2, { section: 'column', index: 4 }],
     [64 * 10 + 2, { section: 'column', index: 9 }],
     [64 * 11 - 2, { section: 'column', index: 9 }]
