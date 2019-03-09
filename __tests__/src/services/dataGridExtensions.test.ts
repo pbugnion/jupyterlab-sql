@@ -51,17 +51,17 @@ describe('dataGridExtensions.addClickEventListener', () => {
 
   it('return that a RowSection is in the header', () => {
     const event = new MouseEvent('click', { clientX: 10, clientY: 5 });
-    expect(testEvent(event)).toEqual({ rowSection: 'row-header' });
+    expect(testEvent(event)).toEqual({ rowSection: 'row-header', row: 1 });
   })
 
   it('return that a RowSection is outside', () => {
     // total height = (101 rows) * (20px / row) = (20 * 101)px
     const event = new MouseEvent('click', { clientX: 10, clientY: 20 * 101 + 1 });
-    expect(testEvent(event)).toEqual({ rowSection: 'outside' });
+    expect(testEvent(event)).toEqual({ rowSection: 'outside', row: null });
   })
 
   it('return a RowSection that is a row', () => {
-    const event = new MouseEvent('click', { clientX: 10, clientY: 20 * 50 });
-    expect(testEvent(event)).toEqual({ rowSection: 'row' });
+    const event = new MouseEvent('click', { clientX: 10, clientY: 20 * 50 + 2 });
+    expect(testEvent(event)).toEqual({ rowSection: 'row', row: 49 });
   })
 })
