@@ -12,6 +12,7 @@ export namespace DataGridExtensions {
 
   export interface Column {
     section: ColumnSection;
+    index: number | null
   }
 
   export interface ClickEvent {
@@ -47,9 +48,14 @@ export namespace DataGridExtensions {
   }
 
   function getColumn(grid: DataGrid, clientX: number): Column {
-    //const { left } = grid.node.getBoundingClientRect();
-    //const x = clientX - left;
+    const { left } = grid.node.getBoundingClientRect();
+    const x = clientX - left;
     let section: ColumnSection = 'row-header';
-    return { section };
+    let index: number = null;
+    if (x > grid.totalWidth) {
+      section = 'outside';
+      index = null;
+    }
+    return { section, index };
   }
 }

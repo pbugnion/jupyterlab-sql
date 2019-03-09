@@ -68,9 +68,15 @@ describe('dataGridExtensions.addClickEventListener', () => {
     expect(row).toEqual({ section: 'row', index: 49 });
   })
 
-  it('return that a column section is in the header', () => {
+  it.skip('return that a column section is in the header', () => {
     const event = new MouseEvent('click', { clientX: 5, clientY: 100 });
     const { column } = testEvent(event)
     expect(column).toEqual({ section: 'row-header' })
+  })
+
+  it('return that a column section is outside', () => {
+    const event = new MouseEvent('click', { clientX: 11 * 64 + 1, clientY: 100 });
+    const { column } = testEvent(event);
+    expect(column).toEqual({ section: 'outside', index: null });
   })
 })
