@@ -43,8 +43,7 @@ namespace Fixtures {
 
 describe('dataGridExtensions.addClickEventListener', () => {
 
-  const testEvent = (event: MouseEvent): DataGridExtensions.ClickEvent => {
-    const grid = Fixtures.grid()
+  const testEvent = (grid: DataGrid, event: MouseEvent): DataGridExtensions.ClickEvent => {
     const mockListener = jest.fn()
     DataGridExtensions.addClickEventListener(grid, mockListener)
     grid.node.dispatchEvent(event);
@@ -55,61 +54,35 @@ describe('dataGridExtensions.addClickEventListener', () => {
   }
 
   it('register an event listener', () => {
-    testEvent(Fixtures.clickEvent({ clientX: 10, clientY: 5 }));
+    testEvent(
+      Fixtures.grid(),
+      Fixtures.clickEvent({ clientX: 10, clientY: 5 })
+    );
   })
 
-  it('return that a RowSection is in the header', () => {
-    const event = Fixtures.clickEvent({ clientX: 10, clientY: 5 });
-    const { row } = testEvent(event)
-    expect(row).toEqual({ section: 'column-header', index: null });
+  it.each([
+    [5, { section: 'column-header', index: null }],
+    [20*101 + 1, { section: 'outside', index: null }],
+    [20*50 + 2, { section: 'row', index: 49 }]
+  ])("row position %#: clientY: %i", (clientY, expected) => {
+    const grid = Fixtures.grid()
+    const event = Fixtures.clickEvent({ clientX: 10, clientY })
+    const { row } = testEvent(grid, event);
+    expect(row).toEqual(expected);
   })
 
-  it('return that a RowSection is outside', () => {
-    // total height = (101 rows) * (20px / row) = (20 * 101)px
-    const event = Fixtures.clickEvent({ clientX: 10, clientY: 20 * 101 + 1 });
-    const { row } = testEvent(event)
-    expect(row).toEqual({ section: 'outside', index: null });
+  it.each([
+    [5, { section: 'row-header', index: null }],
+    [11 * 64 + 1, { section: 'outside', index: null }],
+    [66, { section: 'column', index: 0 }],
+    [64 * 5 + 2, { section: 'column', index: 4 }],
+    [64 * 10 + 2, { section: 'column', index: 9 }],
+    [64 * 11 - 2, { section: 'column', index: 9 }]
+  ])("column position %#: clientX: %i", (clientX, expected) => {
+    const grid = Fixtures.grid()
+    const event = Fixtures.clickEvent({ clientX, clientY: 100 });
+    const { column } = testEvent(grid, event)
+    expect(column).toEqual(expected)
   })
 
-  it('return a RowSection that is a row', () => {
-    const event = Fixtures.clickEvent({ clientX: 10, clientY: 20 * 50 + 2 });
-    const { row } = testEvent(event)
-    expect(row).toEqual({ section: 'row', index: 49 });
-  })
-
-  it('return that a column section is in the header', () => {
-    const event = Fixtures.clickEvent({ clientX: 5, clientY: 100 });
-    const { column } = testEvent(event)
-    expect(column).toEqual({ section: 'row-header', index: null })
-  })
-
-  it('return that a column section is outside', () => {
-    const event = Fixtures.clickEvent({ clientX: 11 * 64 + 1, clientY: 100 });
-    const { column } = testEvent(event);
-    expect(column).toEqual({ section: 'outside', index: null });
-  })
-
-  it('return that a column section is the first column', () => {
-    const event = Fixtures.clickEvent({ clientX: 66, clientY: 100 });
-    const { column } = testEvent(event);
-    expect(column).toEqual({ section: 'column', index: 0 });
-  })
-
-  it('return that a column section is an intermediate column', () => {
-    const event = Fixtures.clickEvent({ clientX: (64 * 5) + 2, clientY: 100 });
-    const { column } = testEvent(event);
-    expect(column).toEqual({ section: 'column', index: 4 });
-  })
-
-  it('return that a column section is the last column', () => {
-    const event = Fixtures.clickEvent({ clientX: (64 * 10) + 2, clientY: 100 });
-    const { column } = testEvent(event);
-    expect(column).toEqual({ section: 'column', index: 9 });
-  })
-
-  it('return that a column section is the last column when click is towards right of column', () => {
-    const event = Fixtures.clickEvent({ clientX: (64 * 11) - 2, clientY: 100 });
-    const { column } = testEvent(event);
-    expect(column).toEqual({ section: 'column', index: 9 });
-  })
 })
