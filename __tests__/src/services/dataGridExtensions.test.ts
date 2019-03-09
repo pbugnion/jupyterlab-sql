@@ -117,4 +117,12 @@ describe('dataGridExtensions.addClickEventListener', () => {
     expect(column).toEqual({ section: 'row-header', index: null })
   })
 
+  it('take resizes into account', () => {
+    const grid = Fixtures.grid()
+    grid.resizeSection('column', 2, 200);
+    const event = Fixtures.clickEvent({ clientX: 3 * 64 + 200 + 2, clientY: 5 })
+    const { column } = testEvent(grid, event);
+    expect(column).toEqual({ section: 'column', index: 3 })
+  })
+
 })
