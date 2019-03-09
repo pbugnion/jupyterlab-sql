@@ -90,10 +90,13 @@ describe('dataGridExtensions.addClickEventListener', () => {
   it.each([
     [5, { section: 'row-header', index: null }],
     [64 * 11 + 1, { section: 'outside', index: null }],
+    [64, { section: 'column', index: 0 }], // on boundary with header
     [64 + 2, { section: 'column', index: 0 }],
     [64 * 5 + 2, { section: 'column', index: 4 }],
+    [64 * 5, { section: 'column', index: 4 }], // boundary between two columns
     [64 * 10 + 2, { section: 'column', index: 9 }],
-    [64 * 11 - 2, { section: 'column', index: 9 }]
+    [64 * 11 - 2, { section: 'column', index: 9 }],
+    [64 * 11, { section: 'outside', index: null }], // on boundary of last column
   ])("column position %#: clientX: %i", (clientX, expected) => {
     const grid = Fixtures.grid()
     const event = Fixtures.clickEvent({ clientX, clientY: 100 });

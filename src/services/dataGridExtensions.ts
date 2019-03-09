@@ -52,10 +52,10 @@ export namespace DataGridExtensions {
     const x = clientX - left;
     let section: ColumnSection = 'row-header';
     let index: number = null;
-    if (x > grid.totalWidth) {
+    if (x >= grid.totalWidth) {
       section = 'outside';
       index = null;
-    } else if (x <= grid.headerWidth) {
+    } else if (x < grid.headerWidth) {
       section = 'row-header';
       index = null;
     } else {
@@ -63,7 +63,7 @@ export namespace DataGridExtensions {
       let currentColumn = 0;
       let currentLeft = 0;
       let nextLeft = currentLeft + grid.sectionSize('column', currentColumn);
-      while (nextLeft < absX) {
+      while (absX >= nextLeft) {
         currentColumn++;
         currentLeft = nextLeft;
         nextLeft = currentLeft + grid.sectionSize('column', currentColumn);
