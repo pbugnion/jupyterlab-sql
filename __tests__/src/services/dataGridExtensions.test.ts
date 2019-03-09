@@ -71,6 +71,22 @@ describe('dataGridExtensions.addClickEventListener', () => {
     expect(row).toEqual(expected);
   })
 
+  it('row position should be correct when scrolled', () => {
+    const grid = Fixtures.grid()
+    grid.scrollBy(0, 100);
+    const event = Fixtures.clickEvent({ clientX: 10, clientY: 32});
+    const { row } = testEvent(grid, event)
+    expect(row).toEqual({ section: 'row', index: 5 })
+  })
+
+  it('scroll should not affect header', () => {
+    const grid = Fixtures.grid()
+    grid.scrollBy(0, 100);
+    const event = Fixtures.clickEvent({ clientX: 10, clientY: 5});
+    const { row } = testEvent(grid, event)
+    expect(row).toEqual({ section: 'column-header', index: null })
+  })
+
   it.each([
     [5, { section: 'row-header', index: null }],
     [64 * 11 + 1, { section: 'outside', index: null }],
