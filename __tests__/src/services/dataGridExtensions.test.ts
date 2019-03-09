@@ -37,5 +37,8 @@ describe('dataGridExtensions.addClickEventListener', () => {
     grid.model = model;
     const mockListener = jest.fn()
     DataGridExtensions.addClickEventListener(grid, mockListener)
+    const event = new MouseEvent('click', { clientX: 10, clientY: 100 });
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(1)
   })
 })
