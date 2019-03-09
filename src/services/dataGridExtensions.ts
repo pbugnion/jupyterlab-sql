@@ -38,7 +38,7 @@ export namespace DataGridExtensions {
       index = null;
     } else if (y <= grid.headerHeight) {
       section = 'column-header';
-      index = 1;
+      index = null;
     } else {
       section = 'row';
       const absY = y + grid.scrollY - grid.headerHeight;
@@ -54,6 +54,9 @@ export namespace DataGridExtensions {
     let index: number = null;
     if (x > grid.totalWidth) {
       section = 'outside';
+      index = null;
+    } else if (x <= grid.headerWidth) {
+      section = 'row-header';
       index = null;
     }
     return { section, index };
