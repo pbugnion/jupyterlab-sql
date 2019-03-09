@@ -31,25 +31,26 @@ namespace Fixtures {
 }
 
 describe('dataGridExtensions.addClickEventListener', () => {
-  it('register an event listener', () => {
+
+  const testEvent = (event: MouseEvent): DataGridExtensions.ClickEvent => {
     const model = new Fixtures.TestDataModel()
     const grid = new DataGrid();
     grid.model = model;
     const mockListener = jest.fn()
     DataGridExtensions.addClickEventListener(grid, mockListener)
-    const event = new MouseEvent('click', { clientX: 10, clientY: 100 });
     grid.node.dispatchEvent(event);
-    expect(mockListener).toHaveBeenCalled();
+    expect(mockListener.mock.calls.length).toBe(1);
+    const [args] = mockListener.mock.calls;
+    expect(args.length).toBe(1)
+    return args[0];
+  }
+
+  it('register an event listener', () => {
+    testEvent(new MouseEvent('click', { clientX: 10, clientY: 5 }));
   })
 
   it('return that a RowSection is in the header', () => {
-    const model = new Fixtures.TestDataModel()
-    const grid = new DataGrid();
-    grid.model = model;
-    const mockListener = jest.fn()
-    DataGridExtensions.addClickEventListener(grid, mockListener)
     const event = new MouseEvent('click', { clientX: 10, clientY: 5 });
-    grid.node.dispatchEvent(event);
-    expect(mockListener).toHaveBeenCalledWith({ rowSection: 'row-header' });
+    expect(testEvent(event)).toEqual({ rowSection: 'row-header' });
   })
 })
