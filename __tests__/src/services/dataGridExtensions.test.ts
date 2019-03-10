@@ -207,7 +207,23 @@ describe('dataGridExtensions.SelectionManager', () => {
     expect(mockListener.mock.calls[0][1]).toEqual(selection)
   })
 
-  it.todo('not trigger selectionChanged if the selection remains the same')
+  it('not trigger selectionChanged if the selection remains the same', () => {
+    const manager = Fixtures.selectionManager()
+    const selection = { rowIndex: 2, columnIndex: 0 }
+    manager.selection = selection
+    const mockListener = jest.fn()
+    manager.selectionChanged.connect(mockListener)
+    manager.selection = selection
+    expect(mockListener.mock.calls.length).toEqual(0)
+  })
+
+  it('not trigger selectionChanged if the selection remains null', () => {
+    const manager = Fixtures.selectionManager()
+    const mockListener = jest.fn()
+    manager.selectionChanged.connect(mockListener)
+    manager.selection = null
+    expect(mockListener.mock.calls.length).toEqual(0)
+  })
 
   it.each([
     ['row > model', { rowIndex: 500, columnIndex: 0}],
