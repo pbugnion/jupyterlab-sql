@@ -1,4 +1,5 @@
 import { IDisposable, DisposableDelegate } from '@phosphor/disposable';
+import { ISignal, Signal } from '@phosphor/signaling';
 import { DataGrid } from '@phosphor/datagrid';
 
 export namespace DataGridExtensions {
@@ -21,6 +22,11 @@ export namespace DataGridExtensions {
     column: Column
   }
 
+  export interface BodyCellIndex {
+    rowIndex: number,
+    columnIndex: number
+  }
+
   export function addMouseEventListener(
     eventType: 'click' | 'contextmenu',
     grid: DataGrid,
@@ -35,6 +41,27 @@ export namespace DataGridExtensions {
     return new DisposableDelegate(() => {
       grid.node.removeEventListener(eventType, handler)
     })
+  }
+
+  export class SelectionManager {
+    set selection(value: BodyCellIndex | null) {
+      if (value === this._selection) {
+        return
+      }
+      this._selection = value
+      this._selectionChanged.emit(value);
+    }
+
+    get selection(): BodyCellIndex | null {
+      return this._selection
+    }
+
+    get selectionChanged(): ISignal<this, BodyCellIndex | null> {
+      return this._selectionChanged
+    }
+
+    private _selection: BodyCellIndex | null = null;
+    private readonly _selectionChanged = new Signal<this, BodyCellIndex | null>(this);
   }
 
   function getRow(grid: DataGrid, clientY: number): Row {

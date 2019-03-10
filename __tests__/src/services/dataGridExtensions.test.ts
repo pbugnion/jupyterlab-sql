@@ -169,3 +169,10 @@ describe('dataGridExtensions.addMouseEventListener', () => {
   })
 
 })
+
+describe('dataGridExtensions.SelectionManager', () => {
+  it('have null selection at construction', () => {
+    const manager = new DataGridExtensions.SelectionManager()
+    expect(manager.selection).toBeNull();
+  })
+})
