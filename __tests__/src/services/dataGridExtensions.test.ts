@@ -12,6 +12,12 @@ namespace Fixtures {
     return grid
   }
 
+  export function selectionManager(): DataGridExtensions.SelectionManager {
+    const model = new TestDataModel()
+    const manager = new DataGridExtensions.SelectionManager(model)
+    return manager
+  }
+
   export function clickEvent(args: MouseEventInit): MouseEvent {
     return new MouseEvent('click', args)
   }
@@ -172,19 +178,19 @@ describe('dataGridExtensions.addMouseEventListener', () => {
 
 describe('dataGridExtensions.SelectionManager', () => {
   it('have null selection at construction', () => {
-    const manager = new DataGridExtensions.SelectionManager()
+    const manager = Fixtures.selectionManager()
     expect(manager.selection).toBeNull();
   })
 
   it('support setting the selection', () => {
-    const manager = new DataGridExtensions.SelectionManager()
+    const manager = Fixtures.selectionManager()
     const selection = { rowIndex: 2, columnIndex: 0 }
     manager.selection = selection
     expect(manager.selection).toEqual(selection)
   })
 
   it('support unsetting the selection', () => {
-    const manager = new DataGridExtensions.SelectionManager()
+    const manager = Fixtures.selectionManager()
     const selection = { rowIndex: 2, columnIndex: 0 }
     manager.selection = selection
     manager.selection = null
@@ -192,12 +198,28 @@ describe('dataGridExtensions.SelectionManager', () => {
   })
 
   it('trigger selectionChanged when the selection changes', () => {
-    const manager = new DataGridExtensions.SelectionManager()
+    const manager = Fixtures.selectionManager()
     const selection = { rowIndex: 2, columnIndex: 0 }
     const mockListener = jest.fn()
     manager.selectionChanged.connect(mockListener)
     manager.selection = selection
     expect(mockListener.mock.calls.length).toEqual(1)
     expect(mockListener.mock.calls[0][1]).toEqual(selection)
+  })
+
+  it.todo('not trigger selectionChanged if the selection remains the same')
+
+  it('set selection to null if it is beyond the model rows', () => {
+    const manager = Fixtures.selectionManager()
+    const selection = { rowIndex: 500, columnIndex: 0 }
+    manager.selection = selection
+    expect(manager.selection).toBeNull()
+  })
+
+  it('set selection to null if it is beyond the model columns', () => {
+    const manager = Fixtures.selectionManager()
+    const selection = { rowIndex: 5, columnIndex: 100 }
+    manager.selection = selection
+    expect(manager.selection).toBeNull()
   })
 })

@@ -1,6 +1,6 @@
 import { IDisposable, DisposableDelegate } from '@phosphor/disposable';
 import { ISignal, Signal } from '@phosphor/signaling';
-import { DataGrid } from '@phosphor/datagrid';
+import { DataGrid, DataModel } from '@phosphor/datagrid';
 
 export namespace DataGridExtensions {
 
@@ -44,11 +44,23 @@ export namespace DataGridExtensions {
   }
 
   export class SelectionManager {
+    constructor(model: DataModel) {
+      this._maxRow = model.rowCount('body') - 1;
+      this._maxColumn = model.columnCount('body') - 1;
+    }
+
     set selection(value: BodyCellIndex | null) {
-      if (value === this._selection) {
+      let newSelection = value;
+      if (value !== null) {
+        const { rowIndex, columnIndex } = value
+        if (rowIndex > this._maxRow || columnIndex > this._maxColumn) {
+          newSelection = null;
+        }
+      }
+      if (newSelection === this._selection) {
         return
       }
-      this._selection = value
+      this._selection = newSelection;
       this._selectionChanged.emit(value);
     }
 
@@ -60,6 +72,8 @@ export namespace DataGridExtensions {
       return this._selectionChanged
     }
 
+    private readonly _maxRow: number;
+    private readonly _maxColumn: number;
     private _selection: BodyCellIndex | null = null;
     private readonly _selectionChanged = new Signal<this, BodyCellIndex | null>(this);
   }
