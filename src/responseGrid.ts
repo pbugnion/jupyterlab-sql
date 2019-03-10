@@ -15,13 +15,10 @@ export class ResponseGrid {
       this._grid,
       this._onClick
     )
+    this._updateRenderers()
 
-    const renderer = this._textRendererForSelection(this._selectionManager.selection)
-    this._grid.cellRenderers.set('body', {}, renderer)
-
-    this._selectionManager.selectionChanged.connect((_, selection) => {
-      const renderer = this._textRendererForSelection(selection)
-      this._grid.cellRenderers.set('body', {}, renderer)
+    this._selectionManager.selectionChanged.connect(() => {
+      this._updateRenderers()
     })
   }
 
@@ -40,6 +37,11 @@ export class ResponseGrid {
     } else {
       this._selectionManager.selection = null
     }
+  }
+
+  _updateRenderers(): void {
+    const renderer = this._textRendererForSelection(this._selectionManager.selection)
+    this._grid.cellRenderers.set('body', {}, renderer)
   }
 
   _textRendererForSelection(selectedCell: DataGridExtensions.BodyCellIndex | null): CellRenderer {
