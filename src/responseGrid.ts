@@ -4,6 +4,13 @@ import { DataGrid, DataModel, TextRenderer, CellRenderer } from '@phosphor/datag
 
 import { DataGridExtensions } from './services'
 
+namespace Options {
+  export const unselectedBackgroundColor = 'white';
+  export const selectedBackgroundColor = '#2196f3';
+  export const unselectedTextColor = 'black';
+  export const selectedTextColor = 'white';
+}
+
 export class ResponseGrid {
   constructor(model: DataModel) {
     this._grid = new DataGrid()
@@ -46,20 +53,29 @@ export class ResponseGrid {
 
   _textRendererForSelection(selectedCell: DataGridExtensions.BodyCellIndex | null): CellRenderer {
     let backgroundColor;
+    let textColor;
     if (selectedCell === null) {
-      backgroundColor = 'blue'
+      backgroundColor = Options.unselectedBackgroundColor;
+      textColor = Options.unselectedTextColor;
     } else {
       const selectedRow = selectedCell.rowIndex
       const selectedColumn = selectedCell.columnIndex
       backgroundColor = ({ row, column }: CellRenderer.ICellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
-          return 'red'
+          return Options.selectedBackgroundColor;
         } else {
-          return 'green'
+          return Options.unselectedBackgroundColor;
+        }
+      }
+      textColor = ({ row, column }: CellRenderer.ICellConfig) => {
+        if (row === selectedRow && column === selectedColumn) {
+          return Options.selectedTextColor;
+        } else {
+          return Options.unselectedTextColor;
         }
       }
     }
-    return new TextRenderer({ backgroundColor })
+    return new TextRenderer({ backgroundColor, textColor })
   }
 
   get widget(): Widget {
