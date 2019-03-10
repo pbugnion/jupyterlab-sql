@@ -53,7 +53,12 @@ export namespace DataGridExtensions {
       let newSelection = value;
       if (value !== null) {
         const { rowIndex, columnIndex } = value
-        if (rowIndex > this._maxRow || columnIndex > this._maxColumn) {
+        if (
+          rowIndex > this._maxRow ||
+            columnIndex > this._maxColumn ||
+            rowIndex < 0 ||
+            columnIndex < 0
+        ) {
           newSelection = null;
         }
       }

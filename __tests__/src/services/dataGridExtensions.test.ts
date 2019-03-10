@@ -209,17 +209,15 @@ describe('dataGridExtensions.SelectionManager', () => {
 
   it.todo('not trigger selectionChanged if the selection remains the same')
 
-  it('set selection to null if it is beyond the model rows', () => {
+  it.each([
+    ['row > model', { rowIndex: 500, columnIndex: 0}],
+    ['row < 0', { rowIndex: -1, columnIndex: 0}],
+    ['column > model', { rowIndex: 0, columnIndex: 100}],
+    ['column < 0', { rowIndex: 0, columnIndex: -1}]
+  ])('be null when outside boundaries: %s', (_, selection) => {
     const manager = Fixtures.selectionManager()
-    const selection = { rowIndex: 500, columnIndex: 0 }
     manager.selection = selection
     expect(manager.selection).toBeNull()
   })
 
-  it('set selection to null if it is beyond the model columns', () => {
-    const manager = Fixtures.selectionManager()
-    const selection = { rowIndex: 5, columnIndex: 100 }
-    manager.selection = selection
-    expect(manager.selection).toBeNull()
-  })
 })
