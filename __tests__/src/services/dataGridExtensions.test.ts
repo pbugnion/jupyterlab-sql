@@ -175,4 +175,29 @@ describe('dataGridExtensions.SelectionManager', () => {
     const manager = new DataGridExtensions.SelectionManager()
     expect(manager.selection).toBeNull();
   })
+
+  it('support setting the selection', () => {
+    const manager = new DataGridExtensions.SelectionManager()
+    const selection = { rowIndex: 2, columnIndex: 0 }
+    manager.selection = selection
+    expect(manager.selection).toEqual(selection)
+  })
+
+  it('support unsetting the selection', () => {
+    const manager = new DataGridExtensions.SelectionManager()
+    const selection = { rowIndex: 2, columnIndex: 0 }
+    manager.selection = selection
+    manager.selection = null
+    expect(manager.selection).toBeNull()
+  })
+
+  it('trigger selectionChanged when the selection changes', () => {
+    const manager = new DataGridExtensions.SelectionManager()
+    const selection = { rowIndex: 2, columnIndex: 0 }
+    const mockListener = jest.fn()
+    manager.selectionChanged.connect(mockListener)
+    manager.selection = selection
+    expect(mockListener.mock.calls.length).toEqual(1)
+    expect(mockListener.mock.calls[0][1]).toEqual(selection)
+  })
 })
