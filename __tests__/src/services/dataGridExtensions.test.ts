@@ -16,6 +16,10 @@ namespace Fixtures {
     return new MouseEvent('click', args)
   }
 
+  export function contextmenuEvent(args: MouseEventInit): MouseEvent {
+    return new MouseEvent('contextmenu', args)
+  }
+
   class TestDataModel extends DataModel {
 
     rowCount(region: DataModel.RowRegion): number {
@@ -41,11 +45,11 @@ namespace Fixtures {
   }
 }
 
-describe('dataGridExtensions.addClickEventListener', () => {
+describe('dataGridExtensions.addMouseEventListener', () => {
 
-  const testEvent = (grid: DataGrid, event: MouseEvent): DataGridExtensions.ClickEvent => {
+  const testEvent = (grid: DataGrid, event: MouseEvent): DataGridExtensions.MouseEvent => {
     const mockListener = jest.fn()
-    DataGridExtensions.addClickEventListener(grid, mockListener)
+    DataGridExtensions.addMouseEventListener('click', grid, mockListener)
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(1);
     const [args] = mockListener.mock.calls;
@@ -133,11 +137,35 @@ describe('dataGridExtensions.addClickEventListener', () => {
   it('remove the event listener', () => {
     const grid = Fixtures.grid()
     const mockListener = jest.fn()
-    const disposable = DataGridExtensions.addClickEventListener(grid, mockListener)
+    const disposable = DataGridExtensions.addMouseEventListener('click', grid, mockListener)
     disposable.dispose()
     const event = Fixtures.clickEvent({ clientX: 10, clientY: 5 })
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(0);
+  })
+
+  it('support adding contextmenu listeners', () => {
+    const grid = Fixtures.grid()
+    const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 })
+    const mockListener = jest.fn()
+    DataGridExtensions.addMouseEventListener('contextmenu', grid, mockListener)
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(1);
+    const [args] = mockListener.mock.calls;
+    expect(args.length).toBe(1)
+    const { row, column } = args[0]
+    expect(row).toEqual({ section: 'column-header', index: null })
+    expect(column).toEqual({ section: 'row-header', index: null })
+  })
+
+  it('support removing contextmenu listeners', () => {
+    const grid = Fixtures.grid()
+    const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 })
+    const mockListener = jest.fn()
+    const disposable = DataGridExtensions.addMouseEventListener('contextmenu', grid, mockListener)
+    disposable.dispose()
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(0)
   })
 
 })

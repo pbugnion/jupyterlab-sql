@@ -16,20 +16,24 @@ export namespace DataGridExtensions {
     index: number | null
   }
 
-  export interface ClickEvent {
+  export interface MouseEvent {
     row: Row
     column: Column
   }
 
-  export function addClickEventListener(grid: DataGrid, listener: (row: ClickEvent) => void): IDisposable {
+  export function addMouseEventListener(
+    eventType: 'click' | 'contextmenu',
+    grid: DataGrid,
+    listener: (event: MouseEvent) => void
+  ): IDisposable {
     const handler = ({ clientX, clientY }: MouseEventInit) => {
       const row = getRow(grid, clientY);
       const column = getColumn(grid, clientX);
       return listener({ row, column });
     }
-    grid.node.addEventListener('click', handler)
+    grid.node.addEventListener(eventType, handler)
     return new DisposableDelegate(() => {
-      grid.node.removeEventListener('click', handler)
+      grid.node.removeEventListener(eventType, handler)
     })
   }
 
