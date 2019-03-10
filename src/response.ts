@@ -1,10 +1,12 @@
 import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
 
-import { DataModel, DataGrid } from '@phosphor/datagrid';
+import { DataModel } from '@phosphor/datagrid';
 
 import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
+
+import { ResponseGrid } from './responseGrid';
 
 export interface IResponse {
   readonly widget: Widget;
@@ -57,9 +59,8 @@ export class ResponseWidget extends Widget {
       response,
       (keys, rows) => {
         const model = new SqlDataModel(keys, rows);
-        const gridWidget = new DataGrid();
-        gridWidget.model = model;
-        this.setCurrentWidget(gridWidget);
+        const grid = new ResponseGrid(model)
+        this.setCurrentWidget(grid.widget);
       },
       () => {
         const message = 'Command executed successfully';
