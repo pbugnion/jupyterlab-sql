@@ -52,6 +52,11 @@ export class ResponseTable {
     )
   }
 
+  static fromKeysRows(keys: Array<string>, data: Array<Array<any>>): ResponseTable {
+    const model = new ResponseTableDataModel(keys, data)
+    return new ResponseTable(model);
+  }
+
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
     const { row, column } = event;
     this._updateSelection(row, column)
@@ -137,7 +142,7 @@ export class ResponseTable {
   private readonly _selectionManager: DataGridExtensions.SelectionManager;
 }
 
-export class ResponseTableDataModel extends DataModel {
+class ResponseTableDataModel extends DataModel {
   constructor(keys: Array<string>, data: Array<Array<any>>) {
     super();
     this._data = data;

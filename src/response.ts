@@ -4,7 +4,7 @@ import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
 
-import { ResponseTable, ResponseTableDataModel } from './responseTable';
+import { ResponseTable } from './responseTable';
 
 export interface IResponse {
   readonly widget: Widget;
@@ -56,9 +56,8 @@ export class ResponseWidget extends Widget {
     ResponseModel.match(
       response,
       (keys, rows) => {
-        const model = new ResponseTableDataModel(keys, rows);
-        const grid = new ResponseTable(model)
-        this.setCurrentWidget(grid.widget);
+        const table = ResponseTable.fromKeysRows(keys, rows)
+        this.setCurrentWidget(table.widget);
       },
       () => {
         const message = 'Command executed successfully';
