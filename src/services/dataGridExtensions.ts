@@ -17,9 +17,10 @@ export namespace DataGridExtensions {
     index: number | null
   }
 
-  export interface MouseEvent {
+  export interface GridMouseEvent {
     row: Row
     column: Column
+    rawEvent: MouseEvent
   }
 
   export interface BodyCellIndex {
@@ -30,12 +31,13 @@ export namespace DataGridExtensions {
   export function addMouseEventListener(
     eventType: 'click' | 'contextmenu',
     grid: DataGrid,
-    listener: (event: MouseEvent) => void
+    listener: (event: GridMouseEvent) => void
   ): IDisposable {
-    const handler = ({ clientX, clientY }: MouseEventInit) => {
+    const handler = (rawEvent: MouseEvent) => {
+      const { clientX, clientY } = rawEvent
       const row = getRow(grid, clientY);
       const column = getColumn(grid, clientX);
-      return listener({ row, column });
+      return listener({ row, column, rawEvent });
     }
     grid.node.addEventListener(eventType, handler)
     return new DisposableDelegate(() => {

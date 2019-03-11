@@ -53,7 +53,7 @@ namespace Fixtures {
 
 describe('dataGridExtensions.addMouseEventListener', () => {
 
-  const testEvent = (grid: DataGrid, event: MouseEvent): DataGridExtensions.MouseEvent => {
+  const testEvent = (grid: DataGrid, event: MouseEvent): DataGridExtensions.GridMouseEvent => {
     const mockListener = jest.fn()
     DataGridExtensions.addMouseEventListener('click', grid, mockListener)
     grid.node.dispatchEvent(event);
@@ -138,6 +138,14 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     const event = Fixtures.clickEvent({ clientX: 3 * 64 + 200 + 2, clientY: 5 })
     const { column } = testEvent(grid, event);
     expect(column).toEqual({ section: 'column', index: 3 })
+  })
+
+  it('pass through the raw event', () => {
+    const grid = Fixtures.grid()
+    grid.resizeSection('column', 2, 200);
+    const event = Fixtures.clickEvent({ clientX: 100, clientY: 60 })
+    const { rawEvent } = testEvent(grid, event);
+    expect(rawEvent).toEqual(event)
   })
 
   it('remove the event listener', () => {
