@@ -1,12 +1,10 @@
 import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
 
-import { DataModel } from '@phosphor/datagrid';
-
 import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
 
-import { ResponseTable } from './responseTable';
+import { ResponseTable, ResponseTableDataModel } from './responseTable';
 
 export interface IResponse {
   readonly widget: Widget;
@@ -58,7 +56,7 @@ export class ResponseWidget extends Widget {
     ResponseModel.match(
       response,
       (keys, rows) => {
-        const model = new SqlDataModel(keys, rows);
+        const model = new ResponseTableDataModel(keys, rows);
         const grid = new ResponseTable(model)
         this.setCurrentWidget(grid.widget);
       },
@@ -72,46 +70,6 @@ export class ResponseWidget extends Widget {
         this.setCurrentWidget(errorResponseWidget);
       }
     );
-  }
-}
-
-class SqlDataModel extends DataModel {
-  constructor(keys: Array<string>, data: Array<Array<any>>) {
-    super();
-    this._data = data;
-    this._keys = keys;
-  }
-
-  readonly _data: Array<Array<any>>;
-  readonly _keys: Array<string>;
-
-  rowCount(region: DataModel.RowRegion): number {
-    return region === 'body' ? this._data.length : 1;
-  }
-
-  columnCount(region: DataModel.ColumnRegion): number {
-    return region === 'body' ? this._keys.length : 1;
-  }
-
-  data(region: DataModel.CellRegion, row: number, column: number): any {
-    if (region === 'row-header') {
-      return row;
-    }
-    if (region === 'column-header') {
-      return this._keys[column];
-    }
-    if (region === 'corner-header') {
-      return '';
-    }
-    return this._serializeData(this._data[row][column]);
-  }
-
-  _serializeData(data: any): any {
-    const _type = typeof data;
-    if (_type === 'object') {
-      return JSON.stringify(data);
-    }
-    return data;
   }
 }
 
