@@ -15,6 +15,10 @@ namespace Options {
   export const selectedTextColor = 'white';
 }
 
+namespace CommandIds {
+  export const copyToClipboard = 'copy-selection-to-clipboard'
+}
+
 export class ResponseGrid {
   constructor(model: DataModel) {
     this._grid = new DataGrid()
@@ -111,12 +115,12 @@ export class ResponseGrid {
 
   private _createContextMenu(): Menu {
     const commands = new CommandRegistry()
-    commands.addCommand('copy-selection-to-clipboard', {
+    commands.addCommand(CommandIds.copyToClipboard, {
       label: 'Copy',
       execute: () => { this._copySelectionToClipboard() }
     })
     const menu = new Menu({ commands })
-    menu.addItem({ command: 'copy-selection-to-clipboard' })
+    menu.addItem({ command: CommandIds.copyToClipboard })
     return menu
   }
 
