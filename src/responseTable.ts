@@ -19,7 +19,7 @@ namespace CommandIds {
   export const copyToClipboard = 'copy-selection-to-clipboard'
 }
 
-export class ResponseGrid {
+export class ResponseTable {
   constructor(model: DataModel) {
     this._grid = new DataGrid()
     this._grid.model = model

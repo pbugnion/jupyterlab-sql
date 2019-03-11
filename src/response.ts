@@ -6,7 +6,7 @@ import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
 
-import { ResponseGrid } from './responseGrid';
+import { ResponseTable } from './responseTable';
 
 export interface IResponse {
   readonly widget: Widget;
@@ -59,7 +59,7 @@ export class ResponseWidget extends Widget {
       response,
       (keys, rows) => {
         const model = new SqlDataModel(keys, rows);
-        const grid = new ResponseGrid(model)
+        const grid = new ResponseTable(model)
         this.setCurrentWidget(grid.widget);
       },
       () => {
