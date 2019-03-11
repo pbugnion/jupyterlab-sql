@@ -1,3 +1,5 @@
+import { Clipboard } from '@jupyterlab/apputils';
+
 import { Menu, Widget } from '@phosphor/widgets';
 
 import { DataGrid, DataModel, TextRenderer, CellRenderer } from '@phosphor/datagrid'
@@ -109,13 +111,22 @@ export class ResponseGrid {
 
   private _createContextMenu(): Menu {
     const commands = new CommandRegistry()
-    commands.addCommand('hello-world', {
-      label: 'hello',
-      execute: () => { console.log('hi') }
+    commands.addCommand('copy-selection-to-clipboard', {
+      label: 'Copy',
+      execute: () => { this._copySelectionToClipboard() }
     })
     const menu = new Menu({ commands })
-    menu.addItem({ command: 'hello-world' })
+    menu.addItem({ command: 'copy-selection-to-clipboard' })
     return menu
+  }
+
+  private _copySelectionToClipboard(): void {
+    const selection = this._selectionManager.selection
+    if (selection !== null) {
+      const { rowIndex, columnIndex } = selection
+      const value = this._grid.model.data('body', rowIndex, columnIndex)
+      Clipboard.copyToSystem(value)
+    }
   }
 
   private readonly _grid: DataGrid;
