@@ -25,30 +25,25 @@ export class ResponseTable {
     this._grid.model = model
     this._selectionManager = new DataGridExtensions.SelectionManager(model)
     this._onClick = this._onClick.bind(this)
-    DataGridExtensions.addMouseEventListener(
-      'click',
-      this._grid,
-      this._onClick
-    )
+    this._onContextMenu = this._onContextMenu.bind(this)
     this._updateRenderers()
 
     this._selectionManager.selectionChanged.connect(() => {
       this._updateRenderers()
     })
 
-    const menu = this._createContextMenu();
+    this._menu = this._createContextMenu();
+
+    DataGridExtensions.addMouseEventListener(
+      'click',
+      this._grid,
+      this._onClick
+    )
 
     DataGridExtensions.addMouseEventListener(
       'contextmenu',
       this._grid,
-      event => {
-        const { row, column, rawEvent } = event;
-        this._updateSelection(row, column)
-        if (this._isInBody(row, column)) {
-          menu.open(rawEvent.clientX, rawEvent.clientY)
-          rawEvent.preventDefault()
-        }
-      }
+      this._onContextMenu
     )
   }
 
@@ -60,6 +55,15 @@ export class ResponseTable {
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
     const { row, column } = event;
     this._updateSelection(row, column)
+  }
+
+  private _onContextMenu(event: DataGridExtensions.GridMouseEvent) {
+    const { row, column, rawEvent } = event;
+    this._updateSelection(row, column)
+    if (this._isInBody(row, column)) {
+      this._menu.open(rawEvent.clientX, rawEvent.clientY)
+      rawEvent.preventDefault()
+    }
   }
 
   private _updateSelection(row: DataGridExtensions.Row, column: DataGridExtensions.Column) {
@@ -140,6 +144,7 @@ export class ResponseTable {
 
   private readonly _grid: DataGrid;
   private readonly _selectionManager: DataGridExtensions.SelectionManager;
+  private readonly _menu: Menu
 }
 
 class ResponseTableDataModel extends DataModel {
