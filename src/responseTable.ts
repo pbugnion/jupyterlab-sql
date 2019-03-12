@@ -125,8 +125,9 @@ export class ResponseTable {
   private _createContextMenu(): Menu {
     const commands = new CommandRegistry()
     commands.addCommand(CommandIds.copyToClipboard, {
-      label: 'Copy',
-      execute: () => { this._copySelectionToClipboard() }
+      label: 'Copy cell',
+      iconClass: 'jp-MaterialIcon jp-CopyIcon',
+      execute: this._copySelectionToClipboard
     })
     const menu = new Menu({ commands })
     menu.addItem({ command: CommandIds.copyToClipboard })
