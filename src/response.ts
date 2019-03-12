@@ -33,8 +33,12 @@ export class ResponseWidget extends Widget {
     this.layout = new SingletonLayout();
   }
 
-  readonly layout: SingletonLayout;
-  private item: LayoutItem;
+  dispose(): void {
+    if (this._table) {
+      this._table.dispose()
+    }
+    super.dispose()
+  }
 
   setCurrentWidget(widget: Widget) {
     this.layout.widget = widget;
@@ -56,20 +60,34 @@ export class ResponseWidget extends Widget {
     ResponseModel.match(
       response,
       (keys, rows) => {
+        if (this._table) {
+          this._table.dispose()
+        }
         const table = ResponseTable.fromKeysRows(keys, rows)
+        this._table = table
         this.setCurrentWidget(table.widget);
       },
       () => {
+        if (this._table) {
+          this._table.dispose()
+        }
         const message = 'Command executed successfully';
         const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
       },
       ({ message }) => {
+        if (this._table) {
+          this._table.dispose()
+        }
         const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
       }
     );
   }
+
+  readonly layout: SingletonLayout;
+  private item: LayoutItem;
+  private _table: ResponseTable | null = null
 }
 
 class TextResponseWidget extends Widget {
