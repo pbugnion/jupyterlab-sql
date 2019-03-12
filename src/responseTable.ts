@@ -2,6 +2,8 @@ import { Clipboard } from '@jupyterlab/apputils';
 
 import { Menu, Widget } from '@phosphor/widgets';
 
+import { IDisposable } from '@phosphor/disposable';
+
 import { DataGrid, DataModel, TextRenderer, CellRenderer } from '@phosphor/datagrid'
 
 import { CommandRegistry } from '@phosphor/commands';
@@ -19,7 +21,7 @@ namespace CommandIds {
   export const copyToClipboard = 'copy-selection-to-clipboard'
 }
 
-export class ResponseTable {
+export class ResponseTable implements IDisposable {
   constructor(model: DataModel) {
     this._grid = new DataGrid()
     this._grid.model = model
@@ -35,13 +37,13 @@ export class ResponseTable {
 
     this._menu = this._createContextMenu();
 
-    DataGridExtensions.addMouseEventListener(
+    this._clickEventHandler = DataGridExtensions.addMouseEventListener(
       'click',
       this._grid,
       this._onClick
     )
 
-    DataGridExtensions.addMouseEventListener(
+    this._contextMenuEventHandler = DataGridExtensions.addMouseEventListener(
       'contextmenu',
       this._grid,
       this._onContextMenu
@@ -51,6 +53,22 @@ export class ResponseTable {
   static fromKeysRows(keys: Array<string>, data: Array<Array<any>>): ResponseTable {
     const model = new ResponseTableDataModel(keys, data)
     return new ResponseTable(model);
+  }
+
+  get widget(): Widget {
+    return this._grid
+  }
+
+  dispose(): void {
+    this._clickEventHandler.dispose()
+    this._contextMenuEventHandler.dispose()
+    this._grid.dispose()
+    this._menu.dispose()
+    this._isDisposed = true
+  }
+
+  get isDisposed(): boolean {
+    return this._isDisposed
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
@@ -119,10 +137,6 @@ export class ResponseTable {
     return new TextRenderer({ backgroundColor, textColor })
   }
 
-  get widget(): Widget {
-    return this._grid
-  }
-
   private _createContextMenu(): Menu {
     const commands = new CommandRegistry()
     commands.addCommand(CommandIds.copyToClipboard, {
@@ -147,6 +161,9 @@ export class ResponseTable {
   private readonly _grid: DataGrid;
   private readonly _selectionManager: DataGridExtensions.SelectionManager;
   private readonly _menu: Menu
+  private readonly _clickEventHandler: IDisposable
+  private readonly _contextMenuEventHandler: IDisposable
+  private _isDisposed: boolean = false
 }
 
 class ResponseTableDataModel extends DataModel {
