@@ -26,6 +26,7 @@ export class ResponseTable {
     this._selectionManager = new DataGridExtensions.SelectionManager(model)
     this._onClick = this._onClick.bind(this)
     this._onContextMenu = this._onContextMenu.bind(this)
+    this._copySelectionToClipboard = this._copySelectionToClipboard.bind(this)
     this._updateRenderers()
 
     this._selectionManager.selectionChanged.connect(() => {
