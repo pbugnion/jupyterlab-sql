@@ -1,10 +1,10 @@
 import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
 
-import { DataModel, DataGrid } from '@phosphor/datagrid';
-
 import { Message } from '@phosphor/messaging';
 
 import { ResponseModel } from './responseModel';
+
+import { ResponseTable } from './responseTable';
 
 export interface IResponse {
   readonly widget: Widget;
@@ -33,85 +33,60 @@ export class ResponseWidget extends Widget {
     this.layout = new SingletonLayout();
   }
 
-  readonly layout: SingletonLayout;
-  private item: LayoutItem;
-
-  setCurrentWidget(widget: Widget) {
-    this.layout.widget = widget;
-    this.item = new LayoutItem(this.layout.widget);
-    this.fitCurrentWidget();
+  dispose(): void {
+    if (this._table) {
+      this._table.dispose();
+    }
+    super.dispose();
   }
 
   onResize(msg: Message) {
-    if (this.item) {
-      this.fitCurrentWidget();
+    if (this._item) {
+      this._fitCurrentWidget();
     }
-  }
-
-  fitCurrentWidget() {
-    this.item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
   }
 
   setResponse(response: ResponseModel.Type) {
+    this._disposeTable();
+    let widget: Widget;
     ResponseModel.match(
       response,
       (keys, rows) => {
-        const model = new SqlDataModel(keys, rows);
-        const gridWidget = new DataGrid();
-        gridWidget.model = model;
-        this.setCurrentWidget(gridWidget);
+        const table = ResponseTable.fromKeysRows(keys, rows);
+        this._table = table;
+        widget = table.widget;
       },
       () => {
         const message = 'Command executed successfully';
-        const errorResponseWidget = new TextResponseWidget(message);
-        this.setCurrentWidget(errorResponseWidget);
+        widget = new TextResponseWidget(message);
       },
       ({ message }) => {
-        const errorResponseWidget = new TextResponseWidget(message);
-        this.setCurrentWidget(errorResponseWidget);
+        widget = new TextResponseWidget(message);
       }
     );
-  }
-}
-
-class SqlDataModel extends DataModel {
-  constructor(keys: Array<string>, data: Array<Array<any>>) {
-    super();
-    this._data = data;
-    this._keys = keys;
+    this._setCurrentWidget(widget);
   }
 
-  readonly _data: Array<Array<any>>;
-  readonly _keys: Array<string>;
-
-  rowCount(region: DataModel.RowRegion): number {
-    return region === 'body' ? this._data.length : 1;
+  private _setCurrentWidget(widget: Widget) {
+    this.layout.widget = widget;
+    this._item = new LayoutItem(this.layout.widget);
+    this._fitCurrentWidget();
   }
 
-  columnCount(region: DataModel.ColumnRegion): number {
-    return region === 'body' ? this._keys.length : 1;
+  private _fitCurrentWidget() {
+    this._item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
   }
 
-  data(region: DataModel.CellRegion, row: number, column: number): any {
-    if (region === 'row-header') {
-      return row;
+  private _disposeTable(): void {
+    if (this._table) {
+      this._table.dispose();
     }
-    if (region === 'column-header') {
-      return this._keys[column];
-    }
-    if (region === 'corner-header') {
-      return '';
-    }
-    return this._serializeData(this._data[row][column]);
+    this._table = null;
   }
 
-  _serializeData(data: any): any {
-    const _type = typeof data;
-    if (_type === 'object') {
-      return JSON.stringify(data);
-    }
-    return data;
-  }
+  readonly layout: SingletonLayout;
+  private _item: LayoutItem;
+  private _table: ResponseTable | null = null;
 }
 
 class TextResponseWidget extends Widget {

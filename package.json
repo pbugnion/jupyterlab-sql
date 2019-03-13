@@ -31,7 +31,8 @@
     "prettier": "prettier --write '{src,__tests__}/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
     "prettier:check": "prettier --list-different '{src,__tests__}/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
     "watch": "tsc -w",
-    "test": "jest"
+    "test": "jest",
+    "test:changed": "jest -o"
   },
   "dependencies": {
     "@jupyterlab/application": "^0.19.1",
@@ -52,6 +53,7 @@
     "@types/url-parse": "^1.4.3",
     "@types/uuid": "^3.4.4",
     "jest": "^24.1.0",
+    "jest-canvas-mock": "^2.0.0-beta.1",
     "mkdirp": "^0.5.1",
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
