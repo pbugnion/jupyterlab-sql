@@ -35,9 +35,9 @@ export class ResponseWidget extends Widget {
 
   dispose(): void {
     if (this._table) {
-      this._table.dispose()
+      this._table.dispose();
     }
-    super.dispose()
+    super.dispose();
   }
 
   setCurrentWidget(widget: Widget) {
@@ -61,15 +61,15 @@ export class ResponseWidget extends Widget {
       response,
       (keys, rows) => {
         if (this._table) {
-          this._table.dispose()
+          this._table.dispose();
         }
-        const table = ResponseTable.fromKeysRows(keys, rows)
-        this._table = table
+        const table = ResponseTable.fromKeysRows(keys, rows);
+        this._table = table;
         this.setCurrentWidget(table.widget);
       },
       () => {
         if (this._table) {
-          this._table.dispose()
+          this._table.dispose();
         }
         const message = 'Command executed successfully';
         const errorResponseWidget = new TextResponseWidget(message);
@@ -77,7 +77,7 @@ export class ResponseWidget extends Widget {
       },
       ({ message }) => {
         if (this._table) {
-          this._table.dispose()
+          this._table.dispose();
         }
         const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
@@ -87,7 +87,7 @@ export class ResponseWidget extends Widget {
 
   readonly layout: SingletonLayout;
   private item: LayoutItem;
-  private _table: ResponseTable | null = null
+  private _table: ResponseTable | null = null;
 }
 
 class TextResponseWidget extends Widget {

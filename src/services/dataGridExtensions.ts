@@ -3,29 +3,28 @@ import { ISignal, Signal } from '@phosphor/signaling';
 import { DataGrid, DataModel } from '@phosphor/datagrid';
 
 export namespace DataGridExtensions {
-
-  export type RowSection = 'outside' | 'column-header' | 'row'
-  export type ColumnSection = 'outside' | 'row-header' | 'column'
+  export type RowSection = 'outside' | 'column-header' | 'row';
+  export type ColumnSection = 'outside' | 'row-header' | 'column';
 
   export interface Row {
     section: RowSection;
-    index: number | null
+    index: number | null;
   }
 
   export interface Column {
     section: ColumnSection;
-    index: number | null
+    index: number | null;
   }
 
   export interface GridMouseEvent {
-    row: Row
-    column: Column
-    rawEvent: MouseEvent
+    row: Row;
+    column: Column;
+    rawEvent: MouseEvent;
   }
 
   export interface BodyCellIndex {
-    rowIndex: number,
-    columnIndex: number
+    rowIndex: number;
+    columnIndex: number;
   }
 
   export function addMouseEventListener(
@@ -34,15 +33,15 @@ export namespace DataGridExtensions {
     listener: (event: GridMouseEvent) => void
   ): IDisposable {
     const handler = (rawEvent: MouseEvent) => {
-      const { clientX, clientY } = rawEvent
+      const { clientX, clientY } = rawEvent;
       const row = getRow(grid, clientY);
       const column = getColumn(grid, clientX);
       return listener({ row, column, rawEvent });
-    }
-    grid.node.addEventListener(eventType, handler)
+    };
+    grid.node.addEventListener(eventType, handler);
     return new DisposableDelegate(() => {
-      grid.node.removeEventListener(eventType, handler)
-    })
+      grid.node.removeEventListener(eventType, handler);
+    });
   }
 
   export class SelectionManager {
@@ -54,35 +53,37 @@ export namespace DataGridExtensions {
     set selection(value: BodyCellIndex | null) {
       let newSelection = value;
       if (value !== null) {
-        const { rowIndex, columnIndex } = value
+        const { rowIndex, columnIndex } = value;
         if (
           rowIndex > this._maxRow ||
-            columnIndex > this._maxColumn ||
-            rowIndex < 0 ||
-            columnIndex < 0
+          columnIndex > this._maxColumn ||
+          rowIndex < 0 ||
+          columnIndex < 0
         ) {
           newSelection = null;
         }
       }
       if (newSelection === this._selection) {
-        return
+        return;
       }
       this._selection = newSelection;
       this._selectionChanged.emit(value);
     }
 
     get selection(): BodyCellIndex | null {
-      return this._selection
+      return this._selection;
     }
 
     get selectionChanged(): ISignal<this, BodyCellIndex | null> {
-      return this._selectionChanged
+      return this._selectionChanged;
     }
 
     private readonly _maxRow: number;
     private readonly _maxColumn: number;
     private _selection: BodyCellIndex | null = null;
-    private readonly _selectionChanged = new Signal<this, BodyCellIndex | null>(this);
+    private readonly _selectionChanged = new Signal<this, BodyCellIndex | null>(
+      this
+    );
   }
 
   function getRow(grid: DataGrid, clientY: number): Row {
@@ -101,7 +102,7 @@ export namespace DataGridExtensions {
       const absY = y + grid.scrollY - grid.headerHeight;
       index = Math.floor(absY / grid.baseRowSize);
     }
-    return { section, index }
+    return { section, index };
   }
 
   function getColumn(grid: DataGrid, clientX: number): Column {

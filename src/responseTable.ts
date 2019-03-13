@@ -4,11 +4,16 @@ import { Menu, Widget } from '@phosphor/widgets';
 
 import { IDisposable } from '@phosphor/disposable';
 
-import { DataGrid, DataModel, TextRenderer, CellRenderer } from '@phosphor/datagrid'
+import {
+  DataGrid,
+  DataModel,
+  TextRenderer,
+  CellRenderer
+} from '@phosphor/datagrid';
 
 import { CommandRegistry } from '@phosphor/commands';
 
-import { DataGridExtensions } from './services'
+import { DataGridExtensions } from './services';
 
 namespace Options {
   export const unselectedBackgroundColor = 'white';
@@ -18,22 +23,22 @@ namespace Options {
 }
 
 namespace CommandIds {
-  export const copyToClipboard = 'copy-selection-to-clipboard'
+  export const copyToClipboard = 'copy-selection-to-clipboard';
 }
 
 export class ResponseTable implements IDisposable {
   constructor(model: DataModel) {
-    this._grid = new DataGrid()
-    this._grid.model = model
-    this._selectionManager = new DataGridExtensions.SelectionManager(model)
-    this._onClick = this._onClick.bind(this)
-    this._onContextMenu = this._onContextMenu.bind(this)
-    this._copySelectionToClipboard = this._copySelectionToClipboard.bind(this)
-    this._updateRenderers()
+    this._grid = new DataGrid();
+    this._grid.model = model;
+    this._selectionManager = new DataGridExtensions.SelectionManager(model);
+    this._onClick = this._onClick.bind(this);
+    this._onContextMenu = this._onContextMenu.bind(this);
+    this._copySelectionToClipboard = this._copySelectionToClipboard.bind(this);
+    this._updateRenderers();
 
     this._selectionManager.selectionChanged.connect(() => {
-      this._updateRenderers()
-    })
+      this._updateRenderers();
+    });
 
     this._menu = this._createContextMenu();
 
@@ -41,129 +46,142 @@ export class ResponseTable implements IDisposable {
       'click',
       this._grid,
       this._onClick
-    )
+    );
 
     this._contextMenuEventHandler = DataGridExtensions.addMouseEventListener(
       'contextmenu',
       this._grid,
       this._onContextMenu
-    )
+    );
   }
 
-  static fromKeysRows(keys: Array<string>, data: Array<Array<any>>): ResponseTable {
-    const model = new ResponseTableDataModel(keys, data)
+  static fromKeysRows(
+    keys: Array<string>,
+    data: Array<Array<any>>
+  ): ResponseTable {
+    const model = new ResponseTableDataModel(keys, data);
     return new ResponseTable(model);
   }
 
   get widget(): Widget {
-    return this._grid
+    return this._grid;
   }
 
   dispose(): void {
-    this._clickEventHandler.dispose()
-    this._contextMenuEventHandler.dispose()
-    this._grid.dispose()
-    this._menu.dispose()
-    this._isDisposed = true
+    this._clickEventHandler.dispose();
+    this._contextMenuEventHandler.dispose();
+    this._grid.dispose();
+    this._menu.dispose();
+    this._isDisposed = true;
   }
 
   get isDisposed(): boolean {
-    return this._isDisposed
+    return this._isDisposed;
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
     const { row, column } = event;
-    this._updateSelection(row, column)
+    this._updateSelection(row, column);
   }
 
   private _onContextMenu(event: DataGridExtensions.GridMouseEvent) {
     const { row, column, rawEvent } = event;
-    this._updateSelection(row, column)
+    this._updateSelection(row, column);
     if (this._isInBody(row, column)) {
-      this._menu.open(rawEvent.clientX, rawEvent.clientY)
-      rawEvent.preventDefault()
+      this._menu.open(rawEvent.clientX, rawEvent.clientY);
+      rawEvent.preventDefault();
     }
   }
 
-  private _updateSelection(row: DataGridExtensions.Row, column: DataGridExtensions.Column) {
+  private _updateSelection(
+    row: DataGridExtensions.Row,
+    column: DataGridExtensions.Column
+  ) {
     if (this._isInBody(row, column)) {
       this._selectionManager.selection = {
         rowIndex: row.index,
         columnIndex: column.index
-      }
+      };
     } else {
-      this._selectionManager.selection = null
+      this._selectionManager.selection = null;
     }
   }
 
-  private _isInBody(row: DataGridExtensions.Row, column: DataGridExtensions.Column) {
+  private _isInBody(
+    row: DataGridExtensions.Row,
+    column: DataGridExtensions.Column
+  ) {
     return (
       row.section === 'row' &&
-        column.section === 'column' &&
-        row.index !== null &&
-        column.index !== null
-    )
+      column.section === 'column' &&
+      row.index !== null &&
+      column.index !== null
+    );
   }
 
   private _updateRenderers(): void {
-    const renderer = this._textRendererForSelection(this._selectionManager.selection)
-    this._grid.cellRenderers.set('body', {}, renderer)
+    const renderer = this._textRendererForSelection(
+      this._selectionManager.selection
+    );
+    this._grid.cellRenderers.set('body', {}, renderer);
   }
 
-  private _textRendererForSelection(selectedCell: DataGridExtensions.BodyCellIndex | null): CellRenderer {
+  private _textRendererForSelection(
+    selectedCell: DataGridExtensions.BodyCellIndex | null
+  ): CellRenderer {
     let backgroundColor;
     let textColor;
     if (selectedCell === null) {
       backgroundColor = Options.unselectedBackgroundColor;
       textColor = Options.unselectedTextColor;
     } else {
-      const selectedRow = selectedCell.rowIndex
-      const selectedColumn = selectedCell.columnIndex
+      const selectedRow = selectedCell.rowIndex;
+      const selectedColumn = selectedCell.columnIndex;
       backgroundColor = ({ row, column }: CellRenderer.ICellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
           return Options.selectedBackgroundColor;
         } else {
           return Options.unselectedBackgroundColor;
         }
-      }
+      };
       textColor = ({ row, column }: CellRenderer.ICellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
           return Options.selectedTextColor;
         } else {
           return Options.unselectedTextColor;
         }
-      }
+      };
     }
-    return new TextRenderer({ backgroundColor, textColor })
+    return new TextRenderer({ backgroundColor, textColor });
   }
 
   private _createContextMenu(): Menu {
-    const commands = new CommandRegistry()
+    const commands = new CommandRegistry();
     commands.addCommand(CommandIds.copyToClipboard, {
       label: 'Copy cell',
       iconClass: 'jp-MaterialIcon jp-CopyIcon',
       execute: this._copySelectionToClipboard
-    })
-    const menu = new Menu({ commands })
-    menu.addItem({ command: CommandIds.copyToClipboard })
-    return menu
+    });
+    const menu = new Menu({ commands });
+    menu.addItem({ command: CommandIds.copyToClipboard });
+    return menu;
   }
 
   private _copySelectionToClipboard(): void {
-    const selection = this._selectionManager.selection
+    const selection = this._selectionManager.selection;
     if (selection !== null) {
-      const { rowIndex, columnIndex } = selection
-      const value = this._grid.model.data('body', rowIndex, columnIndex)
-      Clipboard.copyToSystem(value)
+      const { rowIndex, columnIndex } = selection;
+      const value = this._grid.model.data('body', rowIndex, columnIndex);
+      Clipboard.copyToSystem(value);
     }
   }
 
   private readonly _grid: DataGrid;
   private readonly _selectionManager: DataGridExtensions.SelectionManager;
-  private readonly _menu: Menu
-  private readonly _clickEventHandler: IDisposable
-  private readonly _contextMenuEventHandler: IDisposable
-  private _isDisposed: boolean = false
+  private readonly _menu: Menu;
+  private readonly _clickEventHandler: IDisposable;
+  private readonly _contextMenuEventHandler: IDisposable;
+  private _isDisposed: boolean = false;
 }
 
 class ResponseTableDataModel extends DataModel {
