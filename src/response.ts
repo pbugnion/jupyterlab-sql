@@ -47,26 +47,24 @@ export class ResponseWidget extends Widget {
   }
 
   setResponse(response: ResponseModel.Type) {
+    this._disposeTable();
+    let widget: Widget;
     ResponseModel.match(
       response,
       (keys, rows) => {
-        this._disposeTable();
         const table = ResponseTable.fromKeysRows(keys, rows);
         this._table = table;
-        this._setCurrentWidget(table.widget);
+        widget = table.widget
       },
       () => {
-        this._disposeTable();
         const message = 'Command executed successfully';
-        const textResponseWidget = new TextResponseWidget(message);
-        this._setCurrentWidget(textResponseWidget);
+        widget = new TextResponseWidget(message);
       },
       ({ message }) => {
-        this._disposeTable();
-        const errorResponseWidget = new TextResponseWidget(message);
-        this._setCurrentWidget(errorResponseWidget);
+        widget = new TextResponseWidget(message);
       }
     );
+    this._setCurrentWidget(widget)
   }
 
   private _setCurrentWidget(widget: Widget) {
