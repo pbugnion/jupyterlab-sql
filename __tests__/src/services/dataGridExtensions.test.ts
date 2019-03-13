@@ -100,6 +100,17 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     expect(row).toEqual({ section: 'column-header', index: null });
   });
 
+  it('take row resizes into account', () => {
+    const grid = Fixtures.grid();
+    grid.resizeSection('row', 2, 200);
+    const event = Fixtures.clickEvent({
+      clientX: 5,
+      clientY: 3 * 20 + 200 + 2,
+    });
+    const { row } = testEvent(grid, event);
+    expect(row).toEqual({ section: 'row', index: 3 });
+  });
+
   it.each([
     [5, { section: 'row-header', index: null }],
     [64 * 11 + 1, { section: 'outside', index: null }],
@@ -133,7 +144,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     expect(column).toEqual({ section: 'row-header', index: null });
   });
 
-  it('take resizes into account', () => {
+  it('take column resizes into account', () => {
     const grid = Fixtures.grid();
     grid.resizeSection('column', 2, 200);
     const event = Fixtures.clickEvent({

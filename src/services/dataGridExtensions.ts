@@ -98,9 +98,17 @@ export namespace DataGridExtensions {
       section = 'column-header';
       index = null;
     } else {
-      section = 'row';
       const absY = y + grid.scrollY - grid.headerHeight;
-      index = Math.floor(absY / grid.baseRowSize);
+      let currentRow = 0;
+      let currentTop = 0;
+      let nextTop = currentTop + grid.sectionSize('row', currentRow);
+      while (absY >= nextTop) {
+        currentRow++;
+        currentTop = nextTop;
+        nextTop = currentTop + grid.sectionSize('row', currentRow);
+      }
+      index = currentRow;
+      section = 'row';
     }
     return { section, index };
   }
