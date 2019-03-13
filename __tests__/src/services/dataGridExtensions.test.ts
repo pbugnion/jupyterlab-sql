@@ -105,7 +105,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     grid.resizeSection('row', 2, 200);
     const event = Fixtures.clickEvent({
       clientX: 5,
-      clientY: 3 * 20 + 200 + 2,
+      clientY: 3 * 20 + 200 + 2
     });
     const { row } = testEvent(grid, event);
     expect(row).toEqual({ section: 'row', index: 3 });

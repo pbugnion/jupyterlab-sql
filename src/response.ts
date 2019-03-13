@@ -54,7 +54,7 @@ export class ResponseWidget extends Widget {
       (keys, rows) => {
         const table = ResponseTable.fromKeysRows(keys, rows);
         this._table = table;
-        widget = table.widget
+        widget = table.widget;
       },
       () => {
         const message = 'Command executed successfully';
@@ -64,7 +64,7 @@ export class ResponseWidget extends Widget {
         widget = new TextResponseWidget(message);
       }
     );
-    this._setCurrentWidget(widget)
+    this._setCurrentWidget(widget);
   }
 
   private _setCurrentWidget(widget: Widget) {
