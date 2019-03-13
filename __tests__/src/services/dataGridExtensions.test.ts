@@ -77,7 +77,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     [20 * 50 + 2, { section: 'row', index: 49 }],
     [20 * 50, { section: 'row', index: 49 }], // boundary between two rows
     [20, { section: 'row', index: 0 }] // boundary with header
-  ])('row position %#: clientY: %i', (clientY, expected) => {
+  ])('row position %#: clientY: %i', (clientY: any, expected: any) => {
     const grid = Fixtures.grid();
     const event = Fixtures.clickEvent({ clientX: 10, clientY });
     const { row } = testEvent(grid, event);
@@ -110,7 +110,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     [64 * 10 + 2, { section: 'column', index: 9 }],
     [64 * 11 - 2, { section: 'column', index: 9 }],
     [64 * 11, { section: 'outside', index: null }] // on boundary of last column
-  ])('column position %#: clientX: %i', (clientX, expected) => {
+  ])('column position %#: clientX: %i', (clientX: any, expected: any) => {
     const grid = Fixtures.grid();
     const event = Fixtures.clickEvent({ clientX, clientY: 100 });
     const { column } = testEvent(grid, event);
@@ -249,7 +249,7 @@ describe('dataGridExtensions.SelectionManager', () => {
     ['row < 0', { rowIndex: -1, columnIndex: 0 }],
     ['column > model', { rowIndex: 0, columnIndex: 100 }],
     ['column < 0', { rowIndex: 0, columnIndex: -1 }]
-  ])('be null when outside boundaries: %s', (_, selection) => {
+  ])('be null when outside boundaries: %s', (_: any, selection: any) => {
     const manager = Fixtures.selectionManager();
     manager.selection = selection;
     expect(manager.selection).toBeNull();
