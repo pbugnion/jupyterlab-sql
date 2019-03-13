@@ -40,27 +40,10 @@ export class ResponseWidget extends Widget {
     super.dispose();
   }
 
-  setCurrentWidget(widget: Widget) {
-    this.layout.widget = widget;
-    this.item = new LayoutItem(this.layout.widget);
-    this.fitCurrentWidget();
-  }
-
   onResize(msg: Message) {
-    if (this.item) {
-      this.fitCurrentWidget();
+    if (this._item) {
+      this._fitCurrentWidget();
     }
-  }
-
-  fitCurrentWidget() {
-    this.item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
-  }
-
-  private _disposeTable(): void {
-    if (this._table) {
-      this._table.dispose();
-    }
-    this._table = null;
   }
 
   setResponse(response: ResponseModel.Type) {
@@ -70,24 +53,41 @@ export class ResponseWidget extends Widget {
         this._disposeTable();
         const table = ResponseTable.fromKeysRows(keys, rows);
         this._table = table;
-        this.setCurrentWidget(table.widget);
+        this._setCurrentWidget(table.widget);
       },
       () => {
         this._disposeTable();
         const message = 'Command executed successfully';
-        const errorResponseWidget = new TextResponseWidget(message);
-        this.setCurrentWidget(errorResponseWidget);
+        const textResponseWidget = new TextResponseWidget(message);
+        this._setCurrentWidget(textResponseWidget);
       },
       ({ message }) => {
         this._disposeTable();
         const errorResponseWidget = new TextResponseWidget(message);
-        this.setCurrentWidget(errorResponseWidget);
+        this._setCurrentWidget(errorResponseWidget);
       }
     );
   }
 
+  private _setCurrentWidget(widget: Widget) {
+    this.layout.widget = widget;
+    this._item = new LayoutItem(this.layout.widget);
+    this._fitCurrentWidget();
+  }
+
+  private _fitCurrentWidget() {
+    this._item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
+  }
+
+  private _disposeTable(): void {
+    if (this._table) {
+      this._table.dispose();
+    }
+    this._table = null;
+  }
+
   readonly layout: SingletonLayout;
-  private item: LayoutItem;
+  private _item: LayoutItem;
   private _table: ResponseTable | null = null;
 }
 
