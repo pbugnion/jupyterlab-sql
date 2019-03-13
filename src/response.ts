@@ -56,29 +56,30 @@ export class ResponseWidget extends Widget {
     this.item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
   }
 
+  private _disposeTable(): void {
+    if (this._table) {
+      this._table.dispose();
+    }
+    this._table = null;
+  }
+
   setResponse(response: ResponseModel.Type) {
     ResponseModel.match(
       response,
       (keys, rows) => {
-        if (this._table) {
-          this._table.dispose();
-        }
+        this._disposeTable();
         const table = ResponseTable.fromKeysRows(keys, rows);
         this._table = table;
         this.setCurrentWidget(table.widget);
       },
       () => {
-        if (this._table) {
-          this._table.dispose();
-        }
+        this._disposeTable();
         const message = 'Command executed successfully';
         const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
       },
       ({ message }) => {
-        if (this._table) {
-          this._table.dispose();
-        }
+        this._disposeTable();
         const errorResponseWidget = new TextResponseWidget(message);
         this.setCurrentWidget(errorResponseWidget);
       }
