@@ -14,4 +14,12 @@ describe('sanitize', () => {
       )
     ).toEqual('postgres://awsuser:•••••••@some.hostname.com/dbname');
   });
+
+  it('with user without password', () => {
+    expect(
+      ConnectionUrl.sanitize(
+        'postgres://awsuser@some.hostname.com/dbname'
+      )
+    ).toEqual('postgres://awsuser@some.hostname.com/dbname')
+  })
 });
