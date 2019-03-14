@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import decimal
 
 
 def make_row_serializable(row):
@@ -27,9 +28,14 @@ def _list_processor(l):
     return [_make_value_serializable(value) for value in l]
 
 
+def _decimal_processor(dec):
+    return str(dec)
+
+
 DISPATCHER = {
     uuid.UUID: _uuid_processor,
     datetime.datetime: _datetime_processor,
     datetime.date: _datetime_processor,
     list: _list_processor,
+    decimal.Decimal: _decimal_processor,
 }
