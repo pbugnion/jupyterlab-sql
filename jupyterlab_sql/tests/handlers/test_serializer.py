@@ -48,7 +48,10 @@ def test_serialize_uuid_array():
 
 @pytest.mark.parametrize(
     "test_str",
-    ["3.14", "3.141592653589793238462643383279502884197169399375105820974944592307816"]
+    [
+        "3.14",
+        "3.141592653589793238462643383279502884197169399375105820974944592307816",  # noqa
+    ],
 )
 def test_serialize_decimal(test_str):
     dec = decimal.Decimal(test_str)

@@ -37,5 +37,5 @@ DISPATCHER = {
     datetime.datetime: _datetime_processor,
     datetime.date: _datetime_processor,
     list: _list_processor,
-    decimal.Decimal: _decimal_processor
+    decimal.Decimal: _decimal_processor,
 }
