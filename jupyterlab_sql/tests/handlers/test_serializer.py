@@ -46,8 +46,11 @@ def test_serialize_uuid_array():
     assert make_row_serializable(row) == (1, [uuid1_str, uuid2_str])
 
 
-def test_serialize_decimal():
-    expected_str = '3.14'
-    dec = decimal.Decimal(expected_str)
+@pytest.mark.parametrize(
+    "test_str",
+    ["3.14", "3.141592653589793238462643383279502884197169399375105820974944592307816"]
+)
+def test_serialize_decimal(test_str):
+    dec = decimal.Decimal(test_str)
     row = (1, dec)
-    assert make_row_serializable(row) == (1, expected_str)
+    assert make_row_serializable(row) == (1, test_str)
