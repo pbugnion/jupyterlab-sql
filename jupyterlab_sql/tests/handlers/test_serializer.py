@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import decimal
 
 import pytest
 
@@ -43,3 +44,10 @@ def test_serialize_uuid_array():
     uuid2_str = "bfd96545-bd8b-41bb-b9fc-afb57f7d1328"
     row = (1, [uuid.UUID(uuid1_str), uuid.UUID(uuid2_str)])
     assert make_row_serializable(row) == (1, [uuid1_str, uuid2_str])
+
+
+def test_serialize_decimal():
+    expected_str = '3.14'
+    dec = decimal.Decimal(expected_str)
+    row = (1, dec)
+    assert make_row_serializable(row) == (1, expected_str)
