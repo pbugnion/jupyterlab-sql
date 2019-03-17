@@ -13,7 +13,7 @@ import {
 
 import { CommandRegistry } from '@phosphor/commands';
 
-import { DataGridExtensions } from './services';
+import * as DataGridExtensions from './services/dataGridExtensions';
 
 namespace Options {
   export const unselectedBackgroundColor = 'white';
