@@ -13,7 +13,7 @@ function getFontWidth(font: string): number {
   if (width !== undefined) {
     return width
   }
-  
+
   // Normalize the font.
   Private.fontMeasurementGC.font = font;
   let normFont = Private.fontMeasurementGC.font;
