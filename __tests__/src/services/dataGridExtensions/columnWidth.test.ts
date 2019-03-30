@@ -66,4 +66,13 @@ describe('ColumnWidthestimator', () => {
     expect(estimator.getColumnWidth(0)).toEqual(24)
   })
 
+  it('ignore values beyond the first 100', () => {
+    const column = Array.from({ length: 200 }, () => 'a')
+    column[100] = 'bbb'
+    const model = new Fixtures.TestDataModel([column], ['h'], ['r']);
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
+    expect(estimator.getColumnWidth(0)).toEqual(8)
+  })
+
+
 })
