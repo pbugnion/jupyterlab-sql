@@ -79,4 +79,11 @@ describe('ColumnWidthestimator', () => {
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
 
+  it('return a default min value', () => {
+    const model = new Fixtures.TestDataModel([[]], [''], []);
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
+    expect(estimator.getColumnWidth(0)).toEqual(8)
+  })
+
+
 })
