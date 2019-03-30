@@ -42,6 +42,8 @@ namespace Fixtures {
     private readonly _rowHeaders: Array<any>
     private readonly _columnHeaders: Array<any>
   }
+
+  export const renderer = new TextRenderer()
 }
 
 describe('ColumnWidthestimator', () => {
@@ -51,8 +53,7 @@ describe('ColumnWidthestimator', () => {
 
   it('measure the column width', () => {
     const model = new Fixtures.TestDataModel([['a', 'b', 'c', 'd']], ['h'], ['r']);
-    const renderer = new TextRenderer()
-    const estimator = new ColumnWidthEstimator(model, renderer);
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
 
