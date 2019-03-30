@@ -2,7 +2,7 @@ import 'jest-canvas-mock';
 
 import { DataGrid, DataModel } from '@phosphor/datagrid';
 
-import { DataGridExtensions } from '../../../src/services/dataGridExtensions';
+import * as DataGridExtensions from '../../../src/services/dataGridExtensions';
 
 namespace Fixtures {
   export function grid(): DataGrid {
