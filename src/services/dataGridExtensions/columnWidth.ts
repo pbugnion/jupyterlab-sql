@@ -12,7 +12,8 @@ export class ColumnWidthEstimator {
 
   getColumnWidth(column: number): number {
     // TODO: what if the column contains more than 100 elements?
-    const data = Array.from({length: 100}, (_, idx) => this._model.data('body', idx, column))
+    const rowsToCheck = Math.min(this._model.rowCount('body'), 100)
+    const data = Array.from({length: rowsToCheck}, (_, idx) => this._model.data('body', idx, column))
     return measureColumnWidth(data, this._renderer)
   }
 

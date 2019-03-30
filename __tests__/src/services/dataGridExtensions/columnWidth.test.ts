@@ -26,6 +26,11 @@ namespace Fixtures {
     }
 
     data(region: DataModel.CellRegion, row: number, column: number): any {
+      if (row >= this._rowHeaders.length) {
+        throw 'row out of bounds'
+      } else if (column >= this._columnHeaders.length) {
+        throw 'column out of bounds'
+      }
       if (region === 'row-header') {
         return this._rowHeaders[row];
       }
@@ -53,7 +58,7 @@ describe('ColumnWidthestimator', () => {
 
   it('measure the column width', () => {
     const column = Array.from({ length: 200 }, () => 'a')
-    const model = new Fixtures.TestDataModel([column], ['h'], ['r']);
+    const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
@@ -61,7 +66,7 @@ describe('ColumnWidthestimator', () => {
   it('return the longest width in the first 100 elements', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     column[20] = 'bbb'
-    const model = new Fixtures.TestDataModel([column], ['h'], ['r']);
+    const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
     expect(estimator.getColumnWidth(0)).toEqual(24)
   })
@@ -69,10 +74,9 @@ describe('ColumnWidthestimator', () => {
   it('ignore values beyond the first 100', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     column[100] = 'bbb'
-    const model = new Fixtures.TestDataModel([column], ['h'], ['r']);
+    const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
-
 
 })
