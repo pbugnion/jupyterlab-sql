@@ -7,6 +7,9 @@ export function measureRenderedWidth(content: any, renderer: TextRenderer) {
   return rendered.length * width * 0.8;
 }
 
+/*
+ * Measure the width of an M for that font.
+ */
 function getFontWidth(font: string): number {
   let width = Private.fontWidthCache[font]
 
