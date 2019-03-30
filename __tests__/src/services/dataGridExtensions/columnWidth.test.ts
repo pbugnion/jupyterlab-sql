@@ -52,7 +52,8 @@ describe('ColumnWidthestimator', () => {
   })
 
   it('measure the column width', () => {
-    const model = new Fixtures.TestDataModel([['a', 'b', 'c', 'd']], ['h'], ['r']);
+    const column = Array.from({ length: 200 }, () => 'a')
+    const model = new Fixtures.TestDataModel([column], ['h'], ['r']);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
