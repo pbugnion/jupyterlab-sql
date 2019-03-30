@@ -11,10 +11,22 @@ export class ColumnWidthEstimator {
   }
 
   getColumnWidth(column: number): number {
-    // TODO: what if the column contains more than 100 elements?
-    const rowsToCheck = Math.min(this._model.rowCount('body'), 100)
-    const data = Array.from({length: rowsToCheck}, (_, idx) => this._model.data('body', idx, column))
-    return measureColumnWidth(data, this._renderer)
+    const headerData = this._getDataFromRegion('column-header', column)
+    const bodyData = this._getDataFromRegion('body', column)
+    const minSizeElement = 'a'
+    return measureColumnWidth(
+      [minSizeElement, ...headerData, ...bodyData],
+      this._renderer
+    )
+  }
+
+  private _getDataFromRegion(region: 'column-header' | 'body', column: number): Array<any> {
+    const rowsToCheck = Math.min(this._model.rowCount(region), 100)
+    const data = Array.from(
+      { length: rowsToCheck },
+      (_, idx) => this._model.data(region, idx, column)
+    )
+    return data
   }
 
   private readonly _model: DataModel;

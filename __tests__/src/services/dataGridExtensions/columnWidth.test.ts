@@ -26,20 +26,21 @@ namespace Fixtures {
     }
 
     data(region: DataModel.CellRegion, row: number, column: number): any {
-      if (row >= this._rowHeaders.length) {
-        throw 'row out of bounds'
-      } else if (column >= this._columnHeaders.length) {
-        throw 'column out of bounds'
-      }
       if (region === 'row-header') {
         return this._rowHeaders[row];
       }
       if (region === 'column-header') {
+        console.assert(row === 0)
+        console.assert(column < this._columnHeaders.length)
         return this._columnHeaders[column];
       }
       if (region === 'corner-header') {
         return '';
       }
+
+      // in body
+      console.assert(row < this._rowHeaders.length)
+      console.assert(column < this._columnHeaders.length)
       return this._data[column][row]
     }
 
@@ -85,5 +86,11 @@ describe('ColumnWidthestimator', () => {
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
 
+  it('include the header column', () => {
+    const column = Array.from({ length: 200 }, () => 'a')
+    const model = new Fixtures.TestDataModel([column], ['aaa'], column);
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
+    expect(estimator.getColumnWidth(0)).toEqual(24);
+  })
 
 })
