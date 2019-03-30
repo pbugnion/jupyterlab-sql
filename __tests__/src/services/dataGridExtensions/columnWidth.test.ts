@@ -58,4 +58,12 @@ describe('ColumnWidthestimator', () => {
     expect(estimator.getColumnWidth(0)).toEqual(8)
   })
 
+  it('return the longest width in the first 100 elements', () => {
+    const column = Array.from({ length: 200 }, () => 'a')
+    column[20] = 'bbb'
+    const model = new Fixtures.TestDataModel([column], ['h'], ['r']);
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer);
+    expect(estimator.getColumnWidth(0)).toEqual(24)
+  })
+
 })
