@@ -3,7 +3,7 @@ import { CellRenderer, TextRenderer, DataModel, DataGrid } from '@phosphor/datag
 
 import { getFontWidth } from './fontWidth';
 
-export function setColumnWidths(grid: DataGrid, renderer: TextRenderer, options: ColumnWidthEstimator.IOptions = {}) {
+export function fitColumnWidths(grid: DataGrid, renderer: TextRenderer, options: FitColumnWidths.IOptions = {}) {
   const estimator = new ColumnWidthEstimator(grid.model, renderer, options)
 
   const widths = estimator.getColumnWidths()
@@ -14,16 +14,30 @@ export function setColumnWidths(grid: DataGrid, renderer: TextRenderer, options:
   grid.resizeSection('row-header', 0, headerWidth)
 }
 
-export class ColumnWidthEstimator {
+export namespace FitColumnWidths {
+  export interface IOptions {
+    rowsToInspect?: number;
+    minWidth?: number;
+    maxWidth?: number;
+    characterScaleFactor?: number;
+  }
 
-  constructor(model: DataModel, renderer: TextRenderer, options: ColumnWidthEstimator.IOptions = {}) {
+  export const defaultRowsToInspect: number = 100
+  export const defaultMinWidth: number = 40
+  export const defaultMaxWidth: number = 300
+  export const characterScaleFactor: number = 0.65
+}
+
+class ColumnWidthEstimator {
+
+  constructor(model: DataModel, renderer: TextRenderer, options: FitColumnWidths.IOptions = {}) {
     this._model = model
     this._renderer = renderer
 
-    this._rowsToInspect = options.rowsToInspect || ColumnWidthEstimator.defaultRowsToInspect
-    this._minWidth = options.minWidth || ColumnWidthEstimator.defaultMinWidth
-    this._maxWidth = options.maxWidth || ColumnWidthEstimator.defaultMaxWidth
-    this._characterScaleFactor = options.characterScaleFactor || ColumnWidthEstimator.characterScaleFactor
+    this._rowsToInspect = options.rowsToInspect || FitColumnWidths.defaultRowsToInspect
+    this._minWidth = options.minWidth || FitColumnWidths.defaultMinWidth
+    this._maxWidth = options.maxWidth || FitColumnWidths.defaultMaxWidth
+    this._characterScaleFactor = options.characterScaleFactor || FitColumnWidths.characterScaleFactor
   }
 
   getColumnWidths(): Array<number> {
@@ -99,18 +113,4 @@ export class ColumnWidthEstimator {
   private readonly _minWidth: number;
   private readonly _maxWidth: number;
   private readonly _characterScaleFactor: number;
-}
-
-export namespace ColumnWidthEstimator {
-  export interface IOptions {
-    rowsToInspect?: number;
-    minWidth?: number;
-    maxWidth?: number;
-    characterScaleFactor?: number;
-  }
-
-  export const defaultRowsToInspect: number = 100
-  export const defaultMinWidth: number = 40
-  export const defaultMaxWidth: number = 300
-  export const characterScaleFactor: number = 0.65
 }

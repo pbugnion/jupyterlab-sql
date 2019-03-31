@@ -1,6 +1,6 @@
 import 'jest-canvas-mock';
-import { TextRenderer, DataModel } from '@phosphor/datagrid';
-import { ColumnWidthEstimator } from '../../../../src/services/dataGridExtensions';
+import { TextRenderer, DataModel, DataGrid } from '@phosphor/datagrid';
+import { fitColumnWidths, FitColumnWidths } from '../../../../src/services/dataGridExtensions';
 
 import * as fontWidth from '../../../../src/services/dataGridExtensions/fontWidth';
 
@@ -55,75 +55,100 @@ namespace Fixtures {
 
   export const renderer = new TextRenderer()
 
-  export const options: ColumnWidthEstimator.IOptions = {
+  export const options: FitColumnWidths.IOptions = {
     rowsToInspect: 100,
     minWidth: 5,
     maxWidth: 60,
     characterScaleFactor: 0.8
   };
+
+  export function newGrid(model: DataModel) {
+    const grid = new DataGrid()
+    grid.model = model;
+    jest.spyOn(grid, 'resizeSection')
+    return grid;
+  }
 }
 
 describe('ColumnWidthestimator', () => {
   beforeEach(() => {
-    (fontWidth.getFontWidth as jest.Mock<any>).mockImplementation(jest.fn(() => 10)).mockClear()
+    (fontWidth.getFontWidth as jest.Mock<any>)
+      .mockImplementation(jest.fn(() => 10))
+      .mockClear()
   })
 
-  it('measure the column width', () => {
+  it('set the column width', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([8])
-    expect(estimator.getRowHeaderWidth()).toEqual(8);
+    const grid = Fixtures.newGrid(model)
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options)
+    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 8);
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 8);
   })
 
-  it('return the longest width in the first 100 elements', () => {
+  it('use the longest width in the first 100 elements', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     column[20] = 'bbb'
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([24])
-    expect(estimator.getRowHeaderWidth()).toEqual(24);
+    const grid = Fixtures.newGrid(model);
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options)
+    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 24);
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 24);
   })
 
   it('ignore values beyond the first 100', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     column[100] = 'bbb'
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([8])
-    expect(estimator.getRowHeaderWidth()).toEqual(8);
+    const grid = Fixtures.newGrid(model)
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options)
+    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 8)
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 8);
   })
 
-  it('return a default min value', () => {
+  it('set a default min value', () => {
     const model = new Fixtures.TestDataModel([[]], [''], [], '');
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([5])
-    expect(estimator.getRowHeaderWidth()).toEqual(5);
+    const grid = Fixtures.newGrid(model)
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options)
+    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 5);
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 5);
   })
 
-  it('include the header column', () => {
+  it('include the header in the column width', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     const model = new Fixtures.TestDataModel([column], ['aaa'], column, 'aaa');
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([24]);
-    expect(estimator.getRowHeaderWidth()).toEqual(24);
+    const grid = Fixtures.newGrid(model)
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options)
+    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 24);
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 24);
   })
 
-  it('not return values greater than a maximum size', () => {
+  it('not use values greater than a maximum size', () => {
     const column = Array.from({ length: 200 }, () => 'a');
     column[20] = 'b'.repeat(1000)
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([60]);
-    expect(estimator.getRowHeaderWidth()).toEqual(60);
+    const grid = Fixtures.newGrid(model);
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
+    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 60);
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 60);
   })
 
   it('work for mulitple columns', () => {
     const first = Array.from({ length: 200 }, () => 'a')
     const second = Array.from({ length: 200 }, () => 'bb')
     const model = new Fixtures.TestDataModel([first, second], ['h', 'h'], first, '')
-    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidths()).toEqual([8, 16]);
+    const grid = Fixtures.newGrid(model);
+    fitColumnWidths(grid, Fixtures.renderer, Fixtures.options)
+    expect(grid.resizeSection).toHaveBeenCalledTimes(3);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 8);
+    expect(grid.resizeSection).toHaveBeenCalledWith('column', 1, 16);
+    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 8);
   })
 
 })
