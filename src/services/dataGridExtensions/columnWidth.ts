@@ -31,15 +31,15 @@ export class ColumnWidthEstimator {
     }
     const headerData = this._getDataFromRegion('corner-header', 0)
     const bodyData = this._getDataFromRegion('row-header', 0)
-    const measuredWidth = this._measureArrayWidth([...headerData, ...bodyData])
-    return Math.max(Math.min(measuredWidth, this._maxWidth), this._minWidth)
+    const width = this._measureArrayWidth([...headerData, ...bodyData])
+    return this._clampWidth(width)
   }
 
   private _getColumnWidth(column: number): number {
     const headerData = this._getDataFromRegion('column-header', column)
     const bodyData = this._getDataFromRegion('body', column)
-    const measuredWidth = this._measureArrayWidth([...headerData, ...bodyData])
-    return Math.max(Math.min(measuredWidth, this._maxWidth), this._minWidth)
+    const width = this._measureArrayWidth([...headerData, ...bodyData])
+    return this._clampWidth(width)
   }
 
   private _getDataFromRegion(region: DataModel.CellRegion, column: number): Array<any> {
@@ -75,6 +75,10 @@ export class ColumnWidthEstimator {
     } else {
       throw 'unreachable'
     }
+  }
+
+  private _clampWidth(width: number): number {
+    return Math.max(Math.min(width, this._maxWidth), this._minWidth)
   }
 
   private readonly _model: DataModel;
