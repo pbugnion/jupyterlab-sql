@@ -12,15 +12,13 @@ export class ColumnWidthEstimator {
     this._rowsToInspect = options.rowsToInspect || ColumnWidthEstimator.defaultRowsToInspect
     this._minWidth = options.minWidth || ColumnWidthEstimator.defaultMinWidth
     this._maxWidth = options.maxWidth || ColumnWidthEstimator.defaultMaxWidth
+    this._characterScaleFactor = options.characterScaleFactor || ColumnWidthEstimator.characterScaleFactor
   }
 
   getColumnWidth(column: number): number {
     const headerData = this._getDataFromRegion('column-header', column)
     const bodyData = this._getDataFromRegion('body', column)
-    const measuredWidth = measureColumnWidth(
-      [...headerData, ...bodyData],
-      this._renderer
-    )
+    const measuredWidth = this._measureArrayWidth([...headerData, ...bodyData])
     return Math.max(Math.min(measuredWidth, this._maxWidth), this._minWidth)
   }
 
@@ -33,12 +31,29 @@ export class ColumnWidthEstimator {
     return data
   }
 
+  private _measureArrayWidth(content: Array<any>): number {
+    const widths = content.map(elementContent => this._measureElementWidth(elementContent))
+    if (widths.length === 0) {
+      return 0
+    } else {
+      return Math.max(...widths)
+    }
+  }
+
+  private _measureElementWidth(content: any): number {
+    const config: CellRenderer.ICellConfig = { x: 1, y: 1, height: 100, width: 20, region: 'body', row: 10, column: 10, metadata: {}, value: content }
+    const rendered: string = this._renderer.format(config)
+    const width = getFontWidth('12px sans-serif');
+    return rendered.length * width * this._characterScaleFactor;
+  }
+
   private readonly _model: DataModel;
   private readonly _renderer: TextRenderer;
 
   private readonly _rowsToInspect: number;
   private readonly _minWidth: number;
   private readonly _maxWidth: number;
+  private readonly _characterScaleFactor: number;
 }
 
 export namespace ColumnWidthEstimator {
@@ -46,26 +61,11 @@ export namespace ColumnWidthEstimator {
     rowsToInspect?: number;
     minWidth?: number;
     maxWidth?: number;
+    characterScaleFactor?: number;
   }
 
   export const defaultRowsToInspect: number = 100
-  export const defaultMinWidth: number = 20
+  export const defaultMinWidth: number = 40
   export const defaultMaxWidth: number = 300
-}
-
-function measureColumnWidth(columnContent: Array<any>, renderer: TextRenderer): number {
-  const widths = columnContent.map(cellContent => measureRenderedWidth(cellContent, renderer))
-  if (widths.length === 0) {
-    return 0
-  } else {
-    return Math.max(...widths)
-  }
-}
-
-
-function measureRenderedWidth(content: any, renderer: TextRenderer): number {
-  const config: CellRenderer.ICellConfig = { x: 1, y: 1, height: 100, width: 20, region: 'body', row: 10, column: 10, metadata: {}, value: content }
-  const rendered: string = renderer.format(config)
-  const width = getFontWidth('12px sans-serif');
-  return rendered.length * width * 0.8;
+  export const characterScaleFactor: number = 0.6
 }

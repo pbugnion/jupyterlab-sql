@@ -54,7 +54,8 @@ namespace Fixtures {
   export const options: ColumnWidthEstimator.IOptions = {
     rowsToInspect: 100,
     minWidth: 5,
-    maxWidth: 60
+    maxWidth: 60,
+    characterScaleFactor: 0.8
   };
 }
 
