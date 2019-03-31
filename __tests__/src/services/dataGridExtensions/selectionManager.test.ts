@@ -1,29 +1,14 @@
 import 'jest-canvas-mock'
 
-import { DataGrid, DataModel } from '@phosphor/datagrid';
+import { DataModel } from '@phosphor/datagrid';
 
 import { SelectionManager } from '../../../../src/services/dataGridExtensions'
 
 namespace Fixtures {
-  export function grid(): DataGrid {
-    const model = new TestDataModel();
-    const grid = new DataGrid();
-    grid.model = model;
-    return grid;
-  }
-
   export function selectionManager(): SelectionManager {
     const model = new TestDataModel();
     const manager = new SelectionManager(model);
     return manager;
-  }
-
-  export function clickEvent(args: MouseEventInit): MouseEvent {
-    return new MouseEvent('click', args);
-  }
-
-  export function contextmenuEvent(args: MouseEventInit): MouseEvent {
-    return new MouseEvent('contextmenu', args);
   }
 
   class TestDataModel extends DataModel {
