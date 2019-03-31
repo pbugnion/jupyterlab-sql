@@ -76,5 +76,5 @@ export namespace ColumnWidthEstimator {
   export const defaultRowsToInspect: number = 100
   export const defaultMinWidth: number = 40
   export const defaultMaxWidth: number = 300
-  export const characterScaleFactor: number = 0.6
+  export const characterScaleFactor: number = 0.65
 }
