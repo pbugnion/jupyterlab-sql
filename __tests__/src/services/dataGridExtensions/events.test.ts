@@ -2,7 +2,7 @@ import 'jest-canvas-mock';
 
 import { DataGrid, DataModel } from '@phosphor/datagrid';
 
-import * as DataGridExtensions from '../../../src/services/dataGridExtensions';
+import { addMouseEventListener, GridMouseEvent } from '../../../../src/services/dataGridExtensions';
 
 namespace Fixtures {
   export function grid(): DataGrid {
@@ -10,12 +10,6 @@ namespace Fixtures {
     const grid = new DataGrid();
     grid.model = model;
     return grid;
-  }
-
-  export function selectionManager(): DataGridExtensions.SelectionManager {
-    const model = new TestDataModel();
-    const manager = new DataGridExtensions.SelectionManager(model);
-    return manager;
   }
 
   export function clickEvent(args: MouseEventInit): MouseEvent {
@@ -50,13 +44,13 @@ namespace Fixtures {
   }
 }
 
-describe('dataGridExtensions.addMouseEventListener', () => {
+describe('addMouseEventListener', () => {
   const testEvent = (
     grid: DataGrid,
     event: MouseEvent
-  ): DataGridExtensions.GridMouseEvent => {
+  ): GridMouseEvent => {
     const mockListener = jest.fn();
-    DataGridExtensions.addMouseEventListener('click', grid, mockListener);
+    addMouseEventListener('click', grid, mockListener);
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(1);
     const [args] = mockListener.mock.calls;
@@ -166,7 +160,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
   it('remove the event listener', () => {
     const grid = Fixtures.grid();
     const mockListener = jest.fn();
-    const disposable = DataGridExtensions.addMouseEventListener(
+    const disposable = addMouseEventListener(
       'click',
       grid,
       mockListener
@@ -181,7 +175,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     const grid = Fixtures.grid();
     const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 });
     const mockListener = jest.fn();
-    DataGridExtensions.addMouseEventListener('contextmenu', grid, mockListener);
+    addMouseEventListener('contextmenu', grid, mockListener);
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(1);
     const [args] = mockListener.mock.calls;
@@ -195,7 +189,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     const grid = Fixtures.grid();
     const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 });
     const mockListener = jest.fn();
-    const disposable = DataGridExtensions.addMouseEventListener(
+    const disposable = addMouseEventListener(
       'contextmenu',
       grid,
       mockListener
