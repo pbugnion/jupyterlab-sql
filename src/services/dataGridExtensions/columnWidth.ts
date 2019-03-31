@@ -14,10 +14,11 @@ export class ColumnWidthEstimator {
     const headerData = this._getDataFromRegion('column-header', column)
     const bodyData = this._getDataFromRegion('body', column)
     const minSizeElement = 'a'
-    return measureColumnWidth(
+    const measuredWidth = measureColumnWidth(
       [minSizeElement, ...headerData, ...bodyData],
       this._renderer
     )
+    return Math.min(measuredWidth, 100)
   }
 
   private _getDataFromRegion(region: 'column-header' | 'body', column: number): Array<any> {
