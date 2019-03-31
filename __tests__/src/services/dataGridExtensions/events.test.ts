@@ -2,7 +2,10 @@ import 'jest-canvas-mock';
 
 import { DataGrid, DataModel } from '@phosphor/datagrid';
 
-import { DataGridExtensions } from '../../../src/services/dataGridExtensions';
+import {
+  addMouseEventListener,
+  GridMouseEvent
+} from '../../../../src/services/dataGridExtensions';
 
 namespace Fixtures {
   export function grid(): DataGrid {
@@ -10,12 +13,6 @@ namespace Fixtures {
     const grid = new DataGrid();
     grid.model = model;
     return grid;
-  }
-
-  export function selectionManager(): DataGridExtensions.SelectionManager {
-    const model = new TestDataModel();
-    const manager = new DataGridExtensions.SelectionManager(model);
-    return manager;
   }
 
   export function clickEvent(args: MouseEventInit): MouseEvent {
@@ -50,13 +47,10 @@ namespace Fixtures {
   }
 }
 
-describe('dataGridExtensions.addMouseEventListener', () => {
-  const testEvent = (
-    grid: DataGrid,
-    event: MouseEvent
-  ): DataGridExtensions.GridMouseEvent => {
+describe('addMouseEventListener', () => {
+  const testEvent = (grid: DataGrid, event: MouseEvent): GridMouseEvent => {
     const mockListener = jest.fn();
-    DataGridExtensions.addMouseEventListener('click', grid, mockListener);
+    addMouseEventListener('click', grid, mockListener);
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(1);
     const [args] = mockListener.mock.calls;
@@ -166,11 +160,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
   it('remove the event listener', () => {
     const grid = Fixtures.grid();
     const mockListener = jest.fn();
-    const disposable = DataGridExtensions.addMouseEventListener(
-      'click',
-      grid,
-      mockListener
-    );
+    const disposable = addMouseEventListener('click', grid, mockListener);
     disposable.dispose();
     const event = Fixtures.clickEvent({ clientX: 10, clientY: 5 });
     grid.node.dispatchEvent(event);
@@ -181,7 +171,7 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     const grid = Fixtures.grid();
     const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 });
     const mockListener = jest.fn();
-    DataGridExtensions.addMouseEventListener('contextmenu', grid, mockListener);
+    addMouseEventListener('contextmenu', grid, mockListener);
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(1);
     const [args] = mockListener.mock.calls;
@@ -195,74 +185,9 @@ describe('dataGridExtensions.addMouseEventListener', () => {
     const grid = Fixtures.grid();
     const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 });
     const mockListener = jest.fn();
-    const disposable = DataGridExtensions.addMouseEventListener(
-      'contextmenu',
-      grid,
-      mockListener
-    );
+    const disposable = addMouseEventListener('contextmenu', grid, mockListener);
     disposable.dispose();
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(0);
-  });
-});
-
-describe('dataGridExtensions.SelectionManager', () => {
-  it('have null selection at construction', () => {
-    const manager = Fixtures.selectionManager();
-    expect(manager.selection).toBeNull();
-  });
-
-  it('support setting the selection', () => {
-    const manager = Fixtures.selectionManager();
-    const selection = { rowIndex: 2, columnIndex: 0 };
-    manager.selection = selection;
-    expect(manager.selection).toEqual(selection);
-  });
-
-  it('support unsetting the selection', () => {
-    const manager = Fixtures.selectionManager();
-    const selection = { rowIndex: 2, columnIndex: 0 };
-    manager.selection = selection;
-    manager.selection = null;
-    expect(manager.selection).toBeNull();
-  });
-
-  it('trigger selectionChanged when the selection changes', () => {
-    const manager = Fixtures.selectionManager();
-    const selection = { rowIndex: 2, columnIndex: 0 };
-    const mockListener = jest.fn();
-    manager.selectionChanged.connect(mockListener);
-    manager.selection = selection;
-    expect(mockListener.mock.calls.length).toEqual(1);
-    expect(mockListener.mock.calls[0][1]).toEqual(selection);
-  });
-
-  it('not trigger selectionChanged if the selection remains the same', () => {
-    const manager = Fixtures.selectionManager();
-    const selection = { rowIndex: 2, columnIndex: 0 };
-    manager.selection = selection;
-    const mockListener = jest.fn();
-    manager.selectionChanged.connect(mockListener);
-    manager.selection = selection;
-    expect(mockListener.mock.calls.length).toEqual(0);
-  });
-
-  it('not trigger selectionChanged if the selection remains null', () => {
-    const manager = Fixtures.selectionManager();
-    const mockListener = jest.fn();
-    manager.selectionChanged.connect(mockListener);
-    manager.selection = null;
-    expect(mockListener.mock.calls.length).toEqual(0);
-  });
-
-  it.each([
-    ['row > model', { rowIndex: 500, columnIndex: 0 }],
-    ['row < 0', { rowIndex: -1, columnIndex: 0 }],
-    ['column > model', { rowIndex: 0, columnIndex: 100 }],
-    ['column < 0', { rowIndex: 0, columnIndex: -1 }]
-  ])('be null when outside boundaries: %s', (_: any, selection: any) => {
-    const manager = Fixtures.selectionManager();
-    manager.selection = selection;
-    expect(manager.selection).toBeNull();
   });
 });
