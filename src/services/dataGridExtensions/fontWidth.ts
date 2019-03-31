@@ -1,12 +1,11 @@
-
 /*
  * Measure the width of an M for that font.
  */
 export function getFontWidth(font: string): number {
-  let width = Private.fontWidthCache[font]
+  let width = Private.fontWidthCache[font];
 
   if (width !== undefined) {
-    return width
+    return width;
   }
 
   // Normalize the font.
@@ -40,14 +39,12 @@ namespace Private {
   /**
    * A cache of measured font heights.
    */
-  export
-  const fontWidthCache: { [font: string]: number } = Object.create(null);
+  export const fontWidthCache: { [font: string]: number } = Object.create(null);
 
   /**
    * The DOM node used for font height measurement.
    */
-  export
-  const fontMeasurementNode = (() => {
+  export const fontMeasurementNode = (() => {
     let node = document.createElement('div');
     node.style.position = 'absolute';
     node.style.top = '-99999px';
@@ -60,8 +57,7 @@ namespace Private {
   /**
    * The GC used for font measurement.
    */
-  export
-  const fontMeasurementGC = (() => {
+  export const fontMeasurementGC = (() => {
     let canvas = document.createElement('canvas');
     canvas.width = 0;
     canvas.height = 0;

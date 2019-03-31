@@ -18,9 +18,9 @@ export class SelectionManager {
       const { rowIndex, columnIndex } = value;
       if (
         rowIndex > this._maxRow ||
-          columnIndex > this._maxColumn ||
-          rowIndex < 0 ||
-          columnIndex < 0
+        columnIndex > this._maxColumn ||
+        rowIndex < 0 ||
+        columnIndex < 0
       ) {
         newSelection = null;
       }

@@ -1,4 +1,3 @@
-export * from './events'
-export * from './selectionManager'
-export * from './columnWidth'
-
+export * from './events';
+export * from './selectionManager';
+export * from './columnWidth';

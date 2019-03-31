@@ -20,7 +20,6 @@ export interface Column {
   index: number | null;
 }
 
-
 export function addMouseEventListener(
   eventType: 'click' | 'contextmenu',
   grid: DataGrid,

@@ -81,7 +81,7 @@ export class ResponseTable implements IDisposable {
   }
 
   private _fitColumnWidths() {
-    DataGridExtensions.fitColumnWidths(this._grid, new TextRenderer())
+    DataGridExtensions.fitColumnWidths(this._grid, new TextRenderer());
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
