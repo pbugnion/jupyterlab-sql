@@ -108,4 +108,14 @@ describe('ColumnWidthestimator', () => {
     expect(estimator.getColumnWidths()).toEqual([60]);
   })
 
+  it('work for mulitple columns', () => {
+    const first = Array.from({ length: 200 }, () => 'a')
+    const second = Array.from({ length: 200 }, () => 'bb')
+    const model = new Fixtures.TestDataModel([first, second], ['h', 'h'], first)
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
+    expect(estimator.getColumnWidths()).toEqual([8, 16]);
+
+  })
+
+
 })
