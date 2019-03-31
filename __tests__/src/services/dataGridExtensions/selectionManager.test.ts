@@ -1,8 +1,8 @@
-import 'jest-canvas-mock'
+import 'jest-canvas-mock';
 
 import { DataModel } from '@phosphor/datagrid';
 
-import { SelectionManager } from '../../../../src/services/dataGridExtensions'
+import { SelectionManager } from '../../../../src/services/dataGridExtensions';
 
 namespace Fixtures {
   export function selectionManager(): SelectionManager {
