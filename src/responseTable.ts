@@ -35,6 +35,7 @@ export class ResponseTable implements IDisposable {
     this._onContextMenu = this._onContextMenu.bind(this);
     this._copySelectionToClipboard = this._copySelectionToClipboard.bind(this);
     this._updateRenderers();
+    this._setInitialWidths();
 
     this._selectionManager.selectionChanged.connect(() => {
       this._updateRenderers();
@@ -77,6 +78,10 @@ export class ResponseTable implements IDisposable {
 
   get isDisposed(): boolean {
     return this._isDisposed;
+  }
+
+  private _setInitialWidths() {
+    this._grid.resizeSection('column', 0, 200)
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
