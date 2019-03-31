@@ -84,10 +84,10 @@ export class ResponseTable implements IDisposable {
     const estimator = new DataGridExtensions.ColumnWidthEstimator(
       this._grid.model, new TextRenderer()
     )
-    for (let icolumn = 0; icolumn < this._grid.model.columnCount('body'); icolumn++) {
-      const width = estimator.getColumnWidth(icolumn);
-      this._grid.resizeSection('column', icolumn, width)
-    }
+    const widths = estimator.getColumnWidths()
+    widths.forEach((width, column) => {
+      this._grid.resizeSection('column', column, width)
+    })
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {

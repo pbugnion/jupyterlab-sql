@@ -68,7 +68,7 @@ describe('ColumnWidthestimator', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidth(0)).toEqual(8)
+    expect(estimator.getColumnWidths()).toEqual([8])
   })
 
   it('return the longest width in the first 100 elements', () => {
@@ -76,7 +76,7 @@ describe('ColumnWidthestimator', () => {
     column[20] = 'bbb'
     const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidth(0)).toEqual(24)
+    expect(estimator.getColumnWidths()).toEqual([24])
   })
 
   it('ignore values beyond the first 100', () => {
@@ -84,20 +84,20 @@ describe('ColumnWidthestimator', () => {
     column[100] = 'bbb'
     const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidth(0)).toEqual(8)
+    expect(estimator.getColumnWidths()).toEqual([8])
   })
 
-  it.only('return a default min value', () => {
+  it('return a default min value', () => {
     const model = new Fixtures.TestDataModel([[]], [''], []);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidth(0)).toEqual(5)
+    expect(estimator.getColumnWidths()).toEqual([5])
   })
 
   it('include the header column', () => {
     const column = Array.from({ length: 200 }, () => 'a')
     const model = new Fixtures.TestDataModel([column], ['aaa'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidth(0)).toEqual(24);
+    expect(estimator.getColumnWidths()).toEqual([24]);
   })
 
   it('not return values greater than a maximum size', () => {
@@ -105,7 +105,7 @@ describe('ColumnWidthestimator', () => {
     column[20] = 'b'.repeat(1000)
     const model = new Fixtures.TestDataModel([column], ['h'], column);
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
-    expect(estimator.getColumnWidth(0)).toEqual(60);
+    expect(estimator.getColumnWidths()).toEqual([60]);
   })
 
 })

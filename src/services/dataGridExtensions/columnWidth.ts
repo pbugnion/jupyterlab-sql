@@ -15,7 +15,16 @@ export class ColumnWidthEstimator {
     this._characterScaleFactor = options.characterScaleFactor || ColumnWidthEstimator.characterScaleFactor
   }
 
-  getColumnWidth(column: number): number {
+  getColumnWidths(): Array<number> {
+    const numberColumns = this._model.columnCount('body')
+    const widths = Array.from(
+      { length: numberColumns },
+      (_, column) => this._getColumnWidth(column)
+    )
+    return widths
+  }
+
+  private _getColumnWidth(column: number): number {
     const headerData = this._getDataFromRegion('column-header', column)
     const bodyData = this._getDataFromRegion('body', column)
     const measuredWidth = this._measureArrayWidth([...headerData, ...bodyData])
