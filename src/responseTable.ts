@@ -81,15 +81,7 @@ export class ResponseTable implements IDisposable {
   }
 
   private _setColumnWidths() {
-    const estimator = new DataGridExtensions.ColumnWidthEstimator(
-      this._grid.model, new TextRenderer()
-    )
-    const widths = estimator.getColumnWidths()
-    widths.forEach((width, column) => {
-      this._grid.resizeSection('column', column, width)
-    })
-    const headerWidth = estimator.getRowHeaderWidth()
-    this._grid.resizeSection('row-header', 0, headerWidth)
+    DataGridExtensions.setColumnWidths(this._grid, new TextRenderer())
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {

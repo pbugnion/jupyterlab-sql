@@ -1,7 +1,18 @@
 
-import { CellRenderer, TextRenderer, DataModel } from '@phosphor/datagrid'
+import { CellRenderer, TextRenderer, DataModel, DataGrid } from '@phosphor/datagrid'
 
 import { getFontWidth } from './fontWidth';
+
+export function setColumnWidths(grid: DataGrid, renderer: TextRenderer, options: ColumnWidthEstimator.IOptions = {}) {
+  const estimator = new ColumnWidthEstimator(grid.model, renderer, options)
+
+  const widths = estimator.getColumnWidths()
+  widths.forEach((width, column) => {
+    grid.resizeSection('column', column, width)
+  })
+  const headerWidth = estimator.getRowHeaderWidth()
+  grid.resizeSection('row-header', 0, headerWidth)
+}
 
 export class ColumnWidthEstimator {
 
