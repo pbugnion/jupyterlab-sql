@@ -34,7 +34,6 @@ export class ColumnWidthEstimator {
 }
 
 function measureColumnWidth(columnContent: Array<any>, renderer: TextRenderer): number {
-  // TODO: take first 100 elements
   const widths = columnContent.map(cellContent => measureRenderedWidth(cellContent, renderer))
   const minWidth = measureRenderedWidth('a', renderer)
   return Math.max(minWidth, ...widths)
