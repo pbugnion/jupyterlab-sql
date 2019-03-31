@@ -24,6 +24,17 @@ export class ColumnWidthEstimator {
     return widths
   }
 
+  getRowHeaderWidth(): number {
+    if (this._model.columnCount('row-header') !== 1) {
+      throw new Error(
+        'Unsupported grid: row header does not contain exactly one column')
+    }
+    const headerData = this._getDataFromRegion('corner-header', 0)
+    const bodyData = this._getDataFromRegion('row-header', 0)
+    const measuredWidth = this._measureArrayWidth([...headerData, ...bodyData])
+    return Math.max(Math.min(measuredWidth, this._maxWidth), this._minWidth)
+  }
+
   private _getColumnWidth(column: number): number {
     const headerData = this._getDataFromRegion('column-header', column)
     const bodyData = this._getDataFromRegion('body', column)
@@ -31,8 +42,8 @@ export class ColumnWidthEstimator {
     return Math.max(Math.min(measuredWidth, this._maxWidth), this._minWidth)
   }
 
-  private _getDataFromRegion(region: 'column-header' | 'body', column: number): Array<any> {
-    const rowsToCheck = Math.min(this._model.rowCount(region), this._rowsToInspect)
+  private _getDataFromRegion(region: DataModel.CellRegion, column: number): Array<any> {
+    const rowsToCheck = Math.min(this._getRowCount(region), this._rowsToInspect)
     const data = Array.from(
       { length: rowsToCheck },
       (_, idx) => this._model.data(region, idx, column)
@@ -54,6 +65,16 @@ export class ColumnWidthEstimator {
     const rendered: string = this._renderer.format(config)
     const width = getFontWidth('12px sans-serif');
     return rendered.length * width * this._characterScaleFactor;
+  }
+
+  private _getRowCount(region: DataModel.CellRegion): number {
+    if (region === 'corner-header' || region === 'column-header') {
+      return this._model.rowCount('column-header')
+    } else if (region === 'body' || region === 'row-header') {
+      return this._model.rowCount('body')
+    } else {
+      throw 'unreachable'
+    }
   }
 
   private readonly _model: DataModel;

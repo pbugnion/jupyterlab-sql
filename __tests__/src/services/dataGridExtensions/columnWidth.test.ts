@@ -59,7 +59,7 @@ namespace Fixtures {
   };
 }
 
-describe('ColumnWidthestimator', () => {
+describe('ColumnWidthestimator.getColumnWidths', () => {
   beforeEach(() => {
     (fontWidth.getFontWidth as jest.Mock<any>).mockImplementation(jest.fn(() => 10)).mockClear()
   })
@@ -114,8 +114,16 @@ describe('ColumnWidthestimator', () => {
     const model = new Fixtures.TestDataModel([first, second], ['h', 'h'], first)
     const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
     expect(estimator.getColumnWidths()).toEqual([8, 16]);
-
   })
 
+})
+
+describe('ColumnWidthEstimator.getRowHeaderWidth', () => {
+  it('get the row header width', () => {
+    const column = Array.from({ length: 200 }, () => 'a')
+    const model = new Fixtures.TestDataModel([column], ['h'], column);
+    const estimator = new ColumnWidthEstimator(model, Fixtures.renderer, Fixtures.options);
+    expect(estimator.getRowHeaderWidth()).toEqual(8);
+  })
 
 })
