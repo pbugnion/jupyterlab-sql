@@ -88,6 +88,8 @@ export class ResponseTable implements IDisposable {
     widths.forEach((width, column) => {
       this._grid.resizeSection('column', column, width)
     })
+    const headerWidth = estimator.getRowHeaderWidth()
+    this._grid.resizeSection('row-header', 0, headerWidth)
   }
 
   private _onClick(event: DataGridExtensions.GridMouseEvent) {
