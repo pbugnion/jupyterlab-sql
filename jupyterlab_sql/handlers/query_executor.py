@@ -28,21 +28,30 @@ class QueryExecutor:
         self._sqlite_engine_cache = Cache()
 
     def execute_query(self, connection_string, query):
+        engine = self._get_engine(connection_string)
+        result = self._execute_with_engine(engine, query)
+        return QueryResult.from_sqlalchemy_result(result)
+
+    def _get_engine(self, connection_string):
         backend = sqlalchemy.engine.url.make_url(
             connection_string
         ).get_backend_name()
         if backend == 'sqlite':
-            engine_builder = lambda: create_engine(
-                connection_string,
-                connect_args={'check_same_thread': False},
-                poolclass=StaticPool
-            )
             engine = self._sqlite_engine_cache.get_or_set(
-                connection_string, engine_builder)
+                connection_string,
+                lambda: self._create_sqlite_engine(connection_string)
+            )
         else:
             engine = create_engine(connection_string)
-        result = self._execute_with_engine(engine, query)
-        return QueryResult.from_sqlalchemy_result(result)
+        return engine
+
+    def _create_sqlite_engine(self, connection_string):
+        engine = create_engine(
+            connection_string,
+            connect_args={'check_same_thread': False},
+            poolclass=StaticPool
+        )
+        return engine
 
     def _execute_with_engine(self, engine, query):
         connection = engine.connect()
