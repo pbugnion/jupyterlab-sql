@@ -44,11 +44,16 @@ area to dispatch the statement.
 
 ### Database support
 
-*jupyterlab-sql* has been extensively tested against PostgreSQL and
-MySQL databases.
+*jupyterlab-sql* has been extensively tested against SQLite,
+PostgreSQL, and MySQL databases.
 
-It does not currently work with SQLite databases (in memory or on
-disk).
+Other databases supported by sqlalchemy may also work.
+
+### In-memory SQLite and persistence
+
+The lifetime of a SQLite in-memory database is tied to the lifetime
+of the Jupyter server. Restarting the Jupyter server will clear any
+data in your in-memory database.
 
 ## Issue reporting and contributing
 
