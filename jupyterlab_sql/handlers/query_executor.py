@@ -1,10 +1,10 @@
 
 from sqlalchemy import create_engine
-import sqlalchemy.engine.url
 from sqlalchemy.pool import StaticPool
 
 from .serializer import make_row_serializable
 from .cache import Cache
+from .connection_url import is_sqlite
 
 
 class QueryResult:
@@ -33,10 +33,7 @@ class QueryExecutor:
         return QueryResult.from_sqlalchemy_result(result)
 
     def _get_engine(self, connection_string):
-        backend = sqlalchemy.engine.url.make_url(
-            connection_string
-        ).get_backend_name()
-        if backend == 'sqlite':
+        if is_sqlite(connection_string):
             engine = self._sqlite_engine_cache.get_or_set(
                 connection_string,
                 lambda: self._create_sqlite_engine(connection_string)
