@@ -49,6 +49,12 @@ PostgreSQL, and MySQL databases.
 
 Other databases supported by sqlalchemy may also work.
 
+### In-memory SQLite and persistence
+
+The lifetime of a SQLite in-memory database is tied to the lifetime
+of the Jupyter server. Restarting the Jupyter server will clear any
+data in your in-memory database.
+
 ## Issue reporting and contributing
 
 Report issues using the [issue
