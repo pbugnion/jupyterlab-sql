@@ -4,18 +4,15 @@ from notebook.base.handlers import IPythonHandler
 from tornado.escape import json_decode
 import tornado.ioloop
 
-from sqlalchemy import create_engine
-
-from .serializer import make_row_serializable
-
+from .query_executor import QueryExecutor
 
 
 class SqlHandler(IPythonHandler):
-    def execute_query(self, engine, query):
-        connection = engine.connect()
-        result = connection.execution_options(no_parameters=True).execute(
-            query
-        )
+    def initialize(self, query_executor):
+        self._query_executor = query_executor
+
+    def execute_query(self, connection_string, query):
+        result = self._query_executor.execute_query(connection_string, query)
         return result
 
     def error_response(self, message):
@@ -29,25 +26,18 @@ class SqlHandler(IPythonHandler):
         data = json_decode(self.request.body)
         query = data["query"]
         connection_string = data["connectionString"]
-        try:
-            engine = create_engine(connection_string)
-        except Exception as e:
-            message = "Error creating database engine: \n{}".format(e)
-            return self.finish(self.error_response(message))
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             result = await ioloop.run_in_executor(
-                None, self.execute_query, engine, query
+                None, self.execute_query, connection_string, query
             )
-            if result.returns_rows:
-                keys = result.keys()
-                rows = [make_row_serializable(row) for row in result]
+            if result.has_rows:
                 response = {
                     "responseType": "success",
                     "responseData": {
                         "hasRows": True,
-                        "keys": keys,
-                        "rows": rows,
+                        "keys": result.keys,
+                        "rows": result.rows,
                     },
                 }
             else:
@@ -66,5 +56,6 @@ def register_handlers(nbapp):
     route_pattern = url_path_join(
         web_app.settings["base_url"], "/jupyterlab-sql/query"
     )
-    handlers = [(route_pattern, SqlHandler)]
+    executor = QueryExecutor()
+    handlers = [(route_pattern, SqlHandler, {'query_executor': executor})]
     web_app.add_handlers(host_pattern, handlers)
