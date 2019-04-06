@@ -44,11 +44,10 @@ area to dispatch the statement.
 
 ### Database support
 
-*jupyterlab-sql* has been extensively tested against PostgreSQL and
-MySQL databases.
+*jupyterlab-sql* has been extensively tested against SQLite,
+PostgreSQL, and MySQL databases.
 
-It does not currently work with SQLite databases (in memory or on
-disk).
+Other databases supported by sqlalchemy may also work.
 
 ## Issue reporting and contributing
 
