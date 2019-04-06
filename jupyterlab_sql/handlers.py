@@ -11,8 +11,8 @@ class SqlHandler(IPythonHandler):
     def initialize(self, query_executor):
         self._query_executor = query_executor
 
-    def execute_query(self, connection_string, query):
-        result = self._query_executor.execute_query(connection_string, query)
+    def execute_query(self, connection_url, query):
+        result = self._query_executor.execute_query(connection_url, query)
         return result
 
     def error_response(self, message):
@@ -25,11 +25,11 @@ class SqlHandler(IPythonHandler):
     async def post(self):
         data = json_decode(self.request.body)
         query = data["query"]
-        connection_string = data["connectionString"]
+        connection_url = data["connectionString"]
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             result = await ioloop.run_in_executor(
-                None, self.execute_query, connection_string, query
+                None, self.execute_query, connection_url, query
             )
             if result.has_rows:
                 response = {
