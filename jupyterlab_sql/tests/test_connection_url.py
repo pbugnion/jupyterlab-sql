@@ -9,7 +9,7 @@ import jupyterlab_sql.connection_url as connection_url
         "sqlite://",
         "sqlite:///test.db",
         "sqlite:////test.db",
-        "sqlite+pysqlcipher://:testing@/foo.db?cipher=aes-256-cfb&kdf_iter=64000",
+        "sqlite+pysqlcipher://:testing@/foo.db?ciph=aes-256-cfb&kdf=64000",
         "sqlite+pysqlite:///file.db",
     ],
 )
