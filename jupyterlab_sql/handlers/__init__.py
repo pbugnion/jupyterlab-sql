@@ -9,10 +9,8 @@ from sqlalchemy import create_engine
 from .serializer import make_row_serializable
 
 
-class SqlHandler(IPythonHandler):
-    def __init__(self, *args, **kwargs):
-        super(SqlHandler, self).__init__(*args, **kwargs)
 
+class SqlHandler(IPythonHandler):
     def execute_query(self, engine, query):
         connection = engine.connect()
         result = connection.execution_options(no_parameters=True).execute(
