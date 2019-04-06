@@ -1,4 +1,3 @@
-
 from sqlalchemy import create_engine
 from sqlalchemy.pool import StaticPool
 
@@ -36,7 +35,7 @@ class QueryExecutor:
         if is_sqlite(connection_url):
             engine = self._sqlite_engine_cache.get_or_set(
                 connection_url,
-                lambda: self._create_sqlite_engine(connection_url)
+                lambda: self._create_sqlite_engine(connection_url),
             )
         else:
             engine = create_engine(connection_url)
@@ -45,8 +44,8 @@ class QueryExecutor:
     def _create_sqlite_engine(self, connection_url):
         engine = create_engine(
             connection_url,
-            connect_args={'check_same_thread': False},
-            poolclass=StaticPool
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
         )
         return engine
 

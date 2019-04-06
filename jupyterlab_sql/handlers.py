@@ -57,5 +57,5 @@ def register_handlers(nbapp):
         web_app.settings["base_url"], "/jupyterlab-sql/query"
     )
     executor = QueryExecutor()
-    handlers = [(route_pattern, SqlHandler, {'query_executor': executor})]
+    handlers = [(route_pattern, SqlHandler, {"query_executor": executor})]
     web_app.add_handlers(host_pattern, handlers)
