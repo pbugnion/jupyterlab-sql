@@ -4,7 +4,7 @@ import decimal
 
 import pytest
 
-from jupyterlab_sql.handlers.serializer import make_row_serializable
+from jupyterlab_sql.serializer import make_row_serializable
 
 
 @pytest.mark.parametrize(

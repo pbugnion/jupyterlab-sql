@@ -1,7 +1,7 @@
 
 import pytest
 
-import jupyterlab_sql.handlers.connection_url as connection_url
+import jupyterlab_sql.connection_url as connection_url
 
 @pytest.mark.parametrize(
     "url",
