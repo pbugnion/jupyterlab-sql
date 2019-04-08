@@ -1,6 +1,6 @@
 import { BoxPanel } from '@phosphor/widgets';
 
-import { newToolbar, ToolbarModel } from './toolbar';
+import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar';
 
 namespace ConnectionPage {
   export interface IOptions {
@@ -15,7 +15,7 @@ export class ConnectionPage extends BoxPanel {
 
     this.addClass('p-Sql-MainContainer')
 
-    const toolbarModel = new ToolbarModel(options.initialConnectionString);
+    const toolbarModel = new ConnectionPageToolbarModel(options.initialConnectionString);
     const connectionWidget = newToolbar(toolbarModel);
 
     this.addWidget(connectionWidget)
