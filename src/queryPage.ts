@@ -18,7 +18,6 @@ import { Api } from './api';
 
 namespace QueryPage {
   export interface Options {
-    name: string;
     initialConnectionString: string;
     initialSqlStatement: string;
   }
@@ -30,11 +29,8 @@ export class QueryPage extends BoxPanel {
     options: QueryPage.Options
   ) {
     super();
-    this.name = options.name;
-    this.id = 'jupyterlab-sql';
-    this.title.label = 'SQL';
-    this.title.closable = true;
-    this.addClass('p-Sql-MainContainer');
+
+    this.addClass('p-Sql-MainContainer')
 
     const toolbarModel = new ToolbarModel(options.initialConnectionString);
     this.toolbarModel = toolbarModel;
@@ -63,11 +59,9 @@ export class QueryPage extends BoxPanel {
     BoxPanel.setStretch(this.response.widget, 3);
   }
 
-  readonly editorFactory: IEditorFactoryService;
   readonly editor: IEditor;
   readonly response: IResponse;
   readonly toolbarModel: IToolbarModel;
-  readonly name: string;
   private _lastRequestId: string;
   private _connectionStringChanged = new Signal<this, string>(this);
   private _sqlStatementChanged = new Signal<this, string>(this);

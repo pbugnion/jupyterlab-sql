@@ -16,7 +16,7 @@ import { IEditorServices } from '@jupyterlab/codeeditor';
 
 import { ILauncher } from '@jupyterlab/launcher';
 
-import { QueryPage } from './queryPage';
+import { JupyterLabSqlWidget } from './widget';
 
 import { createTracker } from './tracker';
 
@@ -30,22 +30,22 @@ function activate(
   restorer: ILayoutRestorer
 ) {
   const tracker: InstanceTracker<
-    MainAreaWidget<QueryPage>
+    MainAreaWidget<JupyterLabSqlWidget>
     > = createTracker();
   const command: string = 'jupyterlab-sql:open';
 
-  restorer.restore(tracker, {
-    command: command,
-    args: widget => ({
-      name: widget.content.name,
-      connectionString: widget.content.toolbarModel.connectionString,
-      sqlStatement: widget.content.sqlStatementValue
-    }),
-    name: widget => widget.content.name
-  });
+  // restorer.restore(tracker, {
+  //   command: command,
+  //   args: widget => ({
+  //     name: widget.content.name,
+  //     connectionString: widget.content.toolbarModel.connectionString,
+  //     sqlStatement: widget.content.sqlStatementValue
+  //   }),
+  //   name: widget => widget.content.name
+  // });
 
   app.commands.addCommand(command, {
-    label: ({ isPalette }) => (isPalette ? 'New SL session' : 'SQL'),
+    label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
     execute: ({ name, connectionString, sqlStatement }) => {
       const widgetName = <string>(name || uuid.v4());
@@ -53,7 +53,7 @@ function activate(
         (connectionString || 'postgres://localhost:5432/postgres')
       );
       const initialSqlStatement = <string>(sqlStatement || '');
-      const widget = new QueryPage(editorServices.factoryService, {
+      const widget = new JupyterLabSqlWidget(editorServices.factoryService, {
         name: widgetName,
         initialConnectionString,
         initialSqlStatement
