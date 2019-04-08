@@ -4,7 +4,10 @@ import { Message } from '@phosphor/messaging';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
+// @ts-ignore
 import { QueryPage } from './queryPage';
+
+import { ConnectionPage } from './connectionPage';
 
 
 namespace JupyterLabSqlWidget {
@@ -27,9 +30,8 @@ export class JupyterLabSqlWidget extends Widget {
     this.layout = new SingletonLayout();
 
     this.editorFactory = editorFactory;
-    const widget = new QueryPage(editorFactory, {
-      initialConnectionString: options.initialConnectionString,
-      initialSqlStatement: options.initialSqlStatement
+    const widget = new ConnectionPage({
+      initialConnectionString: options.initialConnectionString
     })
     this._setCurrentWidget(widget);
   }
