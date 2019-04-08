@@ -20,4 +20,15 @@ export namespace Api {
     const data = await response.json();
     return data;
   }
+
+  export async function getStructure(): Promise<any> {
+    const url = URLExt.join(settings.baseUrl, '/jupyterlab-sql/structure')
+    const request: RequestInit = {
+      method: 'POST',
+      body: JSON.stringify({})
+    }
+    const response = await ServerConnection.makeRequest(url, request, settings);
+    const data = await response.json()
+    return data;
+  }
 }
