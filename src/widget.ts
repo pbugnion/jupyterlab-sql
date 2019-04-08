@@ -9,6 +9,8 @@ import { QueryPage } from './queryPage';
 
 import { ConnectionPage } from './connectionPage';
 
+import { DatabaseSummaryPage } from './databaseSummary';
+
 
 namespace JupyterLabSqlWidget {
   export interface IOptions {
@@ -32,6 +34,10 @@ export class JupyterLabSqlWidget extends Widget {
     this.editorFactory = editorFactory;
     const widget = new ConnectionPage({
       initialConnectionString: options.initialConnectionString
+    })
+    widget.connectDatabase.connect((_, connectionUrl) => {
+      const widget = new DatabaseSummaryPage({ connectionUrl });
+      this._setCurrentWidget(widget)
     })
     this._setCurrentWidget(widget);
   }

@@ -2,7 +2,7 @@ import { BoxPanel } from '@phosphor/widgets';
 
 import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar';
 
-import { Api } from './api';
+import { Signal, ISignal } from '@phosphor/signaling';
 
 namespace ConnectionPage {
   export interface IOptions {
@@ -23,9 +23,15 @@ export class ConnectionPage extends BoxPanel {
     this.addWidget(connectionWidget)
     BoxPanel.setSizeBasis(connectionWidget, 50)
 
-    toolbarModel.connect.connect(() => {
-      Api.getStructure().then(console.log)
+    toolbarModel.connect.connect((_, connectionUrl) => {
+      this._connectDatabase.emit(connectionUrl)
     })
   }
+
+  get connectDatabase(): ISignal<this, string> {
+    return this._connectDatabase;
+  }
+
+  private readonly _connectDatabase = new Signal<this, string>(this);
 
 }
