@@ -16,7 +16,7 @@ import { Editor, IEditor } from './editor';
 
 import { Api } from './api';
 
-namespace JupyterLabSqlWidget {
+namespace QueryPage {
   export interface Options {
     name: string;
     initialConnectionString: string;
@@ -24,10 +24,10 @@ namespace JupyterLabSqlWidget {
   }
 }
 
-export class JupyterLabSqlWidget extends BoxPanel {
+export class QueryPage extends BoxPanel {
   constructor(
     editorFactory: IEditorFactoryService,
-    options: JupyterLabSqlWidget.Options
+    options: QueryPage.Options
   ) {
     super();
     this.name = options.name;
