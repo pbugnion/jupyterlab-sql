@@ -50,12 +50,29 @@ class SqlQueryHandler(IPythonHandler):
         self.finish(json.dumps(response))
 
 
+class StructureHandler(IPythonHandler):
+    async def post(self):
+        response = {
+            "responseType": "success",
+            "responseData": {
+                "tables": ["a", "b", "c"]
+            }
+        }
+        self.finish(json.dumps(response))
+
+
+def form_route(web_app, endpoint):
+    return url_path_join(
+        web_app.settings["base_url"], "/jupyterlab-sql/", endpoint
+    )
+
+
 def register_handlers(nbapp):
     web_app = nbapp.web_app
     host_pattern = ".*$"
-    route_pattern = url_path_join(
-        web_app.settings["base_url"], "/jupyterlab-sql/query"
-    )
     executor = QueryExecutor()
-    handlers = [(route_pattern, SqlQueryHandler, {"query_executor": executor})]
+    handlers = [
+        (form_route(web_app, "query"), SqlQueryHandler, {"query_executor": executor}),
+        (form_route(web_app, "structure"), StructureHandler)
+    ]
     web_app.add_handlers(host_pattern, handlers)
