@@ -25,10 +25,14 @@ export class ConnectionPageToolbarModel extends VDomModel implements IConnection
 
   private _connectionString: string;
 
-  private _connectionStringChanged = new Signal<this, string>(this);
+  private _connect = new Signal<this, string>(this);
+
+  tryConnect(connectionString: string): void {
+    this._connect.emit(connectionString)
+  }
 
   get connect(): ISignal<this, string> {
-    return this._connectionStringChanged;
+    return this._connect;
   }
 
   get connectionString(): string {
@@ -46,7 +50,7 @@ class ToolbarContainer extends VDomRenderer<ConnectionPageToolbarModel> {
         <div className="p-Sql-Toolbar">
           <ConnectionInformationEdit
             connectionString={connectionString}
-            onFinishEdit={console.log}
+            onFinishEdit={currentConnectionString => this.model.tryConnect(currentConnectionString)}
           />
         </div>
       );
