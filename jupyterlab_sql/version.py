@@ -1,3 +1,3 @@
 # This file is generated programatically.
 # Version of the Python package
-__version__ = "0.1.8"
+__version__ = "0.1.9-dev"
