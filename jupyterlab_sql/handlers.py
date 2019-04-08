@@ -7,7 +7,7 @@ import tornado.ioloop
 from .query_executor import QueryExecutor
 
 
-class SqlHandler(IPythonHandler):
+class SqlQueryHandler(IPythonHandler):
     def initialize(self, query_executor):
         self._query_executor = query_executor
 
@@ -57,5 +57,5 @@ def register_handlers(nbapp):
         web_app.settings["base_url"], "/jupyterlab-sql/query"
     )
     executor = QueryExecutor()
-    handlers = [(route_pattern, SqlHandler, {"query_executor": executor})]
+    handlers = [(route_pattern, SqlQueryHandler, {"query_executor": executor})]
     web_app.add_handlers(host_pattern, handlers)
