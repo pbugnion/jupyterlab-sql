@@ -1,2 +1,4 @@
 
-export { PreWidget } from './preWidget'
+export { PreWidget } from './PreWidget'
+
+export { SingletonPanel } from './SingletonPanel'
