@@ -1,7 +1,11 @@
 
 import { Widget, BoxPanel, SingletonLayout, LayoutItem } from '@phosphor/widgets';
+
 import { Message } from '@phosphor/messaging';
+
 import { Api } from '../api'
+
+import { PreWidget } from '../components';
 
 namespace DatabaseSummaryPage {
   export interface IOptions {
@@ -40,7 +44,7 @@ class ResponseWidget extends Widget {
   }
 
   setResponse(response: any) {
-    const widget = new TextResponseWidget(JSON.stringify(response));
+    const widget = new PreWidget(JSON.stringify(response));
     this._setCurrentWidget(widget);
   }
 
@@ -56,16 +60,4 @@ class ResponseWidget extends Widget {
 
   readonly layout: SingletonLayout;
   private _item: LayoutItem;
-}
-
-
-class TextResponseWidget extends Widget {
-  constructor(message: string) {
-    super();
-    const element = document.createElement('div');
-    const pre = document.createElement('pre');
-    pre.innerHTML = message;
-    element.appendChild(pre);
-    this.node.appendChild(element);
-  }
 }
