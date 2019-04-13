@@ -1,8 +1,6 @@
-import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
+import { Widget } from '@phosphor/widgets';
 
-import { Message } from '@phosphor/messaging';
-
-import { PreWidget } from './components';
+import { PreWidget, SingletonPanel } from './components';
 
 import { ResponseModel } from './responseModel';
 
@@ -29,12 +27,7 @@ export class Response {
   private readonly _widget: ResponseWidget;
 }
 
-export class ResponseWidget extends Widget {
-  constructor() {
-    super();
-    this.layout = new SingletonLayout();
-  }
-
+export class ResponseWidget extends SingletonPanel {
   dispose(): void {
     if (this._table) {
       this._table.dispose();
@@ -42,41 +35,23 @@ export class ResponseWidget extends Widget {
     super.dispose();
   }
 
-  onResize(msg: Message) {
-    if (this._item) {
-      this._fitCurrentWidget();
-    }
-  }
-
   setResponse(response: ResponseModel.Type) {
     this._disposeTable();
-    let widget: Widget;
     ResponseModel.match(
       response,
       (keys, rows) => {
         const table = ResponseTable.fromKeysRows(keys, rows);
         this._table = table;
-        widget = table.widget;
+        this.widget = table.widget;
       },
       () => {
         const message = 'Command executed successfully';
-        widget = new PreWidget(message);
+        this.widget = new PreWidget(message);
       },
       ({ message }) => {
-        widget = new PreWidget(message);
+        this.widget = new PreWidget(message);
       }
     );
-    this._setCurrentWidget(widget);
-  }
-
-  private _setCurrentWidget(widget: Widget) {
-    this.layout.widget = widget;
-    this._item = new LayoutItem(this.layout.widget);
-    this._fitCurrentWidget();
-  }
-
-  private _fitCurrentWidget() {
-    this._item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
   }
 
   private _disposeTable(): void {
@@ -86,7 +61,5 @@ export class ResponseWidget extends Widget {
     this._table = null;
   }
 
-  readonly layout: SingletonLayout;
-  private _item: LayoutItem;
   private _table: ResponseTable | null = null;
 }
