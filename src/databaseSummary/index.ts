@@ -14,22 +14,22 @@ namespace DatabaseSummaryPage {
 export class DatabaseSummaryPage extends BoxPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
     super();
-    this.responseWidget = new ResponseWidget()
-    this.responseWidget.setResponse("loading")
+    this._responseWidget = new ResponseWidget()
+    this._responseWidget.setResponse("loading")
     const customQueryWidget = new CustomQueryWidget()
     this.addWidget(customQueryWidget);
-    this.addWidget(this.responseWidget);
+    this.addWidget(this._responseWidget);
     BoxPanel.setSizeBasis(customQueryWidget, 30);
-    BoxPanel.setStretch(this.responseWidget, 1)
-    this.getStructure()
+    BoxPanel.setStretch(this._responseWidget, 1)
+    this._getStructure()
   }
 
-  async getStructure(): Promise<void> {
+  private async _getStructure(): Promise<void> {
     const response = await Api.getStructure()
-    this.responseWidget.setResponse(response)
+    this._responseWidget.setResponse(response)
   }
 
-  private readonly responseWidget: ResponseWidget
+  private readonly _responseWidget: ResponseWidget
 }
 
 class CustomQueryWidget extends Widget {
