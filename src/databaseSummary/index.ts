@@ -1,6 +1,8 @@
 
 import { Widget, BoxPanel } from '@phosphor/widgets';
 
+import { ISignal, Signal } from '@phosphor/signaling';
+
 import { PreWidget, SingletonPanel } from '../components';
 
 import { Api } from '../api'
@@ -17,6 +19,7 @@ export class DatabaseSummaryPage extends BoxPanel {
     this._responseWidget = new ResponseWidget()
     this._responseWidget.setResponse("loading")
     const customQueryWidget = new CustomQueryWidget()
+    customQueryWidget.clicked.connect(() => console.log('custom query clicked'))
     this.addWidget(customQueryWidget);
     this.addWidget(this._responseWidget);
     BoxPanel.setSizeBasis(customQueryWidget, 30);
@@ -38,10 +41,16 @@ class CustomQueryWidget extends Widget {
     const element = document.createElement('div');
     const button = document.createElement('button');
     button.innerHTML = 'Custom query';
-    button.onclick = () => console.log('custom query click');
+    button.onclick = () => this._clicked.emit(void 0);
     element.appendChild(button);
     this.node.appendChild(element);
   }
+
+  get clicked(): ISignal<this, void> {
+    return this._clicked;
+  }
+
+  private readonly _clicked = new Signal<this, void>(this);
 }
 
 class ResponseWidget extends SingletonPanel {
