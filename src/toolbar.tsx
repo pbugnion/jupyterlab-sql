@@ -4,7 +4,7 @@ import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
 
-import classNames from 'classnames';
+import classNames from 'classNames';
 
 import { ConnectionUrl } from './services';
 
