@@ -36,4 +36,19 @@ describe('SingletonPanel', () => {
     panel.widget = widget;
     expect(resizeSpy).toBeCalledWith(new Widget.ResizeMessage(200, 400));
   })
+
+  it('pass on its own resize requests', () => {
+    const panel = new SingletonPanel();
+    const widget = new Fixtures.TestWidget();
+    panel.widget = widget;
+    const resizeSpy = jest.spyOn(widget, 'processMessage')
+    const resizeMessage = new Widget.ResizeMessage(300, 100);
+    // Set the node size (since jsdom does no layout)
+    Object.defineProperties(panel.node, {
+      offsetWidth: { get: () => 300 },
+      offsetHeight: { get: () => 100 }
+    })
+    panel.processMessage(resizeMessage);
+    expect(resizeSpy).toBeCalledWith(resizeMessage);
+  })
 })
