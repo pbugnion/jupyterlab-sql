@@ -19,12 +19,16 @@ export class DatabaseSummaryPage extends BoxPanel {
     this._responseWidget = new ResponseWidget()
     this._responseWidget.setResponse("loading")
     const customQueryWidget = new CustomQueryWidget()
-    customQueryWidget.clicked.connect(() => console.log('custom query clicked'))
+    customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
     this.addWidget(customQueryWidget);
     this.addWidget(this._responseWidget);
     BoxPanel.setSizeBasis(customQueryWidget, 30);
     BoxPanel.setStretch(this._responseWidget, 1)
     this._getStructure()
+  }
+
+  get customQueryClicked(): ISignal<this, void> {
+    return this._customQueryClicked;
   }
 
   private async _getStructure(): Promise<void> {
@@ -33,6 +37,7 @@ export class DatabaseSummaryPage extends BoxPanel {
   }
 
   private readonly _responseWidget: ResponseWidget
+  private readonly _customQueryClicked = new Signal<this, void>(this);
 }
 
 class CustomQueryWidget extends Widget {

@@ -37,6 +37,7 @@ export class JupyterLabSqlWidget extends Widget {
     })
     widget.connectDatabase.connect((_, connectionUrl) => {
       const widget = new DatabaseSummaryPage({ connectionUrl });
+      widget.customQueryClicked.connect(() => console.log('custom query clicked'))
       this._setCurrentWidget(widget)
     })
     this._setCurrentWidget(widget);
