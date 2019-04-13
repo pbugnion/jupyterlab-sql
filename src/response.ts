@@ -40,7 +40,7 @@ export class ResponseWidget extends SingletonPanel {
     ResponseModel.match(
       response,
       (keys, rows) => {
-        const table = ResponseTable.fromKeysRows(keys, rows);
+        const table = new ResponseTable(keys, rows);
         this._table = table;
         this.widget = table.widget;
       },
