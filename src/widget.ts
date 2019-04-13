@@ -4,7 +4,6 @@ import { Message } from '@phosphor/messaging';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
-// @ts-ignore
 import { QueryPage } from './queryPage';
 
 import { ConnectionPage } from './connectionPage';
@@ -37,7 +36,14 @@ export class JupyterLabSqlWidget extends Widget {
     })
     widget.connectDatabase.connect((_, connectionUrl) => {
       const widget = new DatabaseSummaryPage({ connectionUrl });
-      widget.customQueryClicked.connect(() => console.log('custom query clicked'))
+      widget.customQueryClicked.connect(() => {
+        const options = {
+          initialConnectionString: connectionUrl,
+          initialSqlStatement: 'select * from t'
+        }
+        const widget = new QueryPage(editorFactory, options)
+        this._setCurrentWidget(widget)
+      })
       this._setCurrentWidget(widget)
     })
     this._setCurrentWidget(widget);
