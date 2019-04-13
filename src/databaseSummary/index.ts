@@ -1,5 +1,5 @@
 
-import { BoxPanel } from '@phosphor/widgets';
+import { Widget, BoxPanel } from '@phosphor/widgets';
 
 import { PreWidget, SingletonPanel } from '../components';
 
@@ -16,9 +16,12 @@ export class DatabaseSummaryPage extends BoxPanel {
     super();
     this.responseWidget = new ResponseWidget()
     this.responseWidget.setResponse("loading")
-    this.getStructure()
+    const customQueryWidget = new CustomQueryWidget()
+    this.addWidget(customQueryWidget);
     this.addWidget(this.responseWidget);
+    BoxPanel.setSizeBasis(customQueryWidget, 30);
     BoxPanel.setStretch(this.responseWidget, 1)
+    this.getStructure()
   }
 
   async getStructure(): Promise<void> {
@@ -27,6 +30,18 @@ export class DatabaseSummaryPage extends BoxPanel {
   }
 
   private readonly responseWidget: ResponseWidget
+}
+
+class CustomQueryWidget extends Widget {
+  constructor() {
+    super();
+    const element = document.createElement('div');
+    const button = document.createElement('button');
+    button.innerHTML = 'Custom query';
+    button.onclick = () => console.log('custom query click');
+    element.appendChild(button);
+    this.node.appendChild(element);
+  }
 }
 
 class ResponseWidget extends SingletonPanel {
