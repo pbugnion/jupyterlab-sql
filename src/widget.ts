@@ -27,22 +27,34 @@ export class JupyterLabSqlWidget extends SingletonPanel {
     this.title.closable = true;
 
     this.editorFactory = editorFactory;
+    this._loadConnectionPage(options.initialConnectionString);
+  }
+
+  private _loadConnectionPage(initialConnectionString: string): void {
     const widget = new ConnectionPage({
-      initialConnectionString: options.initialConnectionString
-    })
+      initialConnectionString
+    });
     widget.connectDatabase.connect((_, connectionUrl) => {
-      const widget = new DatabaseSummaryPage({ connectionUrl });
-      widget.customQueryClicked.connect(() => {
-        const options = {
-          initialConnectionString: connectionUrl,
-          initialSqlStatement: 'select * from t'
-        }
-        const widget = new QueryPage(editorFactory, options)
-        this.widget = widget
-      })
-      this.widget = widget
+      this._loadSummaryPage(connectionUrl)
     })
     this.widget = widget
+  }
+
+  private _loadSummaryPage(connectionUrl: string) {
+    const widget = new DatabaseSummaryPage({ connectionUrl });
+    widget.customQueryClicked.connect(() => {
+      this._loadQueryPage(connectionUrl)
+    })
+    this.widget = widget;
+  }
+
+  private _loadQueryPage(connectionUrl: string) {
+    const options = {
+      initialConnectionString: connectionUrl,
+      initialSqlStatement: 'select * from t'
+    }
+    const widget = new QueryPage(this.editorFactory, options);
+    this.widget = widget;
   }
 
   readonly editorFactory: IEditorFactoryService;
