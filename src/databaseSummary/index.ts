@@ -5,10 +5,11 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import { IDisposable } from '@phosphor/disposable';
 
-import { SingletonPanel, Table } from '../components';
+import { CommandRegistry } from '@phosphor/commands';
+
+import { PreWidget, SingletonPanel, Table } from '../components';
 
 import { Api } from '../api'
-import { CommandRegistry } from '@phosphor/commands';
 
 namespace DatabaseSummaryPage {
   export interface IOptions {
@@ -20,7 +21,7 @@ export class DatabaseSummaryPage extends BoxPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
     super();
     this._responseWidget = new ResponseWidget()
-    this._responseWidget.setResponse("loading")
+    // this._responseWidget.setResponse("loading")
     const customQueryWidget = new CustomQueryWidget()
     customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
     this.addWidget(customQueryWidget);
@@ -62,9 +63,17 @@ class CustomQueryWidget extends Widget {
 }
 
 class ResponseWidget extends SingletonPanel {
-  setResponse(response: any) {
-    const table = new DatabaseSummaryTable(['a', 'b', 'c'])
-    this.widget = table.widget
+  setResponse(response: Api.StructureResponse.Type) {
+    Api.StructureResponse.match(
+      response,
+      tables => {
+        const table = new DatabaseSummaryTable(tables)
+        this.widget = table.widget
+      },
+      () => {
+        this.widget = new PreWidget('oops')
+      }
+    )
   }
 }
 

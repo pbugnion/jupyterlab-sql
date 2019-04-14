@@ -55,7 +55,7 @@ class StructureHandler(IPythonHandler):
         response = {
             "responseType": "success",
             "responseData": {
-                "tables": ["a", "b", "c"]
+                "tables": ["a", "b", "c", "d", "e"]
             }
         }
         self.finish(json.dumps(response))
