@@ -21,7 +21,7 @@ export class DatabaseSummaryPage extends BoxPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
     super();
     this._responseWidget = new ResponseWidget()
-    // this._responseWidget.setResponse("loading")
+    this._responseWidget.setLoading()
     const customQueryWidget = new CustomQueryWidget()
     customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
     this.addWidget(customQueryWidget);
@@ -74,6 +74,10 @@ class ResponseWidget extends SingletonPanel {
         this.widget = new PreWidget('oops')
       }
     )
+  }
+
+  setLoading() {
+    this.widget = new PreWidget('Fetching database summary...')
   }
 }
 
