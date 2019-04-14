@@ -4,15 +4,15 @@ from notebook.base.handlers import IPythonHandler
 from tornado.escape import json_decode
 import tornado.ioloop
 
-from .query_executor import QueryExecutor
+from .executor import Executor
 
 
 class SqlQueryHandler(IPythonHandler):
-    def initialize(self, query_executor):
-        self._query_executor = query_executor
+    def initialize(self, executor):
+        self._executor = executor
 
     def execute_query(self, connection_url, query):
-        result = self._query_executor.execute_query(connection_url, query)
+        result = self._executor.execute_query(connection_url, query)
         return result
 
     def error_response(self, message):
@@ -51,13 +51,35 @@ class SqlQueryHandler(IPythonHandler):
 
 
 class StructureHandler(IPythonHandler):
-    async def post(self):
+
+    def initialize(self, executor):
+        self._executor = executor
+
+    def error_response(self, message):
         response = {
-            "responseType": "success",
-            "responseData": {
-                "tables": ["a", "b", "c", "d", "e"]
-            }
+            "responseType": "error",
+            "responseData": {"message": message},
         }
+        return response
+
+    def get_table_names(self, connection_url):
+        result = self._executor.get_table_names(connection_url)
+        return result
+
+    async def post(self):
+        connection_url = "postgres://localhost:5432/postgres"
+        ioloop = tornado.ioloop.IOLoop.current()
+        try:
+            tables = await ioloop.run_in_executor(
+                None, self.get_table_names, connection_url)
+            response = {
+                "responseType": "success",
+                "responseData": {
+                    "tables": tables
+                }
+            }
+        except Exception as e:
+            response = self.error_response(str(e))
         self.finish(json.dumps(response))
 
 
@@ -70,9 +92,9 @@ def form_route(web_app, endpoint):
 def register_handlers(nbapp):
     web_app = nbapp.web_app
     host_pattern = ".*$"
-    executor = QueryExecutor()
+    executor = Executor()
     handlers = [
-        (form_route(web_app, "query"), SqlQueryHandler, {"query_executor": executor}),
-        (form_route(web_app, "structure"), StructureHandler)
+        (form_route(web_app, "query"), SqlQueryHandler, {"executor": executor}),
+        (form_route(web_app, "structure"), StructureHandler, {"executor": executor})
     ]
     web_app.add_handlers(host_pattern, handlers)

@@ -22,9 +22,13 @@ class QueryResult:
             return cls(None, None)
 
 
-class QueryExecutor:
+class Executor:
     def __init__(self):
         self._sqlite_engine_cache = Cache()
+
+    def get_table_names(self, connection_url):
+        engine = self._get_engine(connection_url)
+        return engine.table_names()
 
     def execute_query(self, connection_url, query):
         engine = self._get_engine(connection_url)
