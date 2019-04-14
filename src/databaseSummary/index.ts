@@ -1,11 +1,14 @@
 
-import { Widget, BoxPanel } from '@phosphor/widgets';
+import { Menu, Widget, BoxPanel } from '@phosphor/widgets';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
-import { PreWidget, SingletonPanel } from '../components';
+import { IDisposable } from '@phosphor/disposable';
+
+import { SingletonPanel, Table } from '../components';
 
 import { Api } from '../api'
+import { CommandRegistry } from '@phosphor/commands';
 
 namespace DatabaseSummaryPage {
   export interface IOptions {
@@ -60,6 +63,32 @@ class CustomQueryWidget extends Widget {
 
 class ResponseWidget extends SingletonPanel {
   setResponse(response: any) {
-    this.widget = new PreWidget(JSON.stringify(response));
+    const table = new DatabaseSummaryTable(['a', 'b', 'c'])
+    this.widget = table.widget
   }
+}
+
+class DatabaseSummaryTable implements IDisposable {
+  constructor(tables: Array<string>) {
+    const commands = new CommandRegistry();
+    const contextMenu = new Menu({ commands });
+    const data = tables.map(table => { return [table] });
+    this._table = Table.fromKeysRows(['tables'], data, { contextMenu })
+  }
+
+  dispose(): void {
+    this._table.dispose();
+    this._isDisposed = true;
+  }
+
+  get widget(): Widget {
+    return this._table.widget;
+  }
+
+  get isDisposed(): boolean {
+    return this._isDisposed;
+  }
+
+  private readonly _table: Table;
+  private _isDisposed: boolean = false;
 }
