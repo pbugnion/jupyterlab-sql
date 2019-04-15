@@ -7,6 +7,8 @@ import { IDisposable } from '@phosphor/disposable';
 
 import { CommandRegistry } from '@phosphor/commands';
 
+import { Clipboard } from '@jupyterlab/apputils';
+
 import { PreWidget, SingletonPanel, Table } from '../components';
 
 import { Api } from '../api'
@@ -83,8 +85,7 @@ class ResponseWidget extends SingletonPanel {
 
 class DatabaseSummaryTable implements IDisposable {
   constructor(tables: Array<string>) {
-    const commands = new CommandRegistry();
-    const contextMenu = new Menu({ commands });
+    const contextMenu = this._createContextMenu()
     const data = tables.map(table => { return [table] });
     this._table = Table.fromKeysRows(['tables'], data, { contextMenu })
   }
@@ -102,6 +103,31 @@ class DatabaseSummaryTable implements IDisposable {
     return this._isDisposed;
   }
 
+  private _createContextMenu(): Menu {
+    const commands = new CommandRegistry();
+    commands.addCommand(DatabaseSummaryTable.CommandIds.copyToClipboard, {
+      label: 'Copy cell',
+      iconClass: 'jp-MaterialIcon jp-CopyIcon',
+      execute: () => this._copySelectionToClipboard()
+    })
+    const menu = new Menu({ commands });
+    menu.addItem({ command: DatabaseSummaryTable.CommandIds.copyToClipboard })
+    return menu
+  }
+
+  private _copySelectionToClipboard(): void {
+    const selectionValue = this._table.selectionValue;
+    if (selectionValue !== null) {
+      Clipboard.copyToSystem(selectionValue)
+    }
+  }
+
   private readonly _table: Table;
   private _isDisposed: boolean = false;
+}
+
+namespace DatabaseSummaryTable {
+  export namespace CommandIds {
+    export const copyToClipboard = 'copy-selection-to-clipboard';
+  }
 }
