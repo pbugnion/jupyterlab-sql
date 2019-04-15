@@ -25,7 +25,7 @@ export class DatabaseSummaryPage extends BoxPanel {
     this._responseWidget = new ResponseWidget()
     this._responseWidget.setLoading()
     this._responseWidget.navigateToTable.connect((_, tableName) => {
-      console.log(tableName)
+      this._navigateToTable.emit(tableName)
     })
     const customQueryWidget = new CustomQueryWidget()
     customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
@@ -40,6 +40,10 @@ export class DatabaseSummaryPage extends BoxPanel {
     return this._customQueryClicked;
   }
 
+  get navigateToTable(): ISignal<this, string> {
+    return this._navigateToTable
+  }
+
   private async _getStructure(): Promise<void> {
     const response = await Api.getStructure()
     this._responseWidget.setResponse(response)
@@ -47,6 +51,7 @@ export class DatabaseSummaryPage extends BoxPanel {
 
   private readonly _responseWidget: ResponseWidget
   private readonly _customQueryClicked = new Signal<this, void>(this);
+  private readonly _navigateToTable = new Signal<this, string>(this);
 }
 
 class CustomQueryWidget extends Widget {

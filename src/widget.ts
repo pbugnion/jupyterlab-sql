@@ -45,6 +45,9 @@ export class JupyterLabSqlWidget extends SingletonPanel {
     widget.customQueryClicked.connect(() => {
       this._loadQueryPage(connectionUrl)
     })
+    widget.navigateToTable.connect((_, tableName) => {
+      console.log(`Navigate to table ${tableName}.`)
+    })
     this.widget = widget;
   }
 
