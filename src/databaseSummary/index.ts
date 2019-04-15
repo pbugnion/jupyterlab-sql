@@ -24,6 +24,9 @@ export class DatabaseSummaryPage extends BoxPanel {
     super();
     this._responseWidget = new ResponseWidget()
     this._responseWidget.setLoading()
+    this._responseWidget.navigateToTable.connect((_, tableName) => {
+      console.log(tableName)
+    })
     const customQueryWidget = new CustomQueryWidget()
     customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
     this.addWidget(customQueryWidget);
@@ -65,11 +68,17 @@ class CustomQueryWidget extends Widget {
 }
 
 class ResponseWidget extends SingletonPanel {
+
+  // TODO: Dispose of table and signals
+
   setResponse(response: Api.StructureResponse.Type) {
     Api.StructureResponse.match(
       response,
       tables => {
         const table = new DatabaseSummaryTable(tables)
+        table.navigateToTable.connect((_, tableName) => {
+          this._navigateToTable.emit(tableName)
+        })
         this.widget = table.widget
       },
       () => {
@@ -81,6 +90,12 @@ class ResponseWidget extends SingletonPanel {
   setLoading() {
     this.widget = new PreWidget('Fetching database summary...')
   }
+
+  get navigateToTable(): ISignal<this, string> {
+    return this._navigateToTable;
+  }
+
+  private readonly _navigateToTable = new Signal<this, string>(this);
 }
 
 class DatabaseSummaryTable implements IDisposable {
@@ -103,6 +118,10 @@ class DatabaseSummaryTable implements IDisposable {
     return this._isDisposed;
   }
 
+  get navigateToTable(): ISignal<this, string> {
+    return this._navigateToTable;
+  }
+
   private _createContextMenu(): Menu {
     const commands = new CommandRegistry();
     commands.addCommand(DatabaseSummaryTable.CommandIds.copyToClipboard, {
@@ -110,8 +129,13 @@ class DatabaseSummaryTable implements IDisposable {
       iconClass: 'jp-MaterialIcon jp-CopyIcon',
       execute: () => this._copySelectionToClipboard()
     })
+    commands.addCommand(DatabaseSummaryTable.CommandIds.viewTable, {
+      label: 'View table',
+      execute: () => this._navigateToSelectedTable()
+    })
     const menu = new Menu({ commands });
     menu.addItem({ command: DatabaseSummaryTable.CommandIds.copyToClipboard })
+    menu.addItem({ command: DatabaseSummaryTable.CommandIds.viewTable })
     return menu
   }
 
@@ -122,12 +146,21 @@ class DatabaseSummaryTable implements IDisposable {
     }
   }
 
+  private _navigateToSelectedTable(): void {
+    const selectionValue = this._table.selectionValue;
+    if (selectionValue !== null) {
+      this._navigateToTable.emit(selectionValue);
+    }
+  }
+
   private readonly _table: Table;
+  private readonly _navigateToTable = new Signal<this, string>(this)
   private _isDisposed: boolean = false;
 }
 
 namespace DatabaseSummaryTable {
   export namespace CommandIds {
     export const copyToClipboard = 'copy-selection-to-clipboard';
+    export const viewTable = 'view-table';
   }
 }
