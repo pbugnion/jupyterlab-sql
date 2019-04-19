@@ -35,6 +35,11 @@ class Executor:
         result = self._execute_with_engine(engine, query)
         return QueryResult.from_sqlalchemy_result(result)
 
+    def get_table_summary(self, connection_url, table_name):
+        # TODO check table_name is a valid SQL table
+        query = "select * from {} limit 10000".format(table_name)
+        return self.execute_query(connection_url, query)
+
     def _get_engine(self, connection_url):
         if is_sqlite(connection_url):
             engine = self._sqlite_engine_cache.get_or_set(

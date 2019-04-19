@@ -67,6 +67,7 @@ class StructureHandler(IPythonHandler):
         return result
 
     async def post(self):
+        # TODO read from request
         connection_url = "postgres://localhost:5432/postgres"
         ioloop = tornado.ioloop.IOLoop.current()
         try:
@@ -76,6 +77,36 @@ class StructureHandler(IPythonHandler):
                 "responseType": "success",
                 "responseData": {
                     "tables": tables
+                }
+            }
+        except Exception as e:
+            response = self.error_response(str(e))
+        self.finish(json.dumps(response))
+
+
+class TableStructureHandler(IPythonHandler):
+
+    def initialize(self, executor):
+        self._executor = executor
+
+    def get_table_summary(self, connection_url, table_name):
+        result = self._executor.get_table_summary(connection_url, table_name)
+        return result
+
+    async def post(self):
+        # TODO read from request
+        connection_url = "postgres://localhost:5432/postgres"
+        table_name = 'account'
+        ioloop = tornado.ioloop.IOLoop.current()
+        try:
+            result = await ioloop.run_in_executor(
+                None, self.get_table_summary, connection_url, table_name)
+            response = {
+                "responseType": "success",
+                "responseData": {
+                    "hasRows": True,
+                    "keys": result.keys,
+                    "rows": result.rows
                 }
             }
         except Exception as e:
@@ -95,6 +126,7 @@ def register_handlers(nbapp):
     executor = Executor()
     handlers = [
         (form_route(web_app, "query"), SqlQueryHandler, {"executor": executor}),
-        (form_route(web_app, "structure"), StructureHandler, {"executor": executor})
+        (form_route(web_app, "structure"), StructureHandler, {"executor": executor}),
+        (form_route(web_app, "table"), TableStructureHandler, {"executor": executor})
     ]
     web_app.add_handlers(host_pattern, handlers)

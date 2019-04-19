@@ -61,4 +61,16 @@ export namespace Api {
     const data = await response.json()
     return data;
   }
+
+  export async function getTableStructure(): Promise<any> {
+    const url = URLExt.join(settings.baseUrl, '/jupyterlab-sql/table');
+    const request: RequestInit = {
+      method: 'POST',
+      body: JSON.stringify({})
+    };
+    const response = await ServerConnection.makeRequest(url, request, settings);
+    const data = await response.json();
+    return data;
+  }
+
 }
