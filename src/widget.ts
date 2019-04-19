@@ -63,7 +63,7 @@ export class JupyterLabSqlWidget extends SingletonPanel {
   }
 
   private _loadTableSummaryPage(tableName: string) {
-    const widget = new TableSummaryPage();
+    const widget = new TableSummaryPage({ tableName });
     this.widget = widget;
   }
 
