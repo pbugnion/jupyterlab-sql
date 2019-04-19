@@ -4,7 +4,7 @@ import { PreWidget, SingletonPanel } from './components';
 
 import { ResponseModel } from './responseModel';
 
-import { ResponseTable } from './responseTable';
+import { ResultsTable } from './components';
 
 export interface IResponse {
   readonly widget: Widget;
@@ -40,7 +40,7 @@ export class ResponseWidget extends SingletonPanel {
     ResponseModel.match(
       response,
       (keys, rows) => {
-        const table = new ResponseTable(keys, rows);
+        const table = new ResultsTable(keys, rows);
         this._table = table;
         this.widget = table.widget;
       },
@@ -61,5 +61,5 @@ export class ResponseWidget extends SingletonPanel {
     this._table = null;
   }
 
-  private _table: ResponseTable | null = null;
+  private _table: ResultsTable | null = null;
 }

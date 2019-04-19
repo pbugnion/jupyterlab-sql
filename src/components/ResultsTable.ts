@@ -6,15 +6,15 @@ import { IDisposable } from '@phosphor/disposable';
 
 import { CommandRegistry } from '@phosphor/commands';
 
-import { Table } from './components';
+import { Table } from './Table';
 
 namespace CommandIds {
   export const copyToClipboard = 'copy-selection-to-clipboard';
 }
 
-export class ResponseTable implements IDisposable {
+export class ResultsTable implements IDisposable {
   constructor(keys: Array<string>, data: Array<Array<any>>) {
-    const contextMenu = this._createContextMenu()
+    const contextMenu = this._createContextMenu();
     this._table = Table.fromKeysRows(keys, data, { contextMenu })
   }
 
@@ -50,6 +50,6 @@ export class ResponseTable implements IDisposable {
     }
   }
 
-  private readonly _table: Table;
-  private _isDisposed: boolean = false;
+  private readonly _table: Table
+  private _isDisposed: boolean = false
 }

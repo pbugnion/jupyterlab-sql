@@ -3,7 +3,8 @@ import { BoxPanel } from '@phosphor/widgets';
 import { PreWidget, SingletonPanel } from '../components';
 
 import { Api } from '../api';
-import { ResponseTable } from '../responseTable';
+
+import { ResultsTable } from '../components';
 
 export namespace TableSummaryPage {
   export interface IOptions {
@@ -35,7 +36,7 @@ class ResponseWidget extends SingletonPanel {
     Api.TableStructureResponse.match(
       response,
       (keys, rows) => {
-        const table = new ResponseTable(keys, rows);
+        const table = new ResultsTable(keys, rows);
         this.widget = table.widget
       },
       () => {
