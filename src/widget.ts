@@ -8,6 +8,8 @@ import { ConnectionPage } from './connectionPage';
 
 import { DatabaseSummaryPage } from './databaseSummary';
 
+import { TableSummaryPage } from './tableSummary';
+
 
 namespace JupyterLabSqlWidget {
   export interface IOptions {
@@ -46,7 +48,7 @@ export class JupyterLabSqlWidget extends SingletonPanel {
       this._loadQueryPage(connectionUrl)
     })
     widget.navigateToTable.connect((_, tableName) => {
-      console.log(`Navigate to table ${tableName}.`)
+      this._loadTableSummaryPage(tableName)
     })
     this.widget = widget;
   }
@@ -57,6 +59,12 @@ export class JupyterLabSqlWidget extends SingletonPanel {
       initialSqlStatement: 'select * from t'
     }
     const widget = new QueryPage(this.editorFactory, options);
+    this.widget = widget;
+  }
+
+  private _loadTableSummaryPage(tableName: string) {
+    console.log(`loading ${tableName}`)
+    const widget = new TableSummaryPage();
     this.widget = widget;
   }
 
