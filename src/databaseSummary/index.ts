@@ -13,6 +13,9 @@ import { PreWidget, SingletonPanel, Table } from '../components';
 
 import { Api } from '../api'
 
+// TODO break up into multiple source files?
+// TODO bind double click to navigating to table
+
 namespace DatabaseSummaryPage {
   export interface IOptions {
     connectionUrl: string;
@@ -87,6 +90,7 @@ class ResponseWidget extends SingletonPanel {
         this.widget = table.widget
       },
       () => {
+        // TODO handle error
         this.widget = new PreWidget('oops')
       }
     )
