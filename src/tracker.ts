@@ -1,13 +1,11 @@
-import { MainAreaWidget, InstanceTracker } from '@jupyterlab/apputils';
+import { InstanceTracker } from '@jupyterlab/apputils';
 
 import { JupyterLabSqlWidget } from './widget';
 
-export function createTracker(): InstanceTracker<
-  MainAreaWidget<JupyterLabSqlWidget>
-  > {
+export function createTracker(): InstanceTracker<JupyterLabSqlWidget> {
   const namespace: string = 'jupyterlab-sql';
 
-  const tracker = new InstanceTracker<MainAreaWidget<JupyterLabSqlWidget>>({
+  const tracker = new InstanceTracker<JupyterLabSqlWidget>({
     namespace
   });
 
