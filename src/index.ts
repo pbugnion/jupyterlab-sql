@@ -1,5 +1,7 @@
 import * as uuid from 'uuid';
 
+import { Widget } from '@phosphor/widgets';
+
 import {
   JupyterLab,
   JupyterLabPlugin,
@@ -9,7 +11,9 @@ import {
 import {
   ICommandPalette,
   MainAreaWidget,
-  InstanceTracker
+  InstanceTracker,
+  Toolbar,
+  ToolbarButton
 } from '@jupyterlab/apputils';
 
 import { IEditorServices } from '@jupyterlab/codeeditor';
@@ -21,6 +25,18 @@ import { JupyterLabSqlWidget } from './widget';
 import { createTracker } from './tracker';
 
 import '../style/index.css';
+
+function createToolbar() {
+  const _toolbar = new Toolbar();
+  const b = new ToolbarButton({ label: 'button' });
+  const s = Toolbar.createSpacerItem();
+  const w = new Widget();
+  w.node.innerHTML = 'hello'
+  _toolbar.addItem('some-button', b)
+  _toolbar.addItem('s', s)
+  _toolbar.addItem('some-name', w)
+  return _toolbar
+}
 
 function activate(
   app: JupyterLab,
@@ -58,7 +74,7 @@ function activate(
         initialConnectionString,
         initialSqlStatement
       });
-      const main = new MainAreaWidget({ content: widget });
+      const main = new MainAreaWidget({ content: widget, toolbar: createToolbar() });
       app.shell.addToMainArea(main);
       tracker.add(main);
     }
