@@ -26,16 +26,26 @@ namespace DatabaseSummaryPage {
   }
 }
 
+// TODO dispose of toolbar
 export class DatabaseSummaryPage implements JupyterLabSqlPage {
   constructor(options: DatabaseSummaryPage.IOptions) {
     this._content = new Content(options);
-    this.toolbar = createToolbar(options.connectionUrl);
+    this._toolbar = new DatabaseSummaryToolbar(options.connectionUrl);
+    this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
     this._customQueryClicked = proxyFor(this._content.customQueryClicked, this);
     this._navigateToTable = proxyFor(this._content.navigateToTable, this);
   }
 
   get content(): Widget {
     return this._content
+  }
+
+  get toolbar(): Toolbar {
+    return this._toolbar
+  }
+
+  get navigateBack(): ISignal<this, void> {
+    return this._navigateBack;
   }
 
   get customQueryClicked(): ISignal<this, void> {
@@ -46,8 +56,9 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     return this._navigateToTable
   }
 
-  readonly toolbar: Toolbar;
+  private readonly _toolbar: DatabaseSummaryToolbar;
   private readonly _content: Content;
+  private readonly _navigateBack: Signal<this, void>;
   private readonly _customQueryClicked: Signal<this, void>
   private readonly _navigateToTable: Signal<this, string>
 }
@@ -204,19 +215,27 @@ namespace DatabaseSummaryTable {
   }
 }
 
-function createToolbar(connectionUrl: string): Toolbar {
-  const toolbar = new Toolbar();
-  const connectionUrlItem = new Widget()
-  connectionUrlItem.node.innerText = connectionUrl
-  toolbar.addItem(
-    'back',
-    new ToolbarButton({
-      // TODO remove jp-Icon and jp-Icon-16 on new release
-      // of packages
-      iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
-    })
-  )
-  toolbar.addItem('spacer', Toolbar.createSpacerItem())
-  toolbar.addItem('url', connectionUrlItem)
-  return toolbar
+class DatabaseSummaryToolbar extends Toolbar {
+  constructor(connectionUrl: string) {
+    super()
+    const connectionUrlItem = new Widget()
+    connectionUrlItem.node.innerText = connectionUrl
+    this.addItem(
+      'back',
+      new ToolbarButton({
+        // TODO remove jp-Icon and jp-Icon-16 on new release
+        // of packages
+        iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
+        onClick: () => { this._backButtonClicked.emit(void 0); }
+      })
+    )
+    this.addItem('spacer', Toolbar.createSpacerItem())
+    this.addItem('url', connectionUrlItem)
+  }
+
+  get backButtonClicked(): ISignal<this, void> {
+    return this._backButtonClicked;
+  }
+
+  private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
 }

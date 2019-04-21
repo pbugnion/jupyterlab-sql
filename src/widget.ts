@@ -78,6 +78,9 @@ export class JupyterLabSqlWidget extends Widget {
     page.navigateToTable.connect((_, tableName) => {
       this._loadTableSummaryPage(tableName)
     })
+    page.navigateBack.connect(() => {
+      this._loadConnectionPage(connectionUrl)
+    })
     this.page = page;
   }
 
