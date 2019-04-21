@@ -29,6 +29,7 @@ namespace DatabaseSummaryPage {
 export class DatabaseSummaryPage implements JupyterLabSqlPage {
   constructor(options: DatabaseSummaryPage.IOptions) {
     this._content = new Content(options);
+    this.toolbar = createToolbar(options.connectionUrl);
     this._customQueryClicked = proxyFor(this._content.customQueryClicked, this);
     this._navigateToTable = proxyFor(this._content.navigateToTable, this);
   }
@@ -45,7 +46,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     return this._navigateToTable
   }
 
-  readonly toolbar: Toolbar = new Toolbar()
+  readonly toolbar: Toolbar;
   private readonly _content: Content;
   private readonly _customQueryClicked: Signal<this, void>
   private readonly _navigateToTable: Signal<this, string>
@@ -201,4 +202,13 @@ namespace DatabaseSummaryTable {
     export const copyToClipboard = 'copy-selection-to-clipboard';
     export const viewTable = 'view-table';
   }
+}
+
+function createToolbar(connectionUrl: string): Toolbar {
+  const toolbar = new Toolbar();
+  const connectionUrlItem = new Widget()
+  connectionUrlItem.node.innerText = connectionUrl
+  toolbar.addItem('spacer', Toolbar.createSpacerItem())
+  toolbar.addItem('url', connectionUrlItem)
+  return toolbar
 }

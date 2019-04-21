@@ -1,6 +1,6 @@
 import { BoxPanel, Widget } from '@phosphor/widgets';
 
-import { Toolbar, ToolbarButton } from '@jupyterlab/apputils';
+import { Toolbar } from '@jupyterlab/apputils';
 
 import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar';
 
@@ -31,7 +31,7 @@ export class ConnectionPage implements JupyterLabSqlPage {
     return this._connectDatabase;
   }
 
-  readonly toolbar: Toolbar = createToolbar();
+  readonly toolbar: Toolbar = new Toolbar();
   private readonly _content: Content;
   private readonly _connectDatabase = new Signal<this, string>(this);
 }
@@ -59,16 +59,4 @@ class Content extends BoxPanel {
 
   private readonly _connectDatabase = new Signal<this, string>(this);
 
-}
-
-function createToolbar() {
-  const _toolbar = new Toolbar();
-  const b = new ToolbarButton({ label: 'button' });
-  const s = Toolbar.createSpacerItem();
-  const w = new Widget();
-  w.node.innerHTML = 'hello'
-  _toolbar.addItem('some-button', b)
-  _toolbar.addItem('s', s)
-  _toolbar.addItem('some-name', w)
-  return _toolbar
 }
