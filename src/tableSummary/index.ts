@@ -1,6 +1,6 @@
 import { Widget, BoxPanel } from '@phosphor/widgets';
 
-import { Toolbar } from '@jupyterlab/apputils';
+import { Toolbar, ToolbarButton } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel } from '../components';
 
@@ -16,17 +16,25 @@ export namespace TableSummaryPage {
   }
 }
 
-
 export class TableSummaryPage implements JupyterLabSqlPage {
   constructor(options: TableSummaryPage.IOptions) {
     this._content = new Content(options)
+    // TODO correct url
+    this._toolbar = new TableSummaryToolbar(
+      'postgres://localhost:5432/postgres',
+      options.tableName
+    )
   }
 
   get content(): Widget {
     return this._content
   }
 
-  readonly toolbar: Toolbar = new Toolbar();
+  get toolbar(): Toolbar {
+    return this._toolbar
+  }
+
+  private readonly _toolbar: Toolbar;
   private readonly _content: Content;
 }
 
@@ -62,5 +70,26 @@ class ResponseWidget extends SingletonPanel {
         this.widget = new PreWidget('oops')
       }
     )
+  }
+}
+
+class TableSummaryToolbar extends Toolbar {
+  constructor(connectionUrl: string, tableName: string) {
+    super();
+    const connectionUrlItem = new Widget();
+    connectionUrlItem.node.innerText = connectionUrl
+    const tableNameItem = new Widget();
+    tableNameItem.node.innerText = tableName
+    this.addItem(
+      'back',
+      new ToolbarButton({
+        // TODO remove jp-Icon and jp-Icon-16 on new release
+        // of packages
+        iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
+      })
+    )
+    this.addItem('spacer', Toolbar.createSpacerItem())
+    this.addItem('url', connectionUrlItem)
+    this.addItem('tableName', tableNameItem)
   }
 }
