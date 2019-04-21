@@ -1,12 +1,14 @@
 import * as uuid from 'uuid';
 
-import { BoxPanel } from '@phosphor/widgets';
+import { BoxPanel, Widget } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
+
+import { Toolbar } from '@jupyterlab/apputils';
 
 import { newToolbar, IToolbarModel, ToolbarModel } from './toolbar';
 
@@ -16,18 +18,31 @@ import { Editor, IEditor } from './editor';
 
 import { Api } from './api';
 
+import { JupyterLabSqlPage } from './page';
+
 namespace QueryPage {
-  export interface Options {
+  export interface IOptions {
+    editorFactory: IEditorFactoryService,
     initialConnectionString: string;
     initialSqlStatement: string;
   }
 }
 
-export class QueryPage extends BoxPanel {
-  constructor(
-    editorFactory: IEditorFactoryService,
-    options: QueryPage.Options
-  ) {
+export class QueryPage implements JupyterLabSqlPage {
+  constructor(options: QueryPage.IOptions) {
+    this._content = new Content(options)
+  }
+
+  get content(): Widget {
+    return this._content
+  }
+
+  readonly toolbar: Toolbar = new Toolbar()
+  private readonly _content: Content
+}
+
+class Content extends BoxPanel {
+  constructor(options: QueryPage.IOptions) {
     super();
 
     this.addClass('p-Sql-MainContainer')
@@ -40,7 +55,7 @@ export class QueryPage extends BoxPanel {
       this._connectionStringChanged.emit(value);
     });
 
-    this.editor = new Editor(options.initialSqlStatement, editorFactory);
+    this.editor = new Editor(options.initialSqlStatement, options.editorFactory);
     this.response = new Response();
 
     this.editor.execute.connect((_, value: string) => {

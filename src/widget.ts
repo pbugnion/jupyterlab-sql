@@ -26,69 +26,68 @@ namespace JupyterLabSqlWidget {
 export class JupyterLabSqlWidget extends Widget {
   constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.IOptions) {
     super()
+
+    // TODO bring out widget definition into separate methods
     this.addClass('jp-MainAreaWidget');
     this.id = 'jupyterlab-sql';
     this.title.label = 'SQL';
     this.title.closable = true;
     const layout = new BoxLayout({ spacing: 0, direction: 'top-to-bottom' });
     const toolbar = createToolbar();
-    const content = new Content(editorFactory, options)
+    this.content = new SingletonPanel()
     BoxLayout.setStretch(toolbar, 0)
-    BoxLayout.setStretch(content, 1)
+    BoxLayout.setStretch(this.content, 1)
     layout.addWidget(toolbar)
-    layout.addWidget(content);
-    content.node.tabIndex = -1;
+    layout.addWidget(this.content);
+    this.content.node.tabIndex = -1;
     this.layout = layout
-  }
-}
 
-class Content extends SingletonPanel {
-  constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.IOptions) {
-    super();
     this.name = options.name;
-
     this.editorFactory = editorFactory;
     this._loadConnectionPage(options.initialConnectionString);
   }
 
   private _loadConnectionPage(initialConnectionString: string): void {
-    const widget = new ConnectionPage({
+    const page = new ConnectionPage({
       initialConnectionString
     });
-    widget.connectDatabase.connect((_, connectionUrl) => {
+    page.connectDatabase.connect((_, connectionUrl) => {
       this._loadSummaryPage(connectionUrl)
     })
-    this.widget = widget
+    this.content.widget = page.content
   }
 
   private _loadSummaryPage(connectionUrl: string) {
-    const widget = new DatabaseSummaryPage({ connectionUrl });
-    widget.customQueryClicked.connect(() => {
+    const page = new DatabaseSummaryPage({ connectionUrl });
+    page.customQueryClicked.connect(() => {
       this._loadQueryPage(connectionUrl)
     })
-    widget.navigateToTable.connect((_, tableName) => {
+    page.navigateToTable.connect((_, tableName) => {
       this._loadTableSummaryPage(tableName)
     })
-    this.widget = widget;
+    this.content.widget = page.content;
   }
 
   private _loadQueryPage(connectionUrl: string) {
     const options = {
       initialConnectionString: connectionUrl,
-      initialSqlStatement: 'select * from t'
+      initialSqlStatement: 'select * from t',
+      editorFactory: this.editorFactory
     }
-    const widget = new QueryPage(this.editorFactory, options);
-    this.widget = widget;
+    const page = new QueryPage(options);
+    this.content.widget = page.content;
   }
 
   private _loadTableSummaryPage(tableName: string) {
-    const widget = new TableSummaryPage({ tableName });
-    this.widget = widget;
+    const page = new TableSummaryPage({ tableName });
+    this.content.widget = page.content;
   }
 
   readonly editorFactory: IEditorFactoryService;
   readonly name: string;
+  private readonly content: SingletonPanel
 }
+
 
 function createToolbar() {
   const _toolbar = new Toolbar();

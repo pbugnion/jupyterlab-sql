@@ -7,11 +7,15 @@ import { IDisposable } from '@phosphor/disposable';
 
 import { CommandRegistry } from '@phosphor/commands';
 
-import { Clipboard } from '@jupyterlab/apputils';
+import { Clipboard, Toolbar } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel, Table } from '../components';
 
 import { Api } from '../api'
+
+import { proxyFor } from '../services';
+
+import { JupyterLabSqlPage } from '../page';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
@@ -22,7 +26,32 @@ namespace DatabaseSummaryPage {
   }
 }
 
-export class DatabaseSummaryPage extends BoxPanel {
+export class DatabaseSummaryPage implements JupyterLabSqlPage {
+  constructor(options: DatabaseSummaryPage.IOptions) {
+    this._content = new Content(options);
+    this._customQueryClicked = proxyFor(this._content.customQueryClicked, this);
+    this._navigateToTable = proxyFor(this._content.navigateToTable, this);
+  }
+
+  get content(): Widget {
+    return this._content
+  }
+
+  get customQueryClicked(): ISignal<this, void> {
+    return this._customQueryClicked;
+  }
+
+  get navigateToTable(): ISignal<this, string> {
+    return this._navigateToTable
+  }
+
+  readonly toolbar: Toolbar = new Toolbar()
+  private readonly _content: Content;
+  private readonly _customQueryClicked: Signal<this, void>
+  private readonly _navigateToTable: Signal<this, string>
+}
+
+class Content extends BoxPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
     super();
     this._responseWidget = new ResponseWidget()
