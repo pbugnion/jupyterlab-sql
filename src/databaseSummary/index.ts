@@ -7,7 +7,7 @@ import { IDisposable } from '@phosphor/disposable';
 
 import { CommandRegistry } from '@phosphor/commands';
 
-import { Clipboard, Toolbar } from '@jupyterlab/apputils';
+import { Clipboard, Toolbar, ToolbarButton } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel, Table } from '../components';
 
@@ -208,6 +208,14 @@ function createToolbar(connectionUrl: string): Toolbar {
   const toolbar = new Toolbar();
   const connectionUrlItem = new Widget()
   connectionUrlItem.node.innerText = connectionUrl
+  toolbar.addItem(
+    'back',
+    new ToolbarButton({
+      // TODO remove jp-Icon and jp-Icon-16 on new release
+      // of packages
+      iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
+    })
+  )
   toolbar.addItem('spacer', Toolbar.createSpacerItem())
   toolbar.addItem('url', connectionUrlItem)
   return toolbar
