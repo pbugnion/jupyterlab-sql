@@ -58,6 +58,7 @@ class Content extends BoxPanel {
 class ResponseWidget extends SingletonPanel {
 
   // TODO: Dispose of table and signals
+  // TODO: Proper error handling
 
   setResponse(response: Api.TableStructureResponse.Type) {
     Api.TableStructureResponse.match(
@@ -86,6 +87,7 @@ class TableSummaryToolbar extends Toolbar {
         // TODO remove jp-Icon and jp-Icon-16 on new release
         // of packages
         iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
+        // TODO: On click
       })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
