@@ -18,7 +18,7 @@ import { Editor, IEditor } from './editor';
 
 import { Api } from './api';
 
-import { JupyterLabSqlPage } from './page';
+import { JupyterLabSqlPage, PageName } from './page';
 
 namespace QueryPage {
   export interface IOptions {
@@ -37,6 +37,7 @@ export class QueryPage implements JupyterLabSqlPage {
     return this._content
   }
 
+  readonly pageName = PageName.CustomQuery
   readonly toolbar: Toolbar = new Toolbar()
   private readonly _content: Content
 }

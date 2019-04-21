@@ -6,7 +6,7 @@ import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar'
 
 import { Signal, ISignal } from '@phosphor/signaling';
 
-import { JupyterLabSqlPage } from './page';
+import { JupyterLabSqlPage, PageName } from './page';
 
 import { proxyFor } from './services';
 
@@ -31,6 +31,7 @@ export class ConnectionPage implements JupyterLabSqlPage {
     return this._connectDatabase;
   }
 
+  readonly pageName: PageName = PageName.Connection;
   readonly toolbar: Toolbar = new Toolbar();
   private readonly _content: Content;
   private readonly _connectDatabase = new Signal<this, string>(this);

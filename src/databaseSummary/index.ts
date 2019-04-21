@@ -15,7 +15,7 @@ import { Api } from '../api'
 
 import { proxyFor } from '../services';
 
-import { JupyterLabSqlPage } from '../page';
+import { JupyterLabSqlPage, PageName } from '../page';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
@@ -56,6 +56,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     return this._navigateToTable
   }
 
+  readonly pageName: PageName = PageName.DatabaseSummary;
   private readonly _toolbar: DatabaseSummaryToolbar;
   private readonly _content: Content;
   private readonly _navigateBack: Signal<this, void>;

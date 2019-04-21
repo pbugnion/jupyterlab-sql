@@ -19,6 +19,8 @@ import { JupyterLabSqlWidget } from './widget';
 
 import { createTracker } from './tracker';
 
+import { PageName } from './page';
+
 import '../style/index.css';
 
 function activate(
@@ -31,29 +33,24 @@ function activate(
   const tracker: InstanceTracker<JupyterLabSqlWidget> = createTracker();
   const command: string = 'jupyterlab-sql:open';
 
-  // restorer.restore(tracker, {
-  //   command: command,
-  //   args: widget => ({
-  //     name: widget.content.name,
-  //     connectionString: widget.content.toolbarModel.connectionString,
-  //     sqlStatement: widget.content.sqlStatementValue
-  //   }),
-  //   name: widget => widget.content.name
-  // });
+  restorer.restore(tracker, {
+    command,
+    args: widget => ({
+      initialWidgetName: widget.name,
+      initialPageName: widget.pageName
+    }),
+    name: widget => widget.name
+  })
 
   app.commands.addCommand(command, {
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
-    execute: ({ name, connectionString, sqlStatement }) => {
-      const widgetName = <string>(name || uuid.v4());
-      const initialConnectionString = <string>(
-        (connectionString || 'postgres://localhost:5432/postgres')
-      );
-      const initialSqlStatement = <string>(sqlStatement || '');
+    execute: ({ initialWidgetName, initialPageName }) => {
+      const name = <string>(initialWidgetName || uuid.v4());
+      const pageName = <PageName>(initialPageName || PageName.Connection);
       const widget = new JupyterLabSqlWidget(editorServices.factoryService, {
-        name: widgetName,
-        initialConnectionString,
-        initialSqlStatement
+        name,
+        pageName
       });
       app.shell.addToMainArea(widget);
       tracker.add(widget);

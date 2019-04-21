@@ -8,7 +8,7 @@ import { Api } from '../api';
 
 import { ResultsTable } from '../components';
 
-import { JupyterLabSqlPage } from '../page';
+import { JupyterLabSqlPage, PageName } from '../page';
 
 export namespace TableSummaryPage {
   export interface IOptions {
@@ -34,6 +34,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
     return this._toolbar
   }
 
+  readonly pageName: PageName = PageName.TableSummary;
   private readonly _toolbar: Toolbar;
   private readonly _content: Content;
 }

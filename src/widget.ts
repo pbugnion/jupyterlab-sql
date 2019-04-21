@@ -1,5 +1,7 @@
 import { Widget, BoxLayout } from '@phosphor/widgets';
 
+import { ISignal, Signal } from '@phosphor/signaling';
+
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
 import { Toolbar } from '@jupyterlab/apputils';
@@ -13,14 +15,13 @@ import { ConnectionPage } from './connectionPage';
 import { DatabaseSummaryPage } from './databaseSummary';
 
 import { TableSummaryPage } from './tableSummary';
-import { JupyterLabSqlPage } from './page';
 
+import { JupyterLabSqlPage, PageName } from './page';
 
 namespace JupyterLabSqlWidget {
   export interface IOptions {
     name: string;
-    initialConnectionString: string;
-    initialSqlStatement: string
+    pageName: PageName;
   }
 }
 
@@ -41,8 +42,25 @@ export class JupyterLabSqlWidget extends Widget {
     this.layout = layout
 
     this.name = options.name;
+    this.pageName = options.pageName;
     this.editorFactory = editorFactory;
-    this._loadConnectionPage(options.initialConnectionString);
+    this._setInitialPage()
+  }
+
+  get pageChanged(): ISignal<this, void> {
+    return this._pageChanged;
+  }
+
+  private _setInitialPage(): void {
+    if (this.pageName === PageName.Connection) {
+      this._loadConnectionPage()
+    } else if (this.pageName === PageName.DatabaseSummary) {
+      this._loadSummaryPage()
+    } else if (this.pageName === PageName.TableSummary) {
+      this._loadTableSummaryPage()
+    } else {
+      this._loadQueryPage()
+    }
   }
 
   private set toolbar(newToolbar: Toolbar) {
@@ -58,33 +76,39 @@ export class JupyterLabSqlWidget extends Widget {
   private set page(newPage: JupyterLabSqlPage) {
     this.content.widget = newPage.content;
     this.toolbar = newPage.toolbar
+    this.pageName = newPage.pageName
+    this._pageChanged.emit(void 0)
   }
 
-  private _loadConnectionPage(initialConnectionString: string): void {
+  private _loadConnectionPage(): void {
+    const initialConnectionString: string = 'postgres://localhost:5432/postgres'
     const page = new ConnectionPage({
       initialConnectionString
     });
     page.connectDatabase.connect((_, connectionUrl) => {
-      this._loadSummaryPage(connectionUrl)
+      this._loadSummaryPage()
     })
     this.page = page
   }
 
-  private _loadSummaryPage(connectionUrl: string) {
+  private _loadSummaryPage() {
+    const connectionUrl: string = 'postgres://localhost:5432/postgres'
     const page = new DatabaseSummaryPage({ connectionUrl });
     page.customQueryClicked.connect(() => {
-      this._loadQueryPage(connectionUrl)
+      this._loadQueryPage()
     })
     page.navigateToTable.connect((_, tableName) => {
-      this._loadTableSummaryPage(tableName)
+      this._loadTableSummaryPage()
     })
     page.navigateBack.connect(() => {
-      this._loadConnectionPage(connectionUrl)
+      this._loadConnectionPage()
     })
     this.page = page;
   }
 
-  private _loadQueryPage(connectionUrl: string) {
+  private _loadQueryPage() {
+    // TODO: Don't hardcode URL
+    const connectionUrl = 'postgres://localhost:5432/postgres';
     const options = {
       initialConnectionString: connectionUrl,
       initialSqlStatement: 'select * from t',
@@ -93,12 +117,16 @@ export class JupyterLabSqlWidget extends Widget {
     this.page = new QueryPage(options);
   }
 
-  private _loadTableSummaryPage(tableName: string) {
+  private _loadTableSummaryPage() {
+    // TODO don't hard-code table name
+    const tableName: string = 'account';
     this.page = new TableSummaryPage({ tableName });
   }
 
   readonly editorFactory: IEditorFactoryService;
   readonly name: string;
+  pageName: PageName;
+  private readonly _pageChanged: Signal<this, void> = new Signal(this);
   private _toolbar: Toolbar | null = null;
   private readonly content: SingletonPanel
 }
