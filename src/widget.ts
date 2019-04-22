@@ -49,12 +49,16 @@ export class JupyterLabSqlWidget extends Widget {
     this._setInitialPage()
   }
 
+  get connectionUrl(): string {
+    return this._connectionUrl;
+  }
+
   get pageChanged(): ISignal<this, void> {
     return this._pageChanged;
   }
 
-  get connectionUrl(): string {
-    return this._connectionUrl;
+  get connectionUrlChanged(): ISignal<this, string> {
+    return this._connectionUrlChanged;
   }
 
   private _setInitialPage(): void {
@@ -86,19 +90,28 @@ export class JupyterLabSqlWidget extends Widget {
     this._pageChanged.emit(void 0)
   }
 
+  private _setConnectionUrl(newConnectionUrl: string): void {
+    this._connectionUrl = newConnectionUrl;
+    this._connectionUrlChanged.emit(this._connectionUrl);
+  }
+
   private _loadConnectionPage(): void {
     const initialConnectionString = this._connectionUrl
     const page = new ConnectionPage({
       initialConnectionString
     });
     page.connectDatabase.connect((_, connectionUrl) => {
+      this._setConnectionUrl(connectionUrl)
       this._loadSummaryPage()
+    })
+    page.connectionUrlChanged.connect((_, connectionUrl) => {
+      this._setConnectionUrl(connectionUrl)
     })
     this.page = page
   }
 
   private _loadSummaryPage() {
-    const connectionUrl: string = 'postgres://localhost:5432/postgres'
+    const connectionUrl: string = this._connectionUrl;
     const page = new DatabaseSummaryPage({ connectionUrl });
     page.customQueryClicked.connect(() => {
       this._loadQueryPage()
@@ -134,7 +147,9 @@ export class JupyterLabSqlWidget extends Widget {
   pageName: PageName;
 
   private _connectionUrl: string;
-  private readonly _pageChanged: Signal<this, void> = new Signal(this);
   private _toolbar: Toolbar | null = null;
   private readonly content: SingletonPanel
+
+  private readonly _pageChanged: Signal<this, void> = new Signal(this);
+  private readonly _connectionUrlChanged: Signal<this, string> = new Signal(this);
 }

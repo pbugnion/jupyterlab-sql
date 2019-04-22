@@ -21,6 +21,7 @@ export class ConnectionPage implements JupyterLabSqlPage {
     const { initialConnectionString } = options
     this._content = new Content(initialConnectionString)
     this._connectDatabase = proxyFor(this._content.connectDatabase, this)
+    this._connectionUrlChanged = proxyFor(this._content.connectionUrlChanged, this)
   }
 
   get content(): Widget {
@@ -31,10 +32,15 @@ export class ConnectionPage implements JupyterLabSqlPage {
     return this._connectDatabase;
   }
 
+  get connectionUrlChanged(): ISignal<this, string> {
+    return this._connectionUrlChanged;
+  }
+
   readonly pageName: PageName = PageName.Connection;
   readonly toolbar: Toolbar = new Toolbar();
   private readonly _content: Content;
-  private readonly _connectDatabase = new Signal<this, string>(this);
+  private readonly _connectDatabase: Signal<this, string>;
+  private readonly _connectionUrlChanged: Signal<this, string>;
 }
 
 class Content extends BoxPanel {
@@ -49,20 +55,18 @@ class Content extends BoxPanel {
     this.addWidget(connectionWidget)
     BoxPanel.setSizeBasis(connectionWidget, 50)
 
-    toolbarModel.connect.connect((_, connectionUrl) => {
-      console.log(`connect -> ${connectionUrl}`)
-      this._connectDatabase.emit(connectionUrl)
-    })
-
-    toolbarModel.connectionUrlChanged.connect((_, connectionUrl) => {
-      console.log(`connectionUrl -> ${connectionUrl}`)
-    })
+    this._connectDatabase = proxyFor(toolbarModel.connect, this);
+    this._connectionUrlChanged = proxyFor(toolbarModel.connectionUrlChanged, this);
   }
 
   get connectDatabase(): ISignal<this, string> {
     return this._connectDatabase;
   }
 
-  private readonly _connectDatabase = new Signal<this, string>(this);
+  get connectionUrlChanged(): ISignal<this, string> {
+    return this._connectionUrlChanged;
+  }
 
+  private readonly _connectDatabase: ISignal<this, string>;
+  private readonly _connectionUrlChanged: ISignal<this, string>;
 }
