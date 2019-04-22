@@ -23,6 +23,7 @@ namespace JupyterLabSqlWidget {
     name: string;
     pageName: PageName;
     connectionUrl: string;
+    tableName: string;
   }
 }
 
@@ -31,6 +32,7 @@ export class JupyterLabSqlWidget extends Widget {
     super()
 
     // TODO bring out widget definition into separate methods
+    // TODO: Disconnect signals on page change
     this.addClass('jp-MainAreaWidget');
     this.id = 'jupyterlab-sql';
     this.title.label = 'SQL';
@@ -44,13 +46,18 @@ export class JupyterLabSqlWidget extends Widget {
 
     this.name = options.name;
     this.pageName = options.pageName;
-    this.editorFactory = editorFactory;
     this._connectionUrl = options.connectionUrl;
+    this._tableName = options.tableName;
+    this.editorFactory = editorFactory;
     this._setInitialPage()
   }
 
   get connectionUrl(): string {
     return this._connectionUrl;
+  }
+
+  get tableName(): string {
+    return this._tableName;
   }
 
   get pageChanged(): ISignal<this, void> {
@@ -59,6 +66,10 @@ export class JupyterLabSqlWidget extends Widget {
 
   get connectionUrlChanged(): ISignal<this, string> {
     return this._connectionUrlChanged;
+  }
+
+  get tableNameChanged(): ISignal<this, string> {
+    return this._tableNameChanged;
   }
 
   private _setInitialPage(): void {
@@ -91,8 +102,17 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   private _setConnectionUrl(newConnectionUrl: string): void {
-    this._connectionUrl = newConnectionUrl;
-    this._connectionUrlChanged.emit(this._connectionUrl);
+    if (newConnectionUrl !== this._connectionUrl) {
+      this._connectionUrl = newConnectionUrl;
+      this._connectionUrlChanged.emit(this._connectionUrl);
+    }
+  }
+
+  private _setTableName(newTableName: string): void {
+    if (newTableName !== this._tableName) {
+      this._tableName = newTableName;
+      this._tableNameChanged.emit(this._tableName);
+    }
   }
 
   private _loadConnectionPage(): void {
@@ -117,6 +137,7 @@ export class JupyterLabSqlWidget extends Widget {
       this._loadQueryPage()
     })
     page.navigateToTable.connect((_, tableName) => {
+      this._setTableName(tableName);
       this._loadTableSummaryPage()
     })
     page.navigateBack.connect(() => {
@@ -147,9 +168,11 @@ export class JupyterLabSqlWidget extends Widget {
   pageName: PageName;
 
   private _connectionUrl: string;
+  private _tableName: string;
   private _toolbar: Toolbar | null = null;
   private readonly content: SingletonPanel
 
   private readonly _pageChanged: Signal<this, void> = new Signal(this);
   private readonly _connectionUrlChanged: Signal<this, string> = new Signal(this);
+  private readonly _tableNameChanged: Signal<this, string> = new Signal(this);
 }
