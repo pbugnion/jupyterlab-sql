@@ -50,7 +50,12 @@ class Content extends BoxPanel {
     BoxPanel.setSizeBasis(connectionWidget, 50)
 
     toolbarModel.connect.connect((_, connectionUrl) => {
+      console.log(`connect -> ${connectionUrl}`)
       this._connectDatabase.emit(connectionUrl)
+    })
+
+    toolbarModel.connectionUrlChanged.connect((_, connectionUrl) => {
+      console.log(`connectionUrl -> ${connectionUrl}`)
     })
   }
 

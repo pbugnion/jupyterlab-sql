@@ -9,6 +9,7 @@ import classNames from 'classNames';
 export interface IConnectionPageToolbarModel {
   readonly connectionString: string;
   readonly connect: ISignal<this, string>;
+  readonly connectionUrlChanged: ISignal<this, string>;
 }
 
 export function newToolbar(model: ConnectionPageToolbarModel): ToolbarContainer {
@@ -23,21 +24,30 @@ export class ConnectionPageToolbarModel extends VDomModel implements IConnection
     this._connectionString = initialConnectionString;
   }
 
-  private _connectionString: string;
-
-  private _connect = new Signal<this, string>(this);
-
   tryConnect(connectionString: string): void {
     this._connect.emit(connectionString)
+  }
+
+  get connectionString(): string {
+    return this._connectionString;
+  }
+
+  set connectionString(newValue: string) {
+    this._connectionString = newValue;
+    this._connectionUrlChanged.emit(newValue);
   }
 
   get connect(): ISignal<this, string> {
     return this._connect;
   }
 
-  get connectionString(): string {
-    return this._connectionString;
+  get connectionUrlChanged(): ISignal<this, string> {
+    return this._connectionUrlChanged;
   }
+
+  private _connectionString: string;
+  private readonly _connectionUrlChanged = new Signal<this, string>(this);
+  private readonly _connect = new Signal<this, string>(this);
 }
 
 class ToolbarContainer extends VDomRenderer<ConnectionPageToolbarModel> {
@@ -49,7 +59,8 @@ class ToolbarContainer extends VDomRenderer<ConnectionPageToolbarModel> {
       return (
         <div className="p-Sql-Toolbar">
           <ConnectionInformationEdit
-            connectionString={connectionString}
+            initialConnectionString={connectionString}
+            onConnectionUrlChanged={newConnectionString => this.model.connectionString = newConnectionString}
             onFinishEdit={currentConnectionString => this.model.tryConnect(currentConnectionString)}
           />
         </div>
@@ -62,11 +73,11 @@ class ToolbarContainer extends VDomRenderer<ConnectionPageToolbarModel> {
 class ConnectionInformationEdit extends React.Component<
   ConnectionInformationEdit.Props,
   ConnectionInformationEdit.State
-> {
+  > {
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
-      value: props.connectionString,
+      connectionString: props.initialConnectionString,
       focused: false
     };
   }
@@ -83,25 +94,29 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   onChange(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ value: event.target.value });
+    const newConnectionString = event.target.value;
+    this.props.onConnectionUrlChanged(newConnectionString);
+    this.setState({ connectionString: newConnectionString });
   }
 
   start() {
     this.setState({
-      focused: true,
-      value: this.props.connectionString
+      focused: true
+      //value: this.props.connectionString
     });
   }
 
   finish() {
-    this.props.onFinishEdit(this.state.value);
+    this.props.onFinishEdit(this.state.connectionString);
     this.setState({
       focused: false
     });
   }
 
   cancel() {
-    this.setState({ value: this.props.connectionString });
+    const newConnectionString = this.props.initialConnectionString;
+    this.props.onConnectionUrlChanged(newConnectionString);
+    this.setState({ connectionString: newConnectionString });
   }
 
   onInputFocus() {
@@ -117,7 +132,7 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   render() {
-    const { value, focused } = this.state;
+    const { connectionString, focused } = this.state;
     const inputWrapperClass = classNames(
       'p-Sql-ConnectionInformation-input-wrapper',
       { 'p-mod-focused': focused }
@@ -126,7 +141,7 @@ class ConnectionInformationEdit extends React.Component<
       <div className={inputWrapperClass}>
         <input
           className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
-          value={value}
+          value={connectionString}
           ref={this.inputRef}
           onChange={event => this.onChange(event)}
           onKeyDown={event => this.onKeyDown(event)}
@@ -140,12 +155,13 @@ class ConnectionInformationEdit extends React.Component<
 
 namespace ConnectionInformationEdit {
   export interface Props {
-    connectionString: string;
+    initialConnectionString: string;
     onFinishEdit: (newConnectionString: string) => void;
+    onConnectionUrlChanged: (newConnectionString: string) => void;
   }
 
   export interface State {
-    value: string;
+    connectionString: string;
     focused: boolean;
   }
 }

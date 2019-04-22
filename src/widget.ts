@@ -22,6 +22,7 @@ namespace JupyterLabSqlWidget {
   export interface IOptions {
     name: string;
     pageName: PageName;
+    connectionUrl: string;
   }
 }
 
@@ -44,11 +45,16 @@ export class JupyterLabSqlWidget extends Widget {
     this.name = options.name;
     this.pageName = options.pageName;
     this.editorFactory = editorFactory;
+    this._connectionUrl = options.connectionUrl;
     this._setInitialPage()
   }
 
   get pageChanged(): ISignal<this, void> {
     return this._pageChanged;
+  }
+
+  get connectionUrl(): string {
+    return this._connectionUrl;
   }
 
   private _setInitialPage(): void {
@@ -81,7 +87,7 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   private _loadConnectionPage(): void {
-    const initialConnectionString: string = 'postgres://localhost:5432/postgres'
+    const initialConnectionString = this._connectionUrl
     const page = new ConnectionPage({
       initialConnectionString
     });
@@ -126,6 +132,8 @@ export class JupyterLabSqlWidget extends Widget {
   readonly editorFactory: IEditorFactoryService;
   readonly name: string;
   pageName: PageName;
+
+  private _connectionUrl: string;
   private readonly _pageChanged: Signal<this, void> = new Signal(this);
   private _toolbar: Toolbar | null = null;
   private readonly content: SingletonPanel
