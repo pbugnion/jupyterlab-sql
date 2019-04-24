@@ -7,7 +7,7 @@ import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 import classNames from 'classNames';
 
 export interface IConnectionPageToolbarModel {
-  readonly connectionString: string;
+  readonly connectionUrl: string;
   readonly connect: ISignal<this, string>;
   readonly connectionUrlChanged: ISignal<this, string>;
 }
@@ -19,21 +19,21 @@ export function newToolbar(model: ConnectionPageToolbarModel): ToolbarContainer 
 }
 
 export class ConnectionPageToolbarModel extends VDomModel implements IConnectionPageToolbarModel {
-  constructor(initialConnectionString: string) {
+  constructor(initialConnectionUrl: string) {
     super();
-    this._connectionString = initialConnectionString;
+    this._connectionUrl = initialConnectionUrl;
   }
 
-  tryConnect(connectionString: string): void {
-    this._connect.emit(connectionString)
+  tryConnect(connectionUrl: string): void {
+    this._connect.emit(connectionUrl)
   }
 
-  get connectionString(): string {
-    return this._connectionString;
+  get connectionUrl(): string {
+    return this._connectionUrl;
   }
 
-  set connectionString(newValue: string) {
-    this._connectionString = newValue;
+  set connectionUrl(newValue: string) {
+    this._connectionUrl = newValue;
     this._connectionUrlChanged.emit(newValue);
   }
 
@@ -45,7 +45,7 @@ export class ConnectionPageToolbarModel extends VDomModel implements IConnection
     return this._connectionUrlChanged;
   }
 
-  private _connectionString: string;
+  private _connectionUrl: string;
   private readonly _connectionUrlChanged = new Signal<this, string>(this);
   private readonly _connect = new Signal<this, string>(this);
 }
@@ -55,13 +55,13 @@ class ToolbarContainer extends VDomRenderer<ConnectionPageToolbarModel> {
     if (!this.model) {
       return null;
     } else {
-      const connectionString = this.model.connectionString
+      const connectionUrl = this.model.connectionUrl
       return (
         <div className="p-Sql-Toolbar">
           <ConnectionInformationEdit
-            initialConnectionString={connectionString}
-            onConnectionUrlChanged={newConnectionString => this.model.connectionString = newConnectionString}
-            onFinishEdit={currentConnectionString => this.model.tryConnect(currentConnectionString)}
+            initialConnectionUrl={connectionUrl}
+            onConnectionUrlChanged={newConnectionUrl => this.model.connectionUrl = newConnectionUrl}
+            onFinishEdit={currentConnectionUrl => this.model.tryConnect(currentConnectionUrl)}
           />
         </div>
       );
@@ -77,7 +77,7 @@ class ConnectionInformationEdit extends React.Component<
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
-      connectionString: props.initialConnectionString,
+      connectionUrl: props.initialConnectionUrl,
       focused: false
     };
   }
@@ -94,29 +94,28 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   onChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const newConnectionString = event.target.value;
-    this.props.onConnectionUrlChanged(newConnectionString);
-    this.setState({ connectionString: newConnectionString });
+    const newConnectionUrl = event.target.value;
+    this.props.onConnectionUrlChanged(newConnectionUrl);
+    this.setState({ connectionUrl: newConnectionUrl });
   }
 
   start() {
     this.setState({
       focused: true
-      //value: this.props.connectionString
     });
   }
 
   finish() {
-    this.props.onFinishEdit(this.state.connectionString);
+    this.props.onFinishEdit(this.state.connectionUrl);
     this.setState({
       focused: false
     });
   }
 
   cancel() {
-    const newConnectionString = this.props.initialConnectionString;
-    this.props.onConnectionUrlChanged(newConnectionString);
-    this.setState({ connectionString: newConnectionString });
+    const newConnectionUrl = this.props.initialConnectionUrl;
+    this.props.onConnectionUrlChanged(newConnectionUrl);
+    this.setState({ connectionUrl: newConnectionUrl });
   }
 
   onInputFocus() {
@@ -132,7 +131,7 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   render() {
-    const { connectionString, focused } = this.state;
+    const { connectionUrl, focused } = this.state;
     const inputWrapperClass = classNames(
       'p-Sql-ConnectionInformation-input-wrapper',
       { 'p-mod-focused': focused }
@@ -141,7 +140,7 @@ class ConnectionInformationEdit extends React.Component<
       <div className={inputWrapperClass}>
         <input
           className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
-          value={connectionString}
+          value={connectionUrl}
           ref={this.inputRef}
           onChange={event => this.onChange(event)}
           onKeyDown={event => this.onKeyDown(event)}
@@ -155,13 +154,13 @@ class ConnectionInformationEdit extends React.Component<
 
 namespace ConnectionInformationEdit {
   export interface Props {
-    initialConnectionString: string;
-    onFinishEdit: (newConnectionString: string) => void;
+    initialConnectionUrl: string;
+    onFinishEdit: (newConnectionUrl: string) => void;
     onConnectionUrlChanged: (newConnectionString: string) => void;
   }
 
   export interface State {
-    connectionString: string;
+    connectionUrl: string;
     focused: boolean;
   }
 }

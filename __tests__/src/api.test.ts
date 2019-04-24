@@ -30,7 +30,7 @@ describe('getForQuery', () => {
     const expectedRequest = {
       method: 'POST',
       body: JSON.stringify({
-        connectionString: "connectionUrl",
+        connectionUrl: "connectionUrl",
         query: "query"
       })
     };

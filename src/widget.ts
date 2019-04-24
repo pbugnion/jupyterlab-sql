@@ -150,7 +150,7 @@ export class JupyterLabSqlWidget extends Widget {
     // TODO: Don't hardcode URL
     const connectionUrl = 'postgres://localhost:5432/postgres';
     const options = {
-      initialConnectionString: connectionUrl,
+      initialConnectionUrl: connectionUrl,
       initialSqlStatement: 'select * from t',
       editorFactory: this.editorFactory
     }

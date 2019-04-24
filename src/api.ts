@@ -70,13 +70,13 @@ export namespace Api {
   }
 
   export async function getForQuery(
-    connectionString: string,
+    connectionUrl: string,
     query: string
   ): Promise<ResponseModel.Type> {
     const url = URLExt.join(settings.baseUrl, '/jupyterlab-sql/query');
     const request: RequestInit = {
       method: 'POST',
-      body: JSON.stringify({ connectionString, query })
+      body: JSON.stringify({ connectionUrl, query })
     };
     const response = await ServerConnection.makeRequest(url, request, settings);
     const data = await response.json();

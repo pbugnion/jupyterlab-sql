@@ -9,8 +9,8 @@ import classNames from 'classNames';
 import { ConnectionUrl } from './services';
 
 export interface IToolbarModel {
-  readonly connectionString: string;
-  readonly connectionStringChanged: ISignal<this, string>;
+  readonly connectionUrl: string;
+  readonly connectionUrlChanged: ISignal<this, string>;
   isLoading: boolean;
 }
 
@@ -21,31 +21,31 @@ export function newToolbar(model: ToolbarModel): ToolbarContainer {
 }
 
 export class ToolbarModel extends VDomModel implements IToolbarModel {
-  constructor(initialConnectionString: string) {
+  constructor(initialConnectionUrl: string) {
     super();
-    this._connectionString = initialConnectionString;
+    this._connectionUrl = initialConnectionUrl;
   }
 
-  private _connectionString: string;
+  private _connectionUrl: string;
   private _isLoading: boolean = false;
-  private _connectionStringChanged = new Signal<this, string>(this);
+  private _connectionUrlChanged = new Signal<this, string>(this);
 
-  get connectionStringChanged(): ISignal<this, string> {
-    return this._connectionStringChanged;
+  get connectionUrlChanged(): ISignal<this, string> {
+    return this._connectionUrlChanged;
   }
 
-  get connectionString(): string {
-    return this._connectionString;
+  get connectionUrl(): string {
+    return this._connectionUrl;
   }
 
   get isLoading(): boolean {
     return this._isLoading;
   }
 
-  set connectionString(newString: string) {
-    this._connectionString = newString;
+  set connectionUrl(newString: string) {
+    this._connectionUrl = newString;
     this.stateChanged.emit(void 0);
-    this._connectionStringChanged.emit(newString);
+    this._connectionUrlChanged.emit(newString);
   }
 
   set isLoading(newValue: boolean) {
@@ -55,25 +55,25 @@ export class ToolbarModel extends VDomModel implements IToolbarModel {
 }
 
 class ToolbarContainer extends VDomRenderer<ToolbarModel> {
-  onConnectionStringChanged(newString: string) {
+  onConnectionUrlChanged(newString: string) {
     if (!this.model) {
       return;
     }
-    this.model.connectionString = newString;
+    this.model.connectionUrl = newString;
   }
 
   render() {
     if (!this.model) {
       return null;
     } else {
-      const connectionString = this.model.connectionString;
+      const connectionUrl = this.model.connectionUrl;
       const isLoading = this.model.isLoading;
       return (
         <div className="p-Sql-Toolbar">
           <ConnectionInformation
-            connectionString={connectionString}
-            onConnectionStringChanged={newString =>
-              this.onConnectionStringChanged(newString)
+            connectionUrl={connectionUrl}
+            onConnectionUrlChanged={newUrl =>
+              this.onConnectionUrlChanged(newUrl)
             }
           />
           {isLoading && <LoadingIcon />}
@@ -85,27 +85,27 @@ class ToolbarContainer extends VDomRenderer<ToolbarModel> {
 
 namespace ConnectionInformation {
   export interface Props {
-    connectionString: string;
-    onConnectionStringChanged: (newString: string) => void;
+    connectionUrl: string;
+    onConnectionUrlChanged: (newUrl: string) => void;
   }
 }
 
 class ConnectionInformation extends React.Component<
   ConnectionInformation.Props
-> {
+  > {
   constructor(props: ConnectionInformation.Props) {
     super(props);
   }
 
-  saveEdit(newConnectionString: string) {
-    this.props.onConnectionStringChanged(newConnectionString);
+  saveEdit(newConnectionUrl: string) {
+    this.props.onConnectionUrlChanged(newConnectionUrl);
   }
 
   render() {
-    const { connectionString } = this.props;
+    const { connectionUrl } = this.props;
     return (
       <ConnectionInformationEdit
-        connectionString={connectionString}
+        connectionUrl={connectionUrl}
         onFinishEdit={(newConnectionString: string) =>
           this.saveEdit(newConnectionString)
         }
@@ -117,11 +117,11 @@ class ConnectionInformation extends React.Component<
 class ConnectionInformationEdit extends React.Component<
   ConnectionInformationEdit.Props,
   ConnectionInformationEdit.State
-> {
+  > {
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
-      value: ConnectionUrl.sanitize(props.connectionString),
+      value: ConnectionUrl.sanitize(props.connectionUrl),
       focused: false
     };
   }
@@ -144,7 +144,7 @@ class ConnectionInformationEdit extends React.Component<
   start() {
     this.setState({
       focused: true,
-      value: this.props.connectionString
+      value: this.props.connectionUrl
     });
   }
 
@@ -157,7 +157,7 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   cancel() {
-    this.setState({ value: this.props.connectionString });
+    this.setState({ value: this.props.connectionUrl });
   }
 
   onInputFocus() {
@@ -196,7 +196,7 @@ class ConnectionInformationEdit extends React.Component<
 
 namespace ConnectionInformationEdit {
   export interface Props {
-    connectionString: string;
+    connectionUrl: string;
     onFinishEdit: (newConnectionString: string) => void;
   }
 

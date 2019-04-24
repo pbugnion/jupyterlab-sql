@@ -23,7 +23,7 @@ import { JupyterLabSqlPage, PageName } from './page';
 namespace QueryPage {
   export interface IOptions {
     editorFactory: IEditorFactoryService,
-    initialConnectionString: string;
+    initialConnectionUrl: string;
     initialSqlStatement: string;
   }
 }
@@ -48,20 +48,20 @@ class Content extends BoxPanel {
 
     this.addClass('p-Sql-MainContainer')
 
-    const toolbarModel = new ToolbarModel(options.initialConnectionString);
+    const toolbarModel = new ToolbarModel(options.initialConnectionUrl);
     this.toolbarModel = toolbarModel;
     const connectionWidget = newToolbar(toolbarModel);
 
-    this.toolbarModel.connectionStringChanged.connect((_, value: string) => {
-      this._connectionStringChanged.emit(value);
+    this.toolbarModel.connectionUrlChanged.connect((_, value: string) => {
+      this._connectionUrlChanged.emit(value);
     });
 
     this.editor = new Editor(options.initialSqlStatement, options.editorFactory);
     this.response = new Response();
 
     this.editor.execute.connect((_, value: string) => {
-      const connectionString = this.toolbarModel.connectionString;
-      this.updateGrid(connectionString, value);
+      const connectionUrl = this.toolbarModel.connectionUrl;
+      this.updateGrid(connectionUrl, value);
     });
     this.editor.valueChanged.connect((_, value) => {
       this._sqlStatementChanged.emit(value);
@@ -79,11 +79,11 @@ class Content extends BoxPanel {
   readonly response: IResponse;
   readonly toolbarModel: IToolbarModel;
   private _lastRequestId: string;
-  private _connectionStringChanged = new Signal<this, string>(this);
+  private _connectionUrlChanged = new Signal<this, string>(this);
   private _sqlStatementChanged = new Signal<this, string>(this);
 
-  get connectionStringChanged(): ISignal<this, string> {
-    return this._connectionStringChanged;
+  get connectionUrlChanged(): ISignal<this, string> {
+    return this._connectionUrlChanged;
   }
 
   get sqlStatementChanged(): ISignal<this, string> {
@@ -94,11 +94,11 @@ class Content extends BoxPanel {
     return this.editor.value;
   }
 
-  async updateGrid(connectionString: string, sql: string): Promise<void> {
+  async updateGrid(connectionUrl: string, sql: string): Promise<void> {
     const thisRequestId = uuid.v4();
     this._lastRequestId = thisRequestId;
     this.toolbarModel.isLoading = true;
-    const data = await Api.getForQuery(connectionString, sql);
+    const data = await Api.getForQuery(connectionUrl, sql);
     if (this._lastRequestId === thisRequestId) {
       // Only update the response widget if the current
       // query is the last query that was dispatched.

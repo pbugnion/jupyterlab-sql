@@ -25,7 +25,7 @@ class SqlQueryHandler(IPythonHandler):
     async def post(self):
         data = json_decode(self.request.body)
         query = data["query"]
-        connection_url = data["connectionString"]
+        connection_url = data["connectionUrl"]
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             result = await ioloop.run_in_executor(
