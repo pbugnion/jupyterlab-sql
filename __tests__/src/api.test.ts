@@ -12,16 +12,37 @@ jest.mock('@jupyterlab/services', () => ({
 }));
 
 describe('getForQuery', () => {
-  it('return a response with data', async () => {
-    const response = {
-      responseType: "success",
-      responseData: {
-        hasRows: true,
-        keys: ["key1", "key2"],
-        rows: [["a", "b"], ["c", "d"]]
+  it.each([
+    [
+      'success with data',
+      {
+        responseType: "success",
+        responseData: {
+          hasRows: true,
+          keys: ["key1", "key2"],
+          rows: [["a", "b"], ["c", "d"]]
+        }
       }
-    }
-
+    ],
+    [
+      'success with no data',
+      {
+        responseType: "success",
+        responseData: {
+          hasRows: false
+        }
+      }
+    ],
+    [
+      'error',
+      {
+        responseType: "error",
+        responseData: {
+          message: "some message",
+        }
+      }
+    ]
+  ])('valid %#: %s', async (_, response) => {
     ServerConnection.makeRequest = jest.fn(() => Promise.resolve(new Response(JSON.stringify(response))))
 
     const result = await Api.getForQuery("connectionUrl", "query");
