@@ -5,7 +5,7 @@ module.exports = {
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
   },
-  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+  "testRegex": "(/__tests__/src/.*|(\\.|/)(test|spec))\\.tsx?$",
   "testPathIgnorePatterns": ["<rootDir>/node_modules/"],
   "moduleFileExtensions": [
     "ts",
@@ -20,4 +20,7 @@ module.exports = {
       "tsConfig": "<rootDir>/tsconfig.spec.json"
     }
   },
+  "setupFiles": [
+    "<rootDir>/__tests__/setupJest.ts"
+  ]
 }
