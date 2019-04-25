@@ -79,4 +79,6 @@ describe('getForQuery', () => {
     )
     expect(mockOnError).toHaveBeenCalled()
   })
+
+  it.todo('bad http status code')
 })
