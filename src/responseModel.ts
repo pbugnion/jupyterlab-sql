@@ -1,3 +1,4 @@
+// TODO: Bring into Api.ts
 export namespace ResponseModel {
   export type Type = ErrorResponse | SuccessResponse;
 
@@ -17,13 +18,13 @@ export namespace ResponseModel {
 
   type SuccessResponseData =
     | {
-        hasRows: false;
-      }
+      hasRows: false;
+    }
     | {
-        hasRows: true;
-        keys: Array<string>;
-        rows: Array<Array<any>>;
-      };
+      hasRows: true;
+      keys: Array<string>;
+      rows: Array<Array<any>>;
+    };
 
   export function createError(message: string): ErrorResponse {
     return {

@@ -2,6 +2,8 @@ import { Api } from '../../src/api';
 
 import { ServerConnection } from '@jupyterlab/services';
 
+import { ResponseModel } from '../../src/responseModel';
+
 jest.mock('@jupyterlab/services', () => ({
   ServerConnection: {
     defaultSettings: {
@@ -11,39 +13,40 @@ jest.mock('@jupyterlab/services', () => ({
   }
 }));
 
+namespace Fixtures {
+  export const successWithData = {
+    responseType: "success",
+    responseData: {
+      hasRows: true,
+      keys: ["key1", "key2"],
+      rows: [["a", "b"], ["c", "d"]]
+    }
+  }
+
+  export const successNoData = {
+    responseType: "success",
+    responseData: {
+      hasRows: false
+    }
+  };
+
+  export const error = {
+    responseType: "error",
+    responseData: {
+      message: "some message",
+    }
+  }
+}
+
 describe('getForQuery', () => {
   it.each([
-    [
-      'success with data',
-      {
-        responseType: "success",
-        responseData: {
-          hasRows: true,
-          keys: ["key1", "key2"],
-          rows: [["a", "b"], ["c", "d"]]
-        }
-      }
-    ],
-    [
-      'success with no data',
-      {
-        responseType: "success",
-        responseData: {
-          hasRows: false
-        }
-      }
-    ],
-    [
-      'error',
-      {
-        responseType: "error",
-        responseData: {
-          message: "some message",
-        }
-      }
-    ]
+    ['success with data', Fixtures.successWithData],
+    ['success with no data', Fixtures.successNoData],
+    ['error', Fixtures.error]
   ])('valid %#: %s', async (_, response) => {
-    ServerConnection.makeRequest = jest.fn(() => Promise.resolve(new Response(JSON.stringify(response))))
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(response)))
+    )
 
     const result = await Api.getForQuery("connectionUrl", "query");
     expect(result).toEqual(response);
@@ -58,5 +61,22 @@ describe('getForQuery', () => {
     expect(ServerConnection.makeRequest).toHaveBeenCalledWith(
       expectedUrl, expectedRequest, ServerConnection.defaultSettings
     );
+  })
+
+  it.skip('missing response type', async () => {
+    const response = {}
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(response)))
+    )
+
+    const result = await Api.getForQuery("connectionUrl", "query");
+    const mockOnError = jest.fn()
+    ResponseModel.match(
+      result,
+      jest.fn(),
+      jest.fn(),
+      mockOnError
+    )
+    expect(mockOnError).toHaveBeenCalled()
   })
 })
