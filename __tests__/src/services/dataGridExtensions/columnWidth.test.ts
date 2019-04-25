@@ -1,4 +1,3 @@
-import 'jest-canvas-mock';
 import { TextRenderer, DataModel, DataGrid } from '@phosphor/datagrid';
 import {
   fitColumnWidths,

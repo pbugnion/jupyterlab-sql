@@ -1,5 +1,3 @@
-import 'jest-canvas-mock';
-
 import { DataModel } from '@phosphor/datagrid';
 
 import { SelectionManager } from '../../../../src/services/dataGridExtensions';

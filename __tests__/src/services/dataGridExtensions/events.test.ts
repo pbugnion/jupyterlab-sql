@@ -1,5 +1,3 @@
-import 'jest-canvas-mock';
-
 import { DataGrid, DataModel } from '@phosphor/datagrid';
 
 import {
