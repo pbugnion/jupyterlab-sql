@@ -74,5 +74,22 @@ describe('getTabeStructure', () => {
       Fixtures.success.responseData.rows
     );
   })
+
+  it('matching on error', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(Fixtures.error)))
+    )
+
+    const result = await getTableStructure('connectionUrl', 'tableName');
+
+    const mockOnError = jest.fn();
+    TableStructureResponse.match(
+      result,
+      jest.fn(),
+      mockOnError
+    )
+
+    expect(mockOnError).toHaveBeenCalledWith(Fixtures.error.responseData);
+  })
 })
 
