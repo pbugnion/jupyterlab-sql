@@ -2,7 +2,7 @@ import { Widget } from '@phosphor/widgets';
 
 import { PreWidget, SingletonPanel } from './components';
 
-import { Api } from './api';
+import * as Api from './api';
 
 import { ResultsTable } from './components';
 

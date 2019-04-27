@@ -16,7 +16,7 @@ import { Response, IResponse } from './response';
 
 import { Editor, IEditor } from './editor';
 
-import { Api } from './api';
+import * as Api from './api';
 
 import { JupyterLabSqlPage, PageName } from './page';
 

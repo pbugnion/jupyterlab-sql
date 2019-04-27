@@ -4,7 +4,7 @@ import { Toolbar, ToolbarButton } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel } from '../components';
 
-import { Api } from '../api';
+import * as Api from '../api';
 
 import { ResultsTable } from '../components';
 

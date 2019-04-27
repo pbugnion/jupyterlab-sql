@@ -11,7 +11,7 @@ import { Clipboard, Toolbar, ToolbarButton } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel, Table } from '../components';
 
-import { Api } from '../api'
+import * as Api from '../api'
 
 import { proxyFor } from '../services';
 
