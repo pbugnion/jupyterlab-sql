@@ -18,6 +18,7 @@ export namespace StructureResponse {
 
   interface ErrorResponse {
     responseType: 'error';
+    responseData: ErrorResponseData;
   }
 
   interface SuccessResponse {
@@ -29,13 +30,17 @@ export namespace StructureResponse {
     tables: Array<string>;
   }
 
+  type ErrorResponseData = {
+    message: string;
+  }
+
   export function match<U>(
     response: Type,
     onSuccess: (tables: Array<string>) => U,
-    onError: () => U
+    onError: (_: ErrorResponseData) => U
   ) {
     if (response.responseType === 'error') {
-      return onError();
+      return onError(response.responseData);
     } else if (response.responseType === 'success') {
       const { tables } = response.responseData;
       return onSuccess(tables);

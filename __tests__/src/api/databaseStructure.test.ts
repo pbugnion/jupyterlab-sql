@@ -29,6 +29,8 @@ namespace Fixtures {
       message: "some message",
     }
   }
+
+  export const errorResponse = new Response(JSON.stringify(error));
 }
 
 describe('getDatabaseStructure', () => {
@@ -69,6 +71,25 @@ describe('getDatabaseStructure', () => {
 
     expect(mockOnSuccess).toHaveBeenCalledWith(
       Fixtures.success.responseData.tables
+    );
+  })
+
+  it('matching on error', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(Fixtures.errorResponse)
+    );
+
+    const result = await getStructure('connectionUrl');
+
+    const mockOnError = jest.fn();
+    StructureResponse.match(
+      result,
+      jest.fn(),
+      mockOnError
+    )
+
+    expect(mockOnError).toHaveBeenCalledWith(
+      Fixtures.error.responseData
     );
   })
 })
