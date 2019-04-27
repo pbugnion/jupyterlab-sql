@@ -427,10 +427,6 @@
   dependencies:
     "@types/jest-diff" "*"
 
-"@types/joi@^14.3.3":
-  version "14.3.3"
-  resolved "https://registry.yarnpkg.com/@types/joi/-/joi-14.3.3.tgz#f251aa8150fc0b6a7ce9feab21802a28473de335"
-
 "@types/node@*":
   version "10.12.24"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"

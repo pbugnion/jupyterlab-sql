@@ -1,5 +1,3 @@
-import * as Joi from '@hapi/joi';
-
 import { Server } from './server';
 
 export async function getForQuery(
@@ -84,31 +82,6 @@ export namespace ResponseModel {
 }
 
 namespace Private {
-  const errorResponseData = Joi.object({
-    message: Joi.string().required()
-  });
-
-  const successResponseData = Joi.object({
-    hasRows: Joi.boolean().required(),
-    keys: Joi.when(
-      'hasRows',
-      { is: true, then: Joi.array().items(Joi.string()).required() }
-    ),
-    rows: Joi.when(
-      'hasRows',
-      { is: true, then: Joi.array().items(Joi.array()).required() }
-    )
-  });
-
-  const schema = Joi.object({
-    responseType: Joi.valid(['success', 'error']).required(),
-    responseData: Joi.when(
-      'responseType', { is: 'error', then: errorResponseData.required() }
-    ).when(
-      'responseType', { is: 'success', then: successResponseData.required() }
-    )
-  })
-
   export function createErrorResponse(responseStatus: number): ResponseModel.Type {
     if (responseStatus === 404) {
       return ResponseModel.createNotFoundError()
@@ -119,10 +92,6 @@ namespace Private {
   }
 
   export function validateBody(responseBody: any): ResponseModel.Type {
-    let { value, error } = schema.validate(responseBody)
-    if (error !== null) {
-      value = ResponseModel.createError('Schema validation error on response')
-    }
-    return value
+    return responseBody
   }
 }

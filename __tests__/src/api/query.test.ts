@@ -119,25 +119,6 @@ describe('getForQuery', () => {
     expect(mockOnError).toHaveBeenCalledWith(Fixtures.error.responseData)
   })
 
-  it('missing response type', async () => {
-    const response = {}
-    ServerConnection.makeRequest = jest.fn(
-      () => Promise.resolve(new Response(JSON.stringify(response)))
-    )
-
-    const result = await getForQuery("connectionUrl", "query");
-    const mockOnError = jest.fn()
-    ResponseModel.match(
-      result,
-      jest.fn(),
-      jest.fn(),
-      mockOnError
-    )
-    expect(mockOnError).toHaveBeenCalled()
-    const [[{ message }]] = mockOnError.mock.calls
-    expect(message).toMatch(/validation error/);
-  })
-
   it('bad http status code', async () => {
     ServerConnection.makeRequest = jest.fn(
       () => Promise.resolve(new Response('', { status: 400 }))
