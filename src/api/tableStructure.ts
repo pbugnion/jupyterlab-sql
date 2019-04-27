@@ -1,6 +1,16 @@
 
 import { Server } from './server';
 
+export async function getTableStructure(): Promise<TableStructureResponse.Type> {
+  const request: RequestInit = {
+    method: 'POST',
+    body: JSON.stringify({})
+  };
+  const response = await Server.makeRequest('/jupyterlab-sql/table', request);
+  const data = await response.json();
+  return data;
+}
+
 export namespace TableStructureResponse {
   export type Type = ErrorResponse | SuccessResponse;
 
@@ -30,14 +40,4 @@ export namespace TableStructureResponse {
       return onSuccess(keys, rows)
     }
   }
-}
-
-export async function getTableStructure(): Promise<TableStructureResponse.Type> {
-  const request: RequestInit = {
-    method: 'POST',
-    body: JSON.stringify({})
-  };
-  const response = await Server.makeRequest('/jupyterlab-sql/table', request);
-  const data = await response.json();
-  return data;
 }
