@@ -78,7 +78,7 @@ class Content extends BoxPanel {
     this.addWidget(this._responseWidget);
     BoxPanel.setSizeBasis(customQueryWidget, 30);
     BoxPanel.setStretch(this._responseWidget, 1)
-    this._getStructure()
+    this._getStructure(options.connectionUrl)
   }
 
   get customQueryClicked(): ISignal<this, void> {
@@ -89,8 +89,8 @@ class Content extends BoxPanel {
     return this._navigateToTable
   }
 
-  private async _getStructure(): Promise<void> {
-    const response = await Api.getStructure()
+  private async _getStructure(connectionUrl: string): Promise<void> {
+    const response = await Api.getStructure(connectionUrl)
     this._responseWidget.setResponse(response)
   }
 

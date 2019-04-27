@@ -1,9 +1,9 @@
 import { Server } from './server';
 
-export async function getStructure(): Promise<StructureResponse.Type> {
+export async function getStructure(connectionUrl: string): Promise<StructureResponse.Type> {
   const request: RequestInit = {
     method: 'POST',
-    body: JSON.stringify({})
+    body: JSON.stringify({ connectionUrl })
   }
   const response = await Server.makeRequest('/jupyterlab-sql/structure', request);
   const data = await response.json()
