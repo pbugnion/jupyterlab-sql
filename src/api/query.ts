@@ -12,16 +12,12 @@ export async function getForQuery(
   };
   const response = await Server.makeRequest('/jupyterlab-sql/query', request);
   if (!response.ok) {
-    let errorMessage: string;
     if (response.status === 404) {
-      errorMessage = (
-        'Failed to reach server endpoints. ' +
-        'Is the server extension installed correctly?'
-      );
+      return ResponseModel.createNotFoundError()
     } else {
-      errorMessage = 'Unexpected response status from server'
+      const errorMessage = 'Unexpected response status from server'
+      return ResponseModel.createError(errorMessage)
     }
-    return ResponseModel.createError(errorMessage)
   }
   const data = await response.json();
   let { value, error } = Private.schema.validate(data)
@@ -65,6 +61,14 @@ export namespace ResponseModel {
         message
       }
     };
+  }
+
+  export function createNotFoundError(): ErrorResponse {
+    const errorMessage = (
+      'Failed to reach server endpoints. ' +
+      'Is the server extension installed correctly?'
+    );
+    return createError(errorMessage)
   }
 
   export function match<U>(
