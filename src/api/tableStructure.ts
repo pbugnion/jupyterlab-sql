@@ -11,6 +11,9 @@ export async function getTableStructure(connectionUrl: string, tableName: string
     body: JSON.stringify(payload)
   };
   const response = await Server.makeRequest('/jupyterlab-sql/table', request);
+  if (!response.ok) {
+    return Private.createErrorResponse(response.status)
+  }
   const data = await response.json();
   return data;
 }
@@ -37,6 +40,24 @@ export namespace TableStructureResponse {
     message: string;
   }
 
+  export function createError(message: string): ErrorResponse {
+    return {
+      responseType: 'error',
+      responseData: {
+        message
+      }
+    };
+  }
+
+  export function createNotFoundError(): ErrorResponse {
+    const errorMessage = (
+      'Failed to reach server endpoints. ' +
+      'Is the server extension installed correctly?'
+    );
+    return createError(errorMessage)
+  }
+
+
   export function match<U>(
     response: Type,
     onSuccess: (keys: Array<string>, rows: Array<Array<any>>) => U,
@@ -47,6 +68,17 @@ export namespace TableStructureResponse {
     } else if (response.responseType === 'success') {
       const { keys, rows } = response.responseData;
       return onSuccess(keys, rows)
+    }
+  }
+}
+
+namespace Private {
+  export function createErrorResponse(responseStatus: number): TableStructureResponse.Type {
+    if (responseStatus === 404) {
+      return TableStructureResponse.createNotFoundError()
+    } else {
+      const errorMessage = 'Unexpected response status from server'
+      return TableStructureResponse.createError(errorMessage)
     }
   }
 }

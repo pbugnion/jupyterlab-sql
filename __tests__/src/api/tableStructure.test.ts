@@ -91,4 +91,18 @@ describe('getTabeStructure', () => {
 
     expect(mockOnError).toHaveBeenCalledWith(Fixtures.error.responseData);
   })
+
+  it('bad http status code', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response('', { status: 400 }))
+    )
+    const result = await getTableStructure('connectionUrl', 'tableName');
+    const mockOnError = jest.fn()
+    TableStructureResponse.match(
+      result,
+      jest.fn(),
+      mockOnError
+    )
+    expect(mockOnError).toHaveBeenCalled();
+  })
 })
