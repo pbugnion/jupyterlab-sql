@@ -92,4 +92,3 @@ describe('getTabeStructure', () => {
     expect(mockOnError).toHaveBeenCalledWith(Fixtures.error.responseData);
   })
 })
-
