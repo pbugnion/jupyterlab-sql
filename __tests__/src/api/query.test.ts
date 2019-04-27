@@ -1,5 +1,5 @@
 
-import { getForQuery, ResponseModel } from '../../src/api';
+import { getForQuery, ResponseModel } from '../../../src/api';
 
 import { ServerConnection } from '@jupyterlab/services';
 
