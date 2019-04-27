@@ -1,5 +1,5 @@
 
-import { getTableStructure } from '../../../src/api';
+import { getTableStructure, TableStructureResponse } from '../../../src/api';
 
 import { ServerConnection } from '@jupyterlab/services';
 
@@ -52,6 +52,26 @@ describe('getTabeStructure', () => {
     }
     expect(ServerConnection.makeRequest).toHaveBeenCalledWith(
       expectedUrl, expectedRequest, ServerConnection.defaultSettings
+    );
+  })
+
+  it('matching on success', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(Fixtures.success)))
+    )
+
+    const result = await getTableStructure('connectionUrl', 'tableName');
+
+    const mockOnSuccess = jest.fn();
+    TableStructureResponse.match(
+      result,
+      mockOnSuccess,
+      jest.fn()
+    )
+
+    expect(mockOnSuccess).toHaveBeenCalledWith(
+      Fixtures.success.responseData.keys,
+      Fixtures.success.responseData.rows
     );
   })
 })
