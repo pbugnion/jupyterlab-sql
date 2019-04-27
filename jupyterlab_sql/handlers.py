@@ -8,6 +8,7 @@ from .executor import Executor
 
 
 # TODO: Use schema to validate request
+# TODO: Centralize definition of error response
 
 class SqlQueryHandler(IPythonHandler):
     def initialize(self, executor):
