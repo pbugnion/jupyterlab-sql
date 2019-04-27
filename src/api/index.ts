@@ -1,2 +1,4 @@
-export * from './queries';
-export * from './models';
+
+export * from './query'
+export * from './databaseStructure'
+export * from './tableStructure'
