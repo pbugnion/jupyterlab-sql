@@ -62,6 +62,63 @@ describe('getForQuery', () => {
     );
   })
 
+  it('matching on success with data', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(Fixtures.successWithData)))
+    )
+
+    const result = await getForQuery('connectionUrl', 'query');
+
+    const mockOnSuccessWithData = jest.fn();
+    ResponseModel.match(
+      result,
+      mockOnSuccessWithData,
+      jest.fn(),
+      jest.fn()
+    )
+
+    expect(mockOnSuccessWithData).toHaveBeenCalledWith(
+      Fixtures.successWithData.responseData.keys,
+      Fixtures.successWithData.responseData.rows
+    )
+  })
+
+  it('matching on success with no data', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(Fixtures.successNoData)))
+    )
+
+    const result = await getForQuery('connectionUrl', 'query');
+
+    const mockOnSuccessNoData = jest.fn();
+    ResponseModel.match(
+      result,
+      jest.fn(),
+      mockOnSuccessNoData,
+      jest.fn()
+    )
+
+    expect(mockOnSuccessNoData).toHaveBeenCalled()
+  })
+
+  it('matching on error', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response(JSON.stringify(Fixtures.error)))
+    )
+
+    const result = await getForQuery('connectionUrl', 'query');
+
+    const mockOnError = jest.fn();
+    ResponseModel.match(
+      result,
+      jest.fn(),
+      jest.fn(),
+      mockOnError,
+    )
+
+    expect(mockOnError).toHaveBeenCalledWith(Fixtures.error.responseData)
+  })
+
   it('missing response type', async () => {
     const response = {}
     ServerConnection.makeRequest = jest.fn(
