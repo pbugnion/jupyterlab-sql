@@ -1,5 +1,15 @@
 import { Server } from './server';
 
+export async function getStructure(): Promise<StructureResponse.Type> {
+  const request: RequestInit = {
+    method: 'POST',
+    body: JSON.stringify({})
+  }
+  const response = await Server.makeRequest('/jupyterlab-sql/structure', request);
+  const data = await response.json()
+  return data;
+}
+
 export namespace StructureResponse {
   export type Type = ErrorResponse | SuccessResponse;
 
@@ -28,14 +38,4 @@ export namespace StructureResponse {
       return onSuccess(tables);
     }
   }
-}
-
-export async function getStructure(): Promise<StructureResponse.Type> {
-  const request: RequestInit = {
-    method: 'POST',
-    body: JSON.stringify({})
-  }
-  const response = await Server.makeRequest('/jupyterlab-sql/structure', request);
-  const data = await response.json()
-  return data;
 }
