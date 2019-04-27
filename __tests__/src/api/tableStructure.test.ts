@@ -31,7 +31,7 @@ namespace Fixtures {
   }
 }
 
-describe('getTabeStructure', () => {
+describe('getTableStructure', () => {
   it.each([
     ['success', Fixtures.success],
     ['error', Fixtures.error]
