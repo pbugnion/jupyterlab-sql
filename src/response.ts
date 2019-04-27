@@ -2,13 +2,13 @@ import { Widget } from '@phosphor/widgets';
 
 import { PreWidget, SingletonPanel } from './components';
 
-import { ResponseModel } from './responseModel';
+import { Api } from './api';
 
 import { ResultsTable } from './components';
 
 export interface IResponse {
   readonly widget: Widget;
-  setResponse(response: ResponseModel.Type): void;
+  setResponse(response: Api.ResponseModel.Type): void;
 }
 
 export class Response {
@@ -20,7 +20,7 @@ export class Response {
     return this._widget;
   }
 
-  setResponse(response: ResponseModel.Type): void {
+  setResponse(response: Api.ResponseModel.Type): void {
     this._widget.setResponse(response);
   }
 
@@ -35,9 +35,9 @@ export class ResponseWidget extends SingletonPanel {
     super.dispose();
   }
 
-  setResponse(response: ResponseModel.Type) {
+  setResponse(response: Api.ResponseModel.Type) {
     this._disposeTable();
-    ResponseModel.match(
+    Api.ResponseModel.match(
       response,
       (keys, rows) => {
         const table = new ResultsTable(keys, rows);
