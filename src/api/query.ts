@@ -12,7 +12,16 @@ export async function getForQuery(
   };
   const response = await Server.makeRequest('/jupyterlab-sql/query', request);
   if (!response.ok) {
-    return ResponseModel.createError('Unexpected response status from server')
+    let errorMessage: string;
+    if (response.status === 404) {
+      errorMessage = (
+        'Failed to reach server endpoints. ' +
+        'Is the server extension installed correctly?'
+      );
+    } else {
+      errorMessage = 'Unexpected response status from server'
+    }
+    return ResponseModel.createError(errorMessage)
   }
   const data = await response.json();
   let { value, error } = Private.schema.validate(data)
