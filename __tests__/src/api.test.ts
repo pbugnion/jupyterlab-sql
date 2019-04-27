@@ -77,6 +77,8 @@ describe('getForQuery', () => {
       mockOnError
     )
     expect(mockOnError).toHaveBeenCalled()
+    const [[{ message }]] = mockOnError.mock.calls
+    expect(message).toMatch(/validation error/);
   })
 
   it.todo('bad http status code')
