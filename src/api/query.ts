@@ -1,5 +1,23 @@
+import * as Joi from '@hapi/joi';
 
 import { Server } from './server';
+
+export async function getForQuery(
+  connectionUrl: string,
+  query: string
+): Promise<ResponseModel.Type> {
+  const request: RequestInit = {
+    method: 'POST',
+    body: JSON.stringify({ connectionUrl, query })
+  };
+  const response = await Server.makeRequest('/jupyterlab-sql/query', request);
+  const data = await response.json();
+  let { value, error } = Private.schema.validate(data)
+  if (error !== null) {
+    value = ResponseModel.createError('Schema validation error on response')
+  }
+  return value;
+}
 
 export namespace ResponseModel {
   export type Type = ErrorResponse | SuccessResponse;
@@ -57,15 +75,29 @@ export namespace ResponseModel {
   }
 }
 
-export async function getForQuery(
-  connectionUrl: string,
-  query: string
-): Promise<ResponseModel.Type> {
-  const request: RequestInit = {
-    method: 'POST',
-    body: JSON.stringify({ connectionUrl, query })
-  };
-  const response = await Server.makeRequest('/jupyterlab-sql/query', request);
-  const data = await response.json();
-  return data;
+namespace Private {
+  const errorResponseData = Joi.object({
+    message: Joi.string().required()
+  });
+
+  const successResponseData = Joi.object({
+    hasRows: Joi.boolean().required(),
+    keys: Joi.when(
+      'hasRows',
+      { is: true, then: Joi.array().items(Joi.string()).required() }
+    ),
+    rows: Joi.when(
+      'hasRows',
+      { is: true, then: Joi.array().items(Joi.array()).required() }
+    )
+  });
+
+  export const schema = Joi.object({
+    responseType: Joi.valid(['success', 'error']).required(),
+    responseData: Joi.when(
+      'responseType', { is: 'error', then: errorResponseData.required() }
+    ).when(
+      'responseType', { is: 'success', then: successResponseData.required() }
+    )
+  })
 }

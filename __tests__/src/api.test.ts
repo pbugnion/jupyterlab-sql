@@ -62,7 +62,7 @@ describe('getForQuery', () => {
     );
   })
 
-  it.skip('missing response type', async () => {
+  it('missing response type', async () => {
     const response = {}
     ServerConnection.makeRequest = jest.fn(
       () => Promise.resolve(new Response(JSON.stringify(response)))
