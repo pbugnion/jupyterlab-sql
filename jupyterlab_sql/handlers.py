@@ -70,8 +70,8 @@ class StructureHandler(IPythonHandler):
         return result
 
     async def post(self):
-        # TODO read from request
-        connection_url = "postgres://localhost:5432/postgres"
+        data = json_decode(self.request.body)
+        connection_url = data["connectionUrl"]
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             tables = await ioloop.run_in_executor(
