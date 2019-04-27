@@ -1,8 +1,7 @@
-import { Api } from '../../src/api';
+
+import { getForQuery, ResponseModel } from '../../src/api';
 
 import { ServerConnection } from '@jupyterlab/services';
-
-import { ResponseModel } from '../../src/responseModel';
 
 jest.mock('@jupyterlab/services', () => ({
   ServerConnection: {
@@ -48,7 +47,7 @@ describe('getForQuery', () => {
       () => Promise.resolve(new Response(JSON.stringify(response)))
     )
 
-    const result = await Api.getForQuery("connectionUrl", "query");
+    const result = await getForQuery("connectionUrl", "query");
     expect(result).toEqual(response);
     const expectedUrl = "https://example.com/jupyterlab-sql/query"
     const expectedRequest = {
@@ -69,7 +68,7 @@ describe('getForQuery', () => {
       () => Promise.resolve(new Response(JSON.stringify(response)))
     )
 
-    const result = await Api.getForQuery("connectionUrl", "query");
+    const result = await getForQuery("connectionUrl", "query");
     const mockOnError = jest.fn()
     ResponseModel.match(
       result,
