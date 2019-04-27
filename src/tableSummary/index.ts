@@ -12,6 +12,7 @@ import { JupyterLabSqlPage, PageName } from '../page';
 
 export namespace TableSummaryPage {
   export interface IOptions {
+    connectionUrl: string,
     tableName: string
   }
 }
@@ -21,7 +22,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
     this._content = new Content(options)
     // TODO correct url
     this._toolbar = new TableSummaryToolbar(
-      'postgres://localhost:5432/postgres',
+      options.connectionUrl,
       options.tableName
     )
   }
@@ -45,11 +46,11 @@ class Content extends BoxPanel {
     super();
     this._responseWidget = new ResponseWidget()
     this.addWidget(this._responseWidget)
-    this._getTableStructure();
+    this._getTableStructure(options.connectionUrl, options.tableName);
   }
 
-  private async _getTableStructure(): Promise<void> {
-    const response = await Api.getTableStructure()
+  private async _getTableStructure(connectionUrl: string, tableName: string): Promise<void> {
+    const response = await Api.getTableStructure(connectionUrl, tableName)
     this._responseWidget.setResponse(response)
   }
 

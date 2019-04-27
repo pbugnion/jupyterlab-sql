@@ -158,9 +158,9 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   private _loadTableSummaryPage() {
-    // TODO don't hard-code table name
-    const tableName: string = 'account';
-    this.page = new TableSummaryPage({ tableName });
+    const tableName = this._tableName;
+    const connectionUrl = this._connectionUrl;
+    this.page = new TableSummaryPage({ connectionUrl, tableName });
   }
 
   readonly editorFactory: IEditorFactoryService;
