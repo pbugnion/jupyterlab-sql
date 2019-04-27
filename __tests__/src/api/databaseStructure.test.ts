@@ -92,4 +92,20 @@ describe('getDatabaseStructure', () => {
       Fixtures.error.responseData
     );
   })
+
+  it('bad http status code', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response('', { status: 400 }))
+    )
+    const result = await getStructure('connectionUrl');
+    const mockOnError = jest.fn()
+    StructureResponse.match(
+      result,
+      jest.fn(),
+      mockOnError
+    )
+    expect(mockOnError).toHaveBeenCalled();
+    const [[{ message }]] = mockOnError.mock.calls
+    expect(message).toMatch(/response status/);
+  })
 })
