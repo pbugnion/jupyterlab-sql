@@ -81,5 +81,20 @@ describe('getForQuery', () => {
     expect(message).toMatch(/validation error/);
   })
 
-  it.todo('bad http status code')
+  it('bad http status code', async () => {
+    ServerConnection.makeRequest = jest.fn(
+      () => Promise.resolve(new Response('', { status: 400 }))
+    )
+    const result = await getForQuery("connectionUrl", "query");
+    const mockOnError = jest.fn()
+    ResponseModel.match(
+      result,
+      jest.fn(),
+      jest.fn(),
+      mockOnError
+    )
+    expect(mockOnError).toHaveBeenCalled()
+    const [[{ message }]] = mockOnError.mock.calls
+    expect(message).toMatch(/response status/);
+  })
 })

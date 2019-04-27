@@ -11,6 +11,9 @@ export async function getForQuery(
     body: JSON.stringify({ connectionUrl, query })
   };
   const response = await Server.makeRequest('/jupyterlab-sql/query', request);
+  if (!response.ok) {
+    return ResponseModel.createError('Unexpected response status from server')
+  }
   const data = await response.json();
   let { value, error } = Private.schema.validate(data)
   if (error !== null) {
