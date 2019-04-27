@@ -104,5 +104,7 @@ describe('getTableStructure', () => {
       mockOnError
     )
     expect(mockOnError).toHaveBeenCalled();
+    const [[{ message }]] = mockOnError.mock.calls
+    expect(message).toMatch(/response status/);
   })
 })
