@@ -7,6 +7,8 @@ import tornado.ioloop
 from .executor import Executor
 
 
+# TODO: Use schema to validate request
+
 class SqlQueryHandler(IPythonHandler):
     def initialize(self, executor):
         self._executor = executor
@@ -94,9 +96,9 @@ class TableStructureHandler(IPythonHandler):
         return result
 
     async def post(self):
-        # TODO read from request
-        connection_url = "postgres://localhost:5432/postgres"
-        table_name = 'account'
+        data = json_decode(self.request.body)
+        connection_url = data["connectionUrl"]
+        table_name = data["table"]
         ioloop = tornado.ioloop.IOLoop.current()
         try:
             result = await ioloop.run_in_executor(
