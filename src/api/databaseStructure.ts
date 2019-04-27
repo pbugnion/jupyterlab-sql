@@ -1,10 +1,13 @@
 import { Server } from './server';
 
+// TODO: rename getStructure to getDatabaseStructure
+
 export async function getStructure(connectionUrl: string): Promise<StructureResponse.Type> {
   const request: RequestInit = {
     method: 'POST',
     body: JSON.stringify({ connectionUrl })
   }
+  // TODO: use /database as endpoint
   const response = await Server.makeRequest('/jupyterlab-sql/structure', request);
   const data = await response.json()
   return data;
