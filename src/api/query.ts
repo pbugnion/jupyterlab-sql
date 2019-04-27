@@ -12,19 +12,11 @@ export async function getForQuery(
   };
   const response = await Server.makeRequest('/jupyterlab-sql/query', request);
   if (!response.ok) {
-    if (response.status === 404) {
-      return ResponseModel.createNotFoundError()
-    } else {
-      const errorMessage = 'Unexpected response status from server'
-      return ResponseModel.createError(errorMessage)
-    }
+    return Private.createErrorResponse(response.status)
   }
   const data = await response.json();
-  let { value, error } = Private.schema.validate(data)
-  if (error !== null) {
-    value = ResponseModel.createError('Schema validation error on response')
-  }
-  return value;
+  const validatedData = Private.validateBody(data)
+  return validatedData;
 }
 
 export namespace ResponseModel {
@@ -108,7 +100,7 @@ namespace Private {
     )
   });
 
-  export const schema = Joi.object({
+  const schema = Joi.object({
     responseType: Joi.valid(['success', 'error']).required(),
     responseData: Joi.when(
       'responseType', { is: 'error', then: errorResponseData.required() }
@@ -116,4 +108,21 @@ namespace Private {
       'responseType', { is: 'success', then: successResponseData.required() }
     )
   })
+
+  export function createErrorResponse(responseStatus: number): ResponseModel.Type {
+    if (responseStatus === 404) {
+      return ResponseModel.createNotFoundError()
+    } else {
+      const errorMessage = 'Unexpected response status from server'
+      return ResponseModel.createError(errorMessage)
+    }
+  }
+
+  export function validateBody(responseBody: any): ResponseModel.Type {
+    let { value, error } = schema.validate(responseBody)
+    if (error !== null) {
+      value = ResponseModel.createError('Schema validation error on response')
+    }
+    return value
+  }
 }
