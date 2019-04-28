@@ -23,12 +23,14 @@ export namespace TableSummaryPage {
 
 export class TableSummaryPage implements JupyterLabSqlPage {
   constructor(options: TableSummaryPage.IOptions) {
+    this._onRefresh = this._onRefresh.bind(this)
     this._content = new Content(options)
     this._toolbar = new TableSummaryToolbar(
       options.connectionUrl,
       options.tableName
     )
     this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
+    this._toolbar.refreshButtonClicked.connect(this._onRefresh)
     this._onRefresh();
   }
 
@@ -100,9 +102,14 @@ class TableSummaryToolbar extends Toolbar {
   constructor(connectionUrl: string, tableName: string) {
     super();
     this._onBackButtonClicked = this._onBackButtonClicked.bind(this)
+    this._onRefreshButtonClicked = this._onRefreshButtonClicked.bind(this)
     this.addItem(
       'back',
       new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
+    )
+    this.addItem(
+      'refresh',
+      new ToolbarItems.RefreshButton({ onClick: this._onRefreshButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
     this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
@@ -114,6 +121,10 @@ class TableSummaryToolbar extends Toolbar {
     return this._backButtonClicked;
   }
 
+  get refreshButtonClicked(): ISignal<this, void> {
+    return this._refreshButtonClicked;
+  }
+
   setLoading(isLoading: boolean) {
     this._loadingIcon.setLoading(isLoading);
   }
@@ -122,6 +133,11 @@ class TableSummaryToolbar extends Toolbar {
     this._backButtonClicked.emit(void 0)
   }
 
-  private readonly _loadingIcon: ToolbarItems.LoadingIcon = new ToolbarItems.LoadingIcon;
+  private _onRefreshButtonClicked(): void {
+    this._refreshButtonClicked.emit(void 0);
+  }
+
+  private readonly _loadingIcon: ToolbarItems.LoadingIcon = new ToolbarItems.LoadingIcon();
   private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
+  private readonly _refreshButtonClicked: Signal<this, void> = new Signal(this);
 }
