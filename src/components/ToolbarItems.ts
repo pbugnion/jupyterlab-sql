@@ -46,6 +46,7 @@ export namespace ToolbarItems {
       ['jp-Toolbar-kernelStatus', 'jp-Icon', 'jp-Icon-16'].forEach(className =>
         this.addClass(className)
       )
+      this.setLoading(false);
     }
 
     setLoading(isLoading: boolean) {
