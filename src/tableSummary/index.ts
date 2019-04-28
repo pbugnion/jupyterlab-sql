@@ -1,12 +1,12 @@
 import { Widget, BoxPanel } from '@phosphor/widgets';
 
-import { Toolbar, ToolbarButton } from '@jupyterlab/apputils';
+import { Toolbar } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel } from '../components';
 
 import * as Api from '../api';
 
-import { ResultsTable } from '../components';
+import { ResultsTable, ToolbarItems } from '../components';
 
 import { JupyterLabSqlPage, PageName } from '../page';
 
@@ -78,21 +78,17 @@ class ResponseWidget extends SingletonPanel {
 class TableSummaryToolbar extends Toolbar {
   constructor(connectionUrl: string, tableName: string) {
     super();
-    const connectionUrlItem = new Widget();
-    connectionUrlItem.node.innerText = connectionUrl
-    const tableNameItem = new Widget();
-    tableNameItem.node.innerText = tableName
+    this._onBackButtonClicked = this._onBackButtonClicked.bind(this)
     this.addItem(
       'back',
-      new ToolbarButton({
-        // TODO remove jp-Icon and jp-Icon-16 on new release
-        // of packages
-        iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
-        // TODO: On click
-      })
+      new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', connectionUrlItem)
-    this.addItem('tableName', tableNameItem)
+    this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
+    this.addItem('tableName', new ToolbarItems.TextItem(tableName))
+  }
+
+  private _onBackButtonClicked(): void {
+    console.log('clicked')
   }
 }
