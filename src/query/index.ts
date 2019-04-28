@@ -10,13 +10,14 @@ import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
 import { Toolbar } from '@jupyterlab/apputils';
 
+import * as Api from '../api';
+
+import { JupyterLabSqlPage, PageName } from '../page';
+
 import { Response, IResponse } from './response';
 
 import { Editor, IEditor } from './editor';
 
-import * as Api from './api';
-
-import { JupyterLabSqlPage, PageName } from './page';
 
 // TODO: Loading indicator on toolbar
 

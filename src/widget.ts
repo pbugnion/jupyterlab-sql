@@ -8,7 +8,7 @@ import { Toolbar } from '@jupyterlab/apputils';
 
 import { SingletonPanel } from './components';
 
-import { QueryPage } from './queryPage';
+import { QueryPage } from './query';
 
 import { ConnectionPage } from './connectionPage';
 

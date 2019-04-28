@@ -1,10 +1,8 @@
 import { Widget } from '@phosphor/widgets';
 
-import { PreWidget, SingletonPanel } from './components';
+import { PreWidget, SingletonPanel, ResultsTable } from '../components';
 
-import * as Api from './api';
-
-import { ResultsTable } from './components';
+import * as Api from '../api';
 
 export interface IResponse {
   readonly widget: Widget;
