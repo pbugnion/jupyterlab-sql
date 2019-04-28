@@ -14,9 +14,13 @@ import * as Api from '../api';
 
 import { JupyterLabSqlPage, PageName } from '../page';
 
+import { proxyFor } from '../services';
+
 import { Response, IResponse } from './response';
 
 import { Editor, IEditor } from './editor';
+
+import { QueryToolbar } from './toolbar';
 
 
 // TODO: Loading indicator on toolbar
@@ -32,15 +36,26 @@ namespace QueryPage {
 export class QueryPage implements JupyterLabSqlPage {
   constructor(options: QueryPage.IOptions) {
     this._content = new Content(options)
+    this._toolbar = new QueryToolbar(options.connectionUrl)
+    this._backButtonClicked = proxyFor(this._toolbar.backButtonClicked, this)
+  }
+
+  get toolbar(): Toolbar {
+    return this._toolbar
   }
 
   get content(): Widget {
     return this._content
   }
 
+  get backButtonClicked(): ISignal<this, void> {
+    return this._backButtonClicked;
+  }
+
   readonly pageName = PageName.CustomQuery
-  readonly toolbar: Toolbar = new Toolbar()
   private readonly _content: Content
+  private readonly _toolbar: QueryToolbar;
+  private readonly _backButtonClicked: Signal<this, void>;
 }
 
 class Content extends BoxPanel {

@@ -153,7 +153,11 @@ export class JupyterLabSqlWidget extends Widget {
       initialSqlStatement: 'select * from t',
       editorFactory: this.editorFactory
     }
-    this.page = new QueryPage(options);
+    const page = new QueryPage(options);
+    page.backButtonClicked.connect(() => {
+      this._loadSummaryPage()
+    })
+    this.page = page
   }
 
   private _loadTableSummaryPage() {
