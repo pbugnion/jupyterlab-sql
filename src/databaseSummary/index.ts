@@ -7,9 +7,9 @@ import { IDisposable } from '@phosphor/disposable';
 
 import { CommandRegistry } from '@phosphor/commands';
 
-import { Clipboard, Toolbar, ToolbarButton } from '@jupyterlab/apputils';
+import { Clipboard, Toolbar } from '@jupyterlab/apputils';
 
-import { PreWidget, SingletonPanel, Table } from '../components';
+import { PreWidget, SingletonPanel, Table, ToolbarItems } from '../components';
 
 import * as Api from '../api'
 
@@ -219,23 +219,21 @@ namespace DatabaseSummaryTable {
 class DatabaseSummaryToolbar extends Toolbar {
   constructor(connectionUrl: string) {
     super()
-    const connectionUrlItem = new Widget()
-    connectionUrlItem.node.innerText = connectionUrl
+    this._onBackButtonClicked = this._onBackButtonClicked.bind(this)
     this.addItem(
       'back',
-      new ToolbarButton({
-        // TODO remove jp-Icon and jp-Icon-16 on new release
-        // of packages
-        iconClassName: 'jp-UndoIcon jp-Icon jp-Icon-16',
-        onClick: () => { this._backButtonClicked.emit(void 0); }
-      })
+      new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', connectionUrlItem)
+    this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
   }
 
   get backButtonClicked(): ISignal<this, void> {
     return this._backButtonClicked;
+  }
+
+  private _onBackButtonClicked(): void {
+    this._backButtonClicked.emit(void 0);
   }
 
   private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
