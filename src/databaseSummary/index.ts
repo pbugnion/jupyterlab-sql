@@ -32,6 +32,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     this._content = new Content(options);
     this._toolbar = new DatabaseSummaryToolbar(options.connectionUrl);
     this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
+    this._toolbar.refreshButtonClicked.connect(() => this._content.refresh())
     this._customQueryClicked = proxyFor(this._content.customQueryClicked, this);
     this._navigateToTable = proxyFor(this._content.navigateToTable, this);
   }
@@ -67,8 +68,8 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
 class Content extends BoxPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
     super();
+    this._connectionUrl = options.connectionUrl;
     this._responseWidget = new ResponseWidget()
-    this._responseWidget.setLoading()
     this._responseWidget.navigateToTable.connect((_, tableName) => {
       this._navigateToTable.emit(tableName)
     })
@@ -78,7 +79,7 @@ class Content extends BoxPanel {
     this.addWidget(this._responseWidget);
     BoxPanel.setSizeBasis(customQueryWidget, 30);
     BoxPanel.setStretch(this._responseWidget, 1)
-    this._getStructure(options.connectionUrl)
+    this._getStructure()
   }
 
   get customQueryClicked(): ISignal<this, void> {
@@ -89,11 +90,17 @@ class Content extends BoxPanel {
     return this._navigateToTable
   }
 
-  private async _getStructure(connectionUrl: string): Promise<void> {
-    const response = await Api.getStructure(connectionUrl)
+  async refresh(): Promise<void> {
+    return this._getStructure()
+  }
+
+  private async _getStructure(): Promise<void> {
+    this._responseWidget.setLoading()
+    const response = await Api.getStructure(this._connectionUrl)
     this._responseWidget.setResponse(response)
   }
 
+  private readonly _connectionUrl: string;
   private readonly _responseWidget: ResponseWidget
   private readonly _customQueryClicked = new Signal<this, void>(this);
   private readonly _navigateToTable = new Signal<this, string>(this);
@@ -229,9 +236,14 @@ class DatabaseSummaryToolbar extends Toolbar {
   constructor(connectionUrl: string) {
     super()
     this._onBackButtonClicked = this._onBackButtonClicked.bind(this)
+    this._onRefreshButtonClicked = this._onRefreshButtonClicked.bind(this)
     this.addItem(
       'back',
       new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
+    )
+    this.addItem(
+      'refresh',
+      new ToolbarItems.RefreshButton({ onClick: this._onRefreshButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
     this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
@@ -241,9 +253,18 @@ class DatabaseSummaryToolbar extends Toolbar {
     return this._backButtonClicked;
   }
 
+  get refreshButtonClicked(): ISignal<this, void> {
+    return this._refreshButtonClicked;
+  }
+
   private _onBackButtonClicked(): void {
     this._backButtonClicked.emit(void 0);
   }
 
+  private _onRefreshButtonClicked(): void {
+    this._refreshButtonClicked.emit(void 0);
+  }
+
   private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
+  private readonly _refreshButtonClicked: Signal<this, void> = new Signal(this);
 }

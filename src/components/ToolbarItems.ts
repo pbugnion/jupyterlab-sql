@@ -24,4 +24,19 @@ export namespace ToolbarItems {
       onClick: () => void;
     }
   }
+
+  export class RefreshButton extends ToolbarButton {
+    constructor(options: RefreshButton.IOptions) {
+      super({
+        iconClassName: 'jp-RefreshIcon jp-Icon jp-Icon-16',
+        onClick: options.onClick
+      });
+    }
+  }
+
+  export namespace RefreshButton {
+    export interface IOptions {
+      onClick: () => void;
+    }
+  }
 }
