@@ -12,6 +12,8 @@ import { JupyterLabSqlPage, PageName } from '../page';
 
 import { proxyFor } from '../services';
 
+// TODO: add ability to refresh page
+
 export namespace TableSummaryPage {
   export interface IOptions {
     connectionUrl: string,
