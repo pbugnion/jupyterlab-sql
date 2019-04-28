@@ -13,7 +13,6 @@ import { JupyterLabSqlPage, PageName } from '../page';
 import { proxyFor } from '../services';
 
 // TODO: add ability to refresh page
-// TODO: add loading button
 
 export namespace TableSummaryPage {
   export interface IOptions {
@@ -30,6 +29,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
       options.tableName
     )
     this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
+    this._onRefresh();
   }
 
   get content(): Widget {
@@ -44,6 +44,13 @@ export class TableSummaryPage implements JupyterLabSqlPage {
     return this._navigateBack;
   }
 
+  private async _onRefresh(): Promise<void> {
+    this._toolbar.setLoading(true)
+    await this._content.refresh()
+    // TODO: what if refresh fails?
+    this._toolbar.setLoading(false)
+  }
+
   readonly pageName: PageName = PageName.TableSummary;
   private readonly _toolbar: TableSummaryToolbar;
   private readonly _content: Content;
@@ -54,16 +61,19 @@ export class TableSummaryPage implements JupyterLabSqlPage {
 class Content extends BoxPanel {
   constructor(options: TableSummaryPage.IOptions) {
     super();
+    this._connectionUrl = options.connectionUrl;
+    this._tableName = options.tableName
     this._responseWidget = new ResponseWidget()
     this.addWidget(this._responseWidget)
-    this._getTableStructure(options.connectionUrl, options.tableName);
   }
 
-  private async _getTableStructure(connectionUrl: string, tableName: string): Promise<void> {
-    const response = await Api.getTableStructure(connectionUrl, tableName)
+  async refresh(): Promise<void> {
+    const response = await Api.getTableStructure(this._connectionUrl, this._tableName)
     this._responseWidget.setResponse(response)
   }
 
+  private readonly _connectionUrl: string;
+  private readonly _tableName: string;
   private readonly _responseWidget: ResponseWidget;
 }
 
@@ -97,15 +107,21 @@ class TableSummaryToolbar extends Toolbar {
     this.addItem('spacer', Toolbar.createSpacerItem())
     this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
     this.addItem('tableName', new ToolbarItems.TextItem(tableName))
+    this.addItem('loading', this._loadingIcon)
   }
 
   get backButtonClicked(): ISignal<this, void> {
     return this._backButtonClicked;
   }
 
+  setLoading(isLoading: boolean) {
+    this._loadingIcon.setLoading(isLoading);
+  }
+
   private _onBackButtonClicked(): void {
     this._backButtonClicked.emit(void 0)
   }
 
+  private readonly _loadingIcon: ToolbarItems.LoadingIcon = new ToolbarItems.LoadingIcon;
   private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
 }
