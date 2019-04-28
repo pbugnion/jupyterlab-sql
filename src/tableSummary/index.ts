@@ -1,14 +1,16 @@
 import { Widget, BoxPanel } from '@phosphor/widgets';
 
+import { ISignal, Signal } from '@phosphor/signaling';
+
 import { Toolbar } from '@jupyterlab/apputils';
 
-import { PreWidget, SingletonPanel } from '../components';
+import { PreWidget, SingletonPanel, ResultsTable, ToolbarItems } from '../components';
 
 import * as Api from '../api';
 
-import { ResultsTable, ToolbarItems } from '../components';
-
 import { JupyterLabSqlPage, PageName } from '../page';
+
+import { proxyFor } from '../services';
 
 export namespace TableSummaryPage {
   export interface IOptions {
@@ -24,6 +26,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
       options.connectionUrl,
       options.tableName
     )
+    this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
   }
 
   get content(): Widget {
@@ -34,9 +37,14 @@ export class TableSummaryPage implements JupyterLabSqlPage {
     return this._toolbar
   }
 
+  get navigateBack(): ISignal<this, void> {
+    return this._navigateBack;
+  }
+
   readonly pageName: PageName = PageName.TableSummary;
-  private readonly _toolbar: Toolbar;
+  private readonly _toolbar: TableSummaryToolbar;
   private readonly _content: Content;
+  private readonly _navigateBack: Signal<this, void>;
 }
 
 
@@ -88,7 +96,13 @@ class TableSummaryToolbar extends Toolbar {
     this.addItem('tableName', new ToolbarItems.TextItem(tableName))
   }
 
-  private _onBackButtonClicked(): void {
-    console.log('clicked')
+  get backButtonClicked(): ISignal<this, void> {
+    return this._backButtonClicked;
   }
+
+  private _onBackButtonClicked(): void {
+    this._backButtonClicked.emit(void 0)
+  }
+
+  private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
 }

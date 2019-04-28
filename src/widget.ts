@@ -160,7 +160,11 @@ export class JupyterLabSqlWidget extends Widget {
   private _loadTableSummaryPage() {
     const tableName = this._tableName;
     const connectionUrl = this._connectionUrl;
-    this.page = new TableSummaryPage({ connectionUrl, tableName });
+    const page = new TableSummaryPage({ connectionUrl, tableName });
+    page.navigateBack.connect(() => {
+      this._loadSummaryPage();
+    })
+    this.page = page
   }
 
   readonly editorFactory: IEditorFactoryService;
