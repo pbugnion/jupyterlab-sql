@@ -20,7 +20,6 @@ export namespace TableSummaryPage {
 export class TableSummaryPage implements JupyterLabSqlPage {
   constructor(options: TableSummaryPage.IOptions) {
     this._content = new Content(options)
-    // TODO correct url
     this._toolbar = new TableSummaryToolbar(
       options.connectionUrl,
       options.tableName
