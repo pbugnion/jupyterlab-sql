@@ -39,4 +39,23 @@ export namespace ToolbarItems {
       onClick: () => void;
     }
   }
+
+  export class LoadingIcon extends Widget {
+    constructor() {
+      super();
+      ['jp-Toolbar-kernelStatus', 'jp-Icon', 'jp-Icon-16'].forEach(className =>
+        this.addClass(className)
+      )
+    }
+
+    setLoading(isLoading: boolean) {
+      if (isLoading) {
+        this.removeClass('jp-CircleIcon')
+        this.addClass('jp-FilledCircleIcon')
+      } else {
+        this.removeClass('jp-FilledCircleIcon')
+        this.addClass('jp-CircleIcon')
+      }
+    }
+  }
 }

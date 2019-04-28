@@ -29,12 +29,15 @@ namespace DatabaseSummaryPage {
 // TODO dispose of toolbar
 export class DatabaseSummaryPage implements JupyterLabSqlPage {
   constructor(options: DatabaseSummaryPage.IOptions) {
+    this._onRefresh = this._onRefresh.bind(this)
     this._content = new Content(options);
     this._toolbar = new DatabaseSummaryToolbar(options.connectionUrl);
     this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
-    this._toolbar.refreshButtonClicked.connect(() => this._content.refresh())
+    this._toolbar.refreshButtonClicked.connect(this._onRefresh)
     this._customQueryClicked = proxyFor(this._content.customQueryClicked, this);
     this._navigateToTable = proxyFor(this._content.navigateToTable, this);
+
+    this._onRefresh();
   }
 
   get content(): Widget {
@@ -55,6 +58,12 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
 
   get navigateToTable(): ISignal<this, string> {
     return this._navigateToTable
+  }
+
+  private async _onRefresh() {
+    this._toolbar.setLoading(true)
+    await this._content.refresh()
+    this._toolbar.setLoading(false)
   }
 
   readonly pageName: PageName = PageName.DatabaseSummary;
@@ -79,7 +88,6 @@ class Content extends BoxPanel {
     this.addWidget(this._responseWidget);
     BoxPanel.setSizeBasis(customQueryWidget, 30);
     BoxPanel.setStretch(this._responseWidget, 1)
-    this._getStructure()
   }
 
   get customQueryClicked(): ISignal<this, void> {
@@ -91,11 +99,6 @@ class Content extends BoxPanel {
   }
 
   async refresh(): Promise<void> {
-    return this._getStructure()
-  }
-
-  private async _getStructure(): Promise<void> {
-    this._responseWidget.setLoading()
     const response = await Api.getStructure(this._connectionUrl)
     this._responseWidget.setResponse(response)
   }
@@ -144,10 +147,6 @@ class ResponseWidget extends SingletonPanel {
         this.widget = new PreWidget('oops')
       }
     )
-  }
-
-  setLoading() {
-    this.widget = new PreWidget('Fetching database summary...')
   }
 
   get navigateToTable(): ISignal<this, string> {
@@ -247,6 +246,7 @@ class DatabaseSummaryToolbar extends Toolbar {
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
     this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
+    this.addItem('loading', this._loadingIcon)
   }
 
   get backButtonClicked(): ISignal<this, void> {
@@ -257,6 +257,10 @@ class DatabaseSummaryToolbar extends Toolbar {
     return this._refreshButtonClicked;
   }
 
+  setLoading(isLoading: boolean) {
+    this._loadingIcon.setLoading(isLoading);
+  }
+
   private _onBackButtonClicked(): void {
     this._backButtonClicked.emit(void 0);
   }
@@ -265,6 +269,7 @@ class DatabaseSummaryToolbar extends Toolbar {
     this._refreshButtonClicked.emit(void 0);
   }
 
+  private readonly _loadingIcon: ToolbarItems.LoadingIcon = new ToolbarItems.LoadingIcon();
   private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
   private readonly _refreshButtonClicked: Signal<this, void> = new Signal(this);
 }
