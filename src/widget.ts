@@ -24,6 +24,7 @@ namespace JupyterLabSqlWidget {
     pageName: PageName;
     connectionUrl: string;
     tableName: string;
+    sqlStatement: string;
   }
 }
 
@@ -48,6 +49,7 @@ export class JupyterLabSqlWidget extends Widget {
     this.pageName = options.pageName;
     this._connectionUrl = options.connectionUrl;
     this._tableName = options.tableName;
+    this._sqlStatement = options.sqlStatement;
     this.editorFactory = editorFactory;
     this._setInitialPage()
   }
@@ -60,6 +62,10 @@ export class JupyterLabSqlWidget extends Widget {
     return this._tableName;
   }
 
+  get sqlStatement(): string {
+    return this._sqlStatement
+  }
+
   get pageChanged(): ISignal<this, void> {
     return this._pageChanged;
   }
@@ -70,6 +76,10 @@ export class JupyterLabSqlWidget extends Widget {
 
   get tableNameChanged(): ISignal<this, string> {
     return this._tableNameChanged;
+  }
+
+  get sqlStatementChanged(): ISignal<this, string> {
+    return this._sqlStatementChanged;
   }
 
   private _setInitialPage(): void {
@@ -115,6 +125,13 @@ export class JupyterLabSqlWidget extends Widget {
     }
   }
 
+  private _setSqlStatement(newStatement: string): void {
+    if (newStatement !== this._sqlStatement) {
+      this._sqlStatement = newStatement;
+      this._sqlStatementChanged.emit(this._sqlStatement);
+    }
+  }
+
   private _loadConnectionPage(): void {
     const initialConnectionString = this._connectionUrl
     const page = new ConnectionPage({
@@ -147,15 +164,17 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   private _loadQueryPage() {
-    // TODO: Don't hardcode initial statement
     const options = {
       connectionUrl: this._connectionUrl,
-      initialSqlStatement: 'select * from t',
+      initialSqlStatement: this._sqlStatement,
       editorFactory: this.editorFactory
     }
     const page = new QueryPage(options);
     page.backButtonClicked.connect(() => {
       this._loadSummaryPage()
+    })
+    page.sqlStatementChanged.connect((_, newStatement) => {
+      this._setSqlStatement(newStatement)
     })
     this.page = page
   }
@@ -177,9 +196,11 @@ export class JupyterLabSqlWidget extends Widget {
   private _connectionUrl: string;
   private _tableName: string;
   private _toolbar: Toolbar | null = null;
+  private _sqlStatement: string = '';
   private readonly content: SingletonPanel
 
   private readonly _pageChanged: Signal<this, void> = new Signal(this);
   private readonly _connectionUrlChanged: Signal<this, string> = new Signal(this);
   private readonly _tableNameChanged: Signal<this, string> = new Signal(this);
+  private readonly _sqlStatementChanged: Signal<this, string> = new Signal(this);
 }

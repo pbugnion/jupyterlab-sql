@@ -39,7 +39,8 @@ function activate(
       initialWidgetName: widget.name,
       initialPageName: widget.pageName,
       initialConnectionUrl: widget.connectionUrl,
-      initialTableName: widget.tableName
+      initialTableName: widget.tableName,
+      initialSqlStatement: widget.sqlStatement
     }),
     name: widget => widget.name
   })
@@ -47,17 +48,18 @@ function activate(
   app.commands.addCommand(command, {
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
-    execute: ({ initialWidgetName, initialPageName, initialConnectionUrl, initialTableName }) => {
+    execute: ({ initialWidgetName, initialPageName, initialConnectionUrl, initialTableName, initialSqlStatement }) => {
       const name = <string>(initialWidgetName || uuid.v4());
       const pageName = <PageName>(initialPageName || PageName.Connection);
       const connectionUrl = <string>(initialConnectionUrl || 'postgres://localhost:5432/postgres');
       const tableName = <string>(initialTableName || '');
-      console.log({ tableName })
+      const sqlStatement = <string>(initialSqlStatement || '');
       const widget = new JupyterLabSqlWidget(editorServices.factoryService, {
         name,
         pageName,
         connectionUrl,
-        tableName
+        tableName,
+        sqlStatement
       });
       app.shell.addToMainArea(widget);
       tracker.add(widget);

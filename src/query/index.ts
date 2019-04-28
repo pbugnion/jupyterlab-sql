@@ -38,6 +38,7 @@ export class QueryPage implements JupyterLabSqlPage {
     this._content = new Content(options)
     this._toolbar = new QueryToolbar(options.connectionUrl)
     this._backButtonClicked = proxyFor(this._toolbar.backButtonClicked, this)
+    this._sqlStatementChanged = proxyFor(this._content.sqlStatementChanged, this)
   }
 
   get toolbar(): Toolbar {
@@ -52,10 +53,15 @@ export class QueryPage implements JupyterLabSqlPage {
     return this._backButtonClicked;
   }
 
+  get sqlStatementChanged(): ISignal<this, string> {
+    return this._sqlStatementChanged;
+  }
+
   readonly pageName = PageName.CustomQuery
   private readonly _content: Content
   private readonly _toolbar: QueryToolbar;
   private readonly _backButtonClicked: Signal<this, void>;
+  private readonly _sqlStatementChanged: Signal<this, string>;
 }
 
 class Content extends BoxPanel {
@@ -70,9 +76,7 @@ class Content extends BoxPanel {
     this.editor.execute.connect((_, value: string) => {
       this.updateGrid(options.connectionUrl, value);
     });
-    this.editor.valueChanged.connect((_, value) => {
-      this._sqlStatementChanged.emit(value);
-    });
+    this._sqlStatementChanged = proxyFor(this.editor.valueChanged, this);
 
     this.addWidget(this.editor.widget);
     this.addWidget(this.response.widget);
@@ -107,6 +111,6 @@ class Content extends BoxPanel {
   readonly editor: IEditor;
   readonly response: IResponse;
   private _lastRequestId: string;
-  private _sqlStatementChanged = new Signal<this, string>(this);
+  private readonly _sqlStatementChanged: ISignal<this, string>;
 
 }
