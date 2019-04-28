@@ -60,9 +60,10 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     return this._navigateToTable
   }
 
-  private async _onRefresh() {
+  private async _onRefresh(): Promise<void> {
     this._toolbar.setLoading(true)
     await this._content.refresh()
+    // TODO: what if refresh fails?
     this._toolbar.setLoading(false)
   }
 
