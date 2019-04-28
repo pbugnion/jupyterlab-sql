@@ -119,17 +119,18 @@ class CustomQueryWidget extends Widget {
 
 class ResponseWidget extends SingletonPanel {
 
-  // TODO: Dispose of table and signals
+  // TODO: Dispose of signals
 
   setResponse(response: Api.StructureResponse.Type) {
+    this._disposeTable();
     Api.StructureResponse.match(
       response,
       tables => {
-        const table = new DatabaseSummaryTable(tables)
-        table.navigateToTable.connect((_, tableName) => {
+        this._table = new DatabaseSummaryTable(tables)
+        this._table.navigateToTable.connect((_, tableName) => {
           this._navigateToTable.emit(tableName)
         })
-        this.widget = table.widget
+        this.widget = this._table.widget
       },
       () => {
         // TODO handle error
@@ -146,6 +147,14 @@ class ResponseWidget extends SingletonPanel {
     return this._navigateToTable;
   }
 
+  private _disposeTable(): void {
+    if (this._table) {
+      this._table.dispose()
+    }
+    this._table = null;
+  }
+
+  private _table: DatabaseSummaryTable | null = null;
   private readonly _navigateToTable = new Signal<this, string>(this);
 }
 
