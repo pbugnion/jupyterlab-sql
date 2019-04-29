@@ -35,10 +35,14 @@ namespace QueryPage {
 
 export class QueryPage implements JupyterLabSqlPage {
   constructor(options: QueryPage.IOptions) {
+    this._onExecutionStarted = this._onExecutionStarted.bind(this)
+    this._onExecutionFinished = this._onExecutionFinished.bind(this)
     this._content = new Content(options)
     this._toolbar = new QueryToolbar(options.connectionUrl)
     this._backButtonClicked = proxyFor(this._toolbar.backButtonClicked, this)
     this._sqlStatementChanged = proxyFor(this._content.sqlStatementChanged, this)
+    this._content.executionStarted.connect(this._onExecutionStarted)
+    this._content.executionFinished.connect(this._onExecutionFinished)
   }
 
   get toolbar(): Toolbar {
@@ -55,6 +59,14 @@ export class QueryPage implements JupyterLabSqlPage {
 
   get sqlStatementChanged(): ISignal<this, string> {
     return this._sqlStatementChanged;
+  }
+
+  private _onExecutionStarted(): void {
+    this._toolbar.setLoading(true)
+  }
+
+  private _onExecutionFinished(): void {
+    this._toolbar.setLoading(false)
   }
 
   readonly pageName = PageName.CustomQuery
@@ -84,12 +96,20 @@ class Content extends BoxPanel {
     BoxPanel.setStretch(this.response.widget, 3);
   }
 
+  get sqlStatementValue(): string {
+    return this.editor.value;
+  }
+
   get sqlStatementChanged(): ISignal<this, string> {
     return this._sqlStatementChanged;
   }
 
-  get sqlStatementValue(): string {
-    return this.editor.value;
+  get executionStarted(): ISignal<this, void> {
+    return this._executionStarted;
+  }
+
+  get executionFinished(): ISignal<this, void> {
+    return this._executionFinished;
   }
 
   onActivateRequest(_: Message) {
@@ -97,6 +117,7 @@ class Content extends BoxPanel {
   }
 
   private async updateGrid(connectionUrl: string, sql: string): Promise<void> {
+    this._executionStarted.emit(void 0);
     const thisRequestId = uuid.v4();
     this._lastRequestId = thisRequestId;
     const data = await Api.getForQuery(connectionUrl, sql);
@@ -104,6 +125,7 @@ class Content extends BoxPanel {
       // Only update the response widget if the current
       // query is the last query that was dispatched.
       this.response.setResponse(data);
+      this._executionFinished.emit(void 0);
     }
   }
 
@@ -112,5 +134,6 @@ class Content extends BoxPanel {
   readonly response: IResponse;
   private _lastRequestId: string;
   private readonly _sqlStatementChanged: ISignal<this, string>;
-
+  private readonly _executionStarted: Signal<this, void> = new Signal(this);
+  private readonly _executionFinished: Signal<this, void> = new Signal(this);
 }

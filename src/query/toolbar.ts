@@ -14,6 +14,7 @@ export class QueryToolbar extends Toolbar {
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
     this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
+    this.addItem('loading', this._loadingIcon)
   }
 
   get backButtonClicked(): ISignal<this, void> {
@@ -24,5 +25,10 @@ export class QueryToolbar extends Toolbar {
     this._backButtonClicked.emit(void 0);
   }
 
+  setLoading(isLoading: boolean) {
+    this._loadingIcon.setLoading(isLoading)
+  }
+
+  private readonly _loadingIcon: ToolbarItems.LoadingIcon = new ToolbarItems.LoadingIcon();
   private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
 }
