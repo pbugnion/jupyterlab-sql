@@ -6,6 +6,8 @@ import { Message } from '@phosphor/messaging';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
+import { DisposableSet } from '@phosphor/disposable';
+
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 
 import { Toolbar } from '@jupyterlab/apputils';
@@ -43,6 +45,7 @@ export class QueryPage implements JupyterLabSqlPage {
     this._sqlStatementChanged = proxyFor(this._content.sqlStatementChanged, this)
     this._content.executionStarted.connect(this._onExecutionStarted)
     this._content.executionFinished.connect(this._onExecutionFinished)
+    this._disposables = DisposableSet.from([this._content, this._toolbar])
   }
 
   get toolbar(): Toolbar {
@@ -61,6 +64,14 @@ export class QueryPage implements JupyterLabSqlPage {
     return this._sqlStatementChanged;
   }
 
+  get isDisposed() {
+    return this._disposables.isDisposed;
+  }
+
+  dispose() {
+    return this._disposables.dispose();
+  }
+
   private _onExecutionStarted(): void {
     this._toolbar.setLoading(true)
   }
@@ -69,18 +80,10 @@ export class QueryPage implements JupyterLabSqlPage {
     this._toolbar.setLoading(false)
   }
 
-  // TODO: Correct disposal implementation
-  get isDisposed() {
-    return false;
-  }
-
-  dispose() {
-    console.log('disposing')
-  }
-
   readonly pageName = PageName.CustomQuery
   private readonly _content: Content
   private readonly _toolbar: QueryToolbar;
+  private readonly _disposables: DisposableSet;
   private readonly _backButtonClicked: Signal<this, void>;
   private readonly _sqlStatementChanged: Signal<this, string>;
 }
