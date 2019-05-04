@@ -15,6 +15,21 @@ export class SingletonPanel extends Widget {
     }
   }
 
+  // TODO: test activate request
+  onActivateRequest() {
+    const widget = this.layout.widget
+    if (widget) {
+      // Focus the content node if we aren't already focused on it or a
+      // descendent.
+      if (!widget.node.contains(document.activeElement)) {
+        widget.node.focus();
+      }
+
+      // Activate the content asynchronously (which may change the focus).
+      widget.activate();
+    }
+  }
+
   set widget(widget: Widget) {
     this.layout.widget = widget;
     this._item = new LayoutItem(this.layout.widget);

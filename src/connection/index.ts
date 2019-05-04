@@ -67,10 +67,10 @@ class Content extends BoxPanel {
     this.addClass('p-Sql-MainContainer')
 
     const connectionEditorModel = new ConnectionEditorModel(initialConnectionString);
-    const connectionWidget = ConnectionEditor.withModel(connectionEditorModel);
+    this._connectionWidget = ConnectionEditor.withModel(connectionEditorModel);
 
-    this.addWidget(connectionWidget)
-    BoxPanel.setSizeBasis(connectionWidget, 50)
+    this.addWidget(this._connectionWidget)
+    BoxPanel.setSizeBasis(this._connectionWidget, 50)
 
     this._connectDatabase = proxyFor(connectionEditorModel.connect, this);
     this._connectionUrlChanged = proxyFor(connectionEditorModel.connectionUrlChanged, this);
@@ -84,6 +84,11 @@ class Content extends BoxPanel {
     return this._connectionUrlChanged;
   }
 
+  onActivateRequest() {
+    this._connectionWidget.activate();
+  }
+
+  private readonly _connectionWidget: ConnectionEditor;
   private readonly _connectDatabase: ISignal<this, string>;
   private readonly _connectionUrlChanged: ISignal<this, string>;
 }

@@ -82,6 +82,10 @@ export class JupyterLabSqlWidget extends Widget {
     return this._sqlStatementChanged;
   }
 
+  onActivateRequest(): void {
+    this._focusContent()
+  }
+
   onCloseRequest(): void {
     this.dispose();
   }
@@ -192,6 +196,20 @@ export class JupyterLabSqlWidget extends Widget {
       this._loadSummaryPage();
     })
     this.page = page
+  }
+
+  /**
+   * Give focus to the content.
+   */
+  private _focusContent(): void {
+    // Focus the content node if we aren't already focused on it or a
+    // descendent.
+    if (!this.content.node.contains(document.activeElement)) {
+      this.content.node.focus();
+    }
+
+    // Activate the content asynchronously (which may change the focus).
+    this.content.activate();
   }
 
   readonly editorFactory: IEditorFactoryService;

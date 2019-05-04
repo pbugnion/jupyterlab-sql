@@ -52,6 +52,10 @@ export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
     return editor;
   }
 
+  onActivateRequest() {
+    this.node.querySelector('input').focus();
+  }
+
   render() {
     if (!this.model) {
       return null;
@@ -145,6 +149,7 @@ class ConnectionInformationEdit extends React.Component<
           className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
           value={connectionUrl}
           ref={this.inputRef}
+          autoFocus={true}
           onChange={event => this.onChange(event)}
           onKeyDown={event => this.onKeyDown(event)}
           onBlur={() => this.onInputBlur()}
