@@ -8,9 +8,9 @@ import { Toolbar } from '@jupyterlab/apputils';
 
 import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar';
 
-import { JupyterLabSqlPage, PageName } from './page';
+import { JupyterLabSqlPage, PageName } from '../page';
 
-import { proxyFor } from './services';
+import { proxyFor } from '../services';
 
 namespace ConnectionPage {
   export interface IOptions {

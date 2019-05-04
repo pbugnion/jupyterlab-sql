@@ -10,7 +10,7 @@ import { SingletonPanel } from './components';
 
 import { QueryPage } from './query';
 
-import { ConnectionPage } from './connectionPage';
+import { ConnectionPage } from './connection';
 
 import { DatabaseSummaryPage } from './databaseSummary';
 
