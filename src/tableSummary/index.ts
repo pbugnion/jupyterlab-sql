@@ -91,21 +91,35 @@ class Content extends BoxPanel {
 
 class ResponseWidget extends SingletonPanel {
 
-  // TODO: Dispose of table and signals
   // TODO: Proper error handling
 
+  dispose(): void {
+    this._disposeTable();
+    super.dispose();
+  }
+
   setResponse(response: Api.TableStructureResponse.Type) {
+    this._disposeTable();
     Api.TableStructureResponse.match(
       response,
       (keys, rows) => {
-        const table = new ResultsTable(keys, rows);
-        this.widget = table.widget
+        this._table = new ResultsTable(keys, rows);
+        this.widget = this._table.widget
       },
       () => {
         this.widget = new PreWidget('oops')
       }
     )
   }
+
+  private _disposeTable() {
+    if (this._table) {
+      this._table.dispose();
+    }
+    this._table = null;
+  }
+
+  private _table: ResultsTable | null = null;
 }
 
 class TableSummaryToolbar extends Toolbar {
