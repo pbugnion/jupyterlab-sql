@@ -143,6 +143,11 @@ class ResponseWidget extends SingletonPanel {
 
   // TODO: Dispose of signals
 
+  dispose(): void {
+    this._disposeTable();
+    super.dispose();
+  }
+
   setResponse(response: Api.StructureResponse.Type) {
     this._disposeTable();
     Api.StructureResponse.match(
