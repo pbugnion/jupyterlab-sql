@@ -6,19 +6,13 @@ import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
 import classNames from 'classNames';
 
-export interface IConnectionPageToolbarModel {
+export interface IConnectionEditorModel {
   readonly connectionUrl: string;
   readonly connect: ISignal<this, string>;
   readonly connectionUrlChanged: ISignal<this, string>;
 }
 
-export function newToolbar(model: ConnectionPageToolbarModel): ToolbarContainer {
-  const container = new ToolbarContainer();
-  container.model = model;
-  return container;
-}
-
-export class ConnectionPageToolbarModel extends VDomModel implements IConnectionPageToolbarModel {
+export class ConnectionEditorModel extends VDomModel implements IConnectionEditorModel {
   constructor(initialConnectionUrl: string) {
     super();
     this._connectionUrl = initialConnectionUrl;
@@ -50,7 +44,14 @@ export class ConnectionPageToolbarModel extends VDomModel implements IConnection
   private readonly _connect = new Signal<this, string>(this);
 }
 
-class ToolbarContainer extends VDomRenderer<ConnectionPageToolbarModel> {
+export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
+
+  static withModel(model: ConnectionEditorModel): ConnectionEditor {
+    const editor = new ConnectionEditor();
+    editor.model = model;
+    return editor;
+  }
+
   render() {
     if (!this.model) {
       return null;

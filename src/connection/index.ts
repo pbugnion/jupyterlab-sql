@@ -6,7 +6,7 @@ import { DisposableSet } from '@phosphor/disposable';
 
 import { Toolbar } from '@jupyterlab/apputils';
 
-import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar';
+import { ConnectionEditor, ConnectionEditorModel } from './connectionEditor';
 
 import { JupyterLabSqlPage, PageName } from '../page';
 
@@ -66,15 +66,14 @@ class Content extends BoxPanel {
 
     this.addClass('p-Sql-MainContainer')
 
-    // TODO: Rename ConnectionPageToolbarModel to avoid toolbar
-    const toolbarModel = new ConnectionPageToolbarModel(initialConnectionString);
-    const connectionWidget = newToolbar(toolbarModel);
+    const connectionEditorModel = new ConnectionEditorModel(initialConnectionString);
+    const connectionWidget = ConnectionEditor.withModel(connectionEditorModel);
 
     this.addWidget(connectionWidget)
     BoxPanel.setSizeBasis(connectionWidget, 50)
 
-    this._connectDatabase = proxyFor(toolbarModel.connect, this);
-    this._connectionUrlChanged = proxyFor(toolbarModel.connectionUrlChanged, this);
+    this._connectDatabase = proxyFor(connectionEditorModel.connect, this);
+    this._connectionUrlChanged = proxyFor(connectionEditorModel.connectionUrlChanged, this);
   }
 
   get connectDatabase(): ISignal<this, string> {
