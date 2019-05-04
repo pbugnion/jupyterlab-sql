@@ -1,10 +1,12 @@
 import { BoxPanel, Widget } from '@phosphor/widgets';
 
+import { Signal, ISignal } from '@phosphor/signaling';
+
+import { DisposableSet } from '@phosphor/disposable';
+
 import { Toolbar } from '@jupyterlab/apputils';
 
 import { newToolbar, ConnectionPageToolbarModel } from './connectionPageToolbar';
-
-import { Signal, ISignal } from '@phosphor/signaling';
 
 import { JupyterLabSqlPage, PageName } from './page';
 
@@ -22,6 +24,8 @@ export class ConnectionPage implements JupyterLabSqlPage {
     this._content = new Content(initialConnectionString)
     this._connectDatabase = proxyFor(this._content.connectDatabase, this)
     this._connectionUrlChanged = proxyFor(this._content.connectionUrlChanged, this)
+    this._toolbar = new Toolbar();
+    this._disposables = DisposableSet.from([this._content, this._toolbar])
   }
 
   get content(): Widget {
@@ -36,17 +40,21 @@ export class ConnectionPage implements JupyterLabSqlPage {
     return this._connectionUrlChanged;
   }
 
-  // TODO: Correct disposal implementation
+  get toolbar(): Toolbar {
+    return this._toolbar;
+  }
+
   get isDisposed() {
-    return false;
+    return this._disposables.isDisposed;
   }
 
   dispose() {
-    console.log('disposing')
+    return this._disposables.dispose();
   }
 
   readonly pageName: PageName = PageName.Connection;
-  readonly toolbar: Toolbar = new Toolbar();
+  private readonly _disposables: DisposableSet;
+  private readonly _toolbar: Toolbar;
   private readonly _content: Content;
   private readonly _connectDatabase: Signal<this, string>;
   private readonly _connectionUrlChanged: Signal<this, string>;
