@@ -87,7 +87,7 @@ class ConnectionInformationEdit extends React.Component<
 
   onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === 'Enter') {
-      this.inputRef.current!.blur();
+      this.finish();
     } else if (event.keyCode === 27) {
       // ESC key
       this.cancel();
@@ -124,7 +124,9 @@ class ConnectionInformationEdit extends React.Component<
   }
 
   onInputBlur() {
-    this.finish();
+    this.setState({
+      focused: false
+    })
   }
 
   componentDidMount() {
