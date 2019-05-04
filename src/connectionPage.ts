@@ -66,6 +66,7 @@ class Content extends BoxPanel {
 
     this.addClass('p-Sql-MainContainer')
 
+    // TODO: Rename ConnectionPageToolbarModel to avoid toolbar
     const toolbarModel = new ConnectionPageToolbarModel(initialConnectionString);
     const connectionWidget = newToolbar(toolbarModel);
 
