@@ -82,6 +82,10 @@ export class JupyterLabSqlWidget extends Widget {
     return this._sqlStatementChanged;
   }
 
+  onCloseRequest(): void {
+    this.dispose();
+  }
+
   private _setInitialPage(): void {
     if (this.pageName === PageName.Connection) {
       this._loadConnectionPage()
