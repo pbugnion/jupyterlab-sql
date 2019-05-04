@@ -2,6 +2,8 @@ import { Widget, BoxPanel } from '@phosphor/widgets';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
+import { DisposableSet } from '@phosphor/disposable';
+
 import { Toolbar } from '@jupyterlab/apputils';
 
 import { PreWidget, SingletonPanel, ResultsTable, ToolbarItems } from '../components';
@@ -29,6 +31,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
     )
     this._navigateBack = proxyFor(this._toolbar.backButtonClicked, this);
     this._toolbar.refreshButtonClicked.connect(this._onRefresh)
+    this._disposables = DisposableSet.from([this._content, this._toolbar])
     this._onRefresh();
   }
 
@@ -44,6 +47,14 @@ export class TableSummaryPage implements JupyterLabSqlPage {
     return this._navigateBack;
   }
 
+  get isDisposed() {
+    return this._disposables.isDisposed;
+  }
+
+  dispose() {
+    return this._disposables.dispose();
+  }
+
   private async _onRefresh(): Promise<void> {
     this._toolbar.setLoading(true)
     await this._content.refresh()
@@ -52,6 +63,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
   }
 
   readonly pageName: PageName = PageName.TableSummary;
+  private readonly _disposables: DisposableSet;
   private readonly _toolbar: TableSummaryToolbar;
   private readonly _content: Content;
   private readonly _navigateBack: Signal<this, void>;

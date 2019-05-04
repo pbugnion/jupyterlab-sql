@@ -36,6 +36,15 @@ export class ConnectionPage implements JupyterLabSqlPage {
     return this._connectionUrlChanged;
   }
 
+  // TODO: Correct disposal implementation
+  get isDisposed() {
+    return false;
+  }
+
+  dispose() {
+    console.log('disposing')
+  }
+
   readonly pageName: PageName = PageName.Connection;
   readonly toolbar: Toolbar = new Toolbar();
   private readonly _content: Content;

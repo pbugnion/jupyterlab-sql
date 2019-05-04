@@ -69,6 +69,15 @@ export class QueryPage implements JupyterLabSqlPage {
     this._toolbar.setLoading(false)
   }
 
+  // TODO: Correct disposal implementation
+  get isDisposed() {
+    return false;
+  }
+
+  dispose() {
+    console.log('disposing')
+  }
+
   readonly pageName = PageName.CustomQuery
   private readonly _content: Content
   private readonly _toolbar: QueryToolbar;

@@ -60,6 +60,15 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     return this._navigateToTable
   }
 
+  // TODO: Correct disposal implementation
+  get isDisposed() {
+    return false;
+  }
+
+  dispose() {
+    console.log('disposing')
+  }
+
   private async _onRefresh(): Promise<void> {
     this._toolbar.setLoading(true)
     await this._content.refresh()

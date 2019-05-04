@@ -95,20 +95,21 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   private set toolbar(newToolbar: Toolbar) {
-    if (this._toolbar !== null) {
-      this._toolbar.parent = null;
-      this._toolbar.dispose();
-    }
     this._toolbar = newToolbar;
     BoxLayout.setStretch(this._toolbar, 0);
     (<BoxLayout>this.layout).insertWidget(0, this._toolbar)
   }
 
   private set page(newPage: JupyterLabSqlPage) {
+    const oldPage = this._page;
     this.content.widget = newPage.content;
     this.toolbar = newPage.toolbar
     this.pageName = newPage.pageName
+    this._page = newPage
     this._pageChanged.emit(void 0)
+    if (oldPage !== null) {
+      oldPage.dispose()
+    }
   }
 
   private _setConnectionUrl(newConnectionUrl: string): void {
@@ -197,6 +198,7 @@ export class JupyterLabSqlWidget extends Widget {
   private _tableName: string;
   private _toolbar: Toolbar | null = null;
   private _sqlStatement: string = '';
+  private _page: JupyterLabSqlPage | null = null;
   private readonly content: SingletonPanel
 
   private readonly _pageChanged: Signal<this, void> = new Signal(this);
