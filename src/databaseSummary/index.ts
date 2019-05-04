@@ -3,7 +3,7 @@ import { Menu, Widget, BoxPanel } from '@phosphor/widgets';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
-import { IDisposable } from '@phosphor/disposable';
+import { IDisposable, DisposableSet } from '@phosphor/disposable';
 
 import { CommandRegistry } from '@phosphor/commands';
 
@@ -36,6 +36,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     this._toolbar.refreshButtonClicked.connect(this._onRefresh)
     this._customQueryClicked = proxyFor(this._content.customQueryClicked, this);
     this._navigateToTable = proxyFor(this._content.navigateToTable, this);
+    this._disposables = DisposableSet.from([this._content, this._toolbar])
 
     this._onRefresh();
   }
@@ -62,11 +63,11 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
 
   // TODO: Correct disposal implementation
   get isDisposed() {
-    return false;
+    return this._disposables.isDisposed;
   }
 
   dispose() {
-    console.log('disposing')
+    return this._disposables.dispose()
   }
 
   private async _onRefresh(): Promise<void> {
@@ -77,6 +78,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
   }
 
   readonly pageName: PageName = PageName.DatabaseSummary;
+  private readonly _disposables: DisposableSet;
   private readonly _toolbar: DatabaseSummaryToolbar;
   private readonly _content: Content;
   private readonly _navigateBack: Signal<this, void>;
