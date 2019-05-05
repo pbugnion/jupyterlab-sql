@@ -70,7 +70,8 @@ class Content extends BoxPanel {
     this._connectionWidget = ConnectionEditor.withModel(connectionEditorModel);
 
     this.addWidget(this._connectionWidget)
-    BoxPanel.setSizeBasis(this._connectionWidget, 50)
+    // BoxPanel.setSizeBasis(this._connectionWidget, 50)
+    BoxPanel.setStretch(this._connectionWidget, 1)
 
     this._connectDatabase = proxyFor(connectionEditorModel.connect, this);
     this._connectionUrlChanged = proxyFor(connectionEditorModel.connectionUrlChanged, this);

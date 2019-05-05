@@ -3,6 +3,12 @@
     padding-right: 10px;
 }
 
+.p-Sql-ConnectionInformation-container {
+    top: 20%;
+    position: absolute;
+    width: 100%;
+}
+
 .p-Sql-ConnectionInformation-wrapper {
     display: flex;
     align-items: center;
@@ -42,6 +48,10 @@
 }
 
 .p-Sql-ConnectionInformation-input:focus {
+    outline: none;
+}
+
+.p-Sql-ConnectionInformation-container summary:focus {
     outline: none;
 }
 

@@ -62,11 +62,14 @@ export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
     } else {
       const connectionUrl = this.model.connectionUrl
       return (
-         <ConnectionInformationEdit
-           initialConnectionUrl={connectionUrl}
-           onConnectionUrlChanged={newConnectionUrl => this.model.connectionUrl = newConnectionUrl}
-           onFinishEdit={currentConnectionUrl => this.model.tryConnect(currentConnectionUrl)}
-         />
+        <div className="p-Sql-ConnectionInformation-container">
+          <ConnectionInformationEdit
+            initialConnectionUrl={connectionUrl}
+            onConnectionUrlChanged={newConnectionUrl => this.model.connectionUrl = newConnectionUrl}
+            onFinishEdit={currentConnectionUrl => this.model.tryConnect(currentConnectionUrl)}
+          />
+          <ConnectionInformationHelper />
+        </div>
       );
     }
   }
@@ -170,5 +173,23 @@ namespace ConnectionInformationEdit {
   export interface State {
     connectionUrl: string;
     focused: boolean;
+  }
+}
+
+class ConnectionInformationHelper extends React.Component<{}> {
+  render() {
+    return (
+      <details className="jp-RenderedHTMLCommon">
+        <summary>Help</summary>
+        <p>
+          The URL must be a database URL. Follow the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls" target="_blank">SQLAlchemy guide</a> on URLs.
+          For instance:
+        </p>
+        <ul>
+          <li><pre>postgres://localhost:5432/postgres</pre></li>
+          <li><pre>sqlite://</pre></li>
+        </ul>
+      </details>
+    );
   }
 }
