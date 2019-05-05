@@ -17,7 +17,9 @@ import { JupyterLabSqlPage, PageName } from '../page';
 
 import { DatabaseSummaryToolbar } from './toolbar';
 
-import { DatabaseSummaryTable } from './table';
+// import { DatabaseSummaryTable } from './table';
+
+import { TableListWidget, TableListModel } from './tableList';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
@@ -156,9 +158,9 @@ class ResponseWidget extends SingletonPanel {
       response,
       tables => {
         this._tableList = new TableListContainer(tables)
-        this._tableList.navigateToTable.connect((_, tableName) => {
-          this._navigateToTable.emit(tableName)
-        })
+        // this._tableList.navigateToTable.connect((_, tableName) => {
+        //   this._navigateToTable.emit(tableName)
+        // })
         this.widget = this._tableList;
       },
       () => {
@@ -190,12 +192,13 @@ class TableListContainer extends BoxPanel {
     super();
     this.addClass('p-Sql-TableList-container')
     const title = new TitleWidget();
-    this._table = new DatabaseSummaryTable(tables)
-    this._navigateToTable = proxyFor(this._table.navigateToTable, this)
+    const tableList = TableListWidget.withModel(new TableListModel(tables))
+    // this._table = new DatabaseSummaryTable(tables)
+    // this._navigateToTable = proxyFor(this._table.navigateToTable, this)
     this.addWidget(title);
-    this.addWidget(this._table.widget);
+    this.addWidget(tableList);
     BoxPanel.setSizeBasis(title, 50);
-    BoxPanel.setStretch(this._table.widget, 1);
+    BoxPanel.setStretch(tableList, 1);
   }
 
   get navigateToTable(): ISignal<this, string> {
@@ -203,11 +206,11 @@ class TableListContainer extends BoxPanel {
   }
 
   dispose(): void {
-    this._table.dispose();
+    // this._table.dispose();
     super.dispose();
   }
 
-  private readonly _table: DatabaseSummaryTable;
+  // private readonly _table: DatabaseSummaryTable;
   private readonly _navigateToTable: Signal<this, string>;
 }
 
