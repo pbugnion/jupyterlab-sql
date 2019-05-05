@@ -15,6 +15,8 @@ import * as Api from '../api'
 
 import { proxyFor } from '../services';
 
+import * as DataGridExtensions from '../services/dataGridExtensions';
+
 import { JupyterLabSqlPage, PageName } from '../page';
 
 // TODO break up into multiple source files?
@@ -186,6 +188,7 @@ class DatabaseSummaryTable implements IDisposable {
     const contextMenu = this._createContextMenu()
     const data = tables.map(table => { return [table] });
     this._table = Table.fromKeysRows(['tables'], data, { contextMenu })
+    this._table.dblclickSignal.connect(this._onDoubleClick.bind(this))
   }
 
   dispose(): void {
@@ -234,6 +237,11 @@ class DatabaseSummaryTable implements IDisposable {
     if (selectionValue !== null) {
       this._navigateToTable.emit(selectionValue);
     }
+  }
+
+  private _onDoubleClick(_: any, cellIndex: DataGridExtensions.BodyCellIndex): void {
+    const value = this._table.getCellValue(cellIndex)
+    this._navigateToTable.emit(value);
   }
 
   private readonly _table: Table;

@@ -4,6 +4,8 @@ import { Menu, Widget } from '@phosphor/widgets';
 
 import { DataModel, DataGrid, TextRenderer, CellRenderer } from '@phosphor/datagrid';
 
+import { ISignal, Signal } from '@phosphor/signaling';
+
 import * as DataGridExtensions from '../services/dataGridExtensions'
 
 // TODO: unit tests for Table component
@@ -28,6 +30,7 @@ export class Table implements IDisposable {
     this._selectionManager = new DataGridExtensions.SelectionManager(model);
     this._onClick = this._onClick.bind(this);
     this._onContextMenu = this._onContextMenu.bind(this);
+    this._onDoubleClick = this._onDoubleClick.bind(this);
 
     this._selectionManager.selectionChanged.connect(() => {
       this._updateRenderers();
@@ -44,6 +47,12 @@ export class Table implements IDisposable {
       this._grid,
       this._onContextMenu
     );
+
+    this._dblclickEventHandler = DataGridExtensions.addMouseEventListener(
+      'dblclick',
+      this._grid,
+      this._onDoubleClick
+    )
 
     this._fitColumnWidths();
   }
@@ -68,22 +77,31 @@ export class Table implements IDisposable {
   get selectionValue(): any | null {
     const selection = this.selection;
     if (selection !== null) {
-      const { rowIndex, columnIndex } = selection;
-      const value = this._grid.model.data('body', rowIndex, columnIndex);
-      return value
+      return this.getCellValue(selection);
     }
     return null;
+  }
+
+  get isDisposed(): boolean {
+    return this._isDisposed;
+  }
+
+  get dblclickSignal(): ISignal<this, DataGridExtensions.BodyCellIndex> {
+    return this._dblclickSignal;
+  }
+
+  getCellValue(cellIndex: DataGridExtensions.BodyCellIndex): any {
+    const { rowIndex, columnIndex } = cellIndex;
+    const value = this._grid.model.data('body', rowIndex, columnIndex);
+    return value;
   }
 
   dispose(): void {
     this._clickEventHandler.dispose();
     this._contextMenuEventHandler.dispose();
+    this._dblclickEventHandler.dispose();
     this._grid.dispose();
     this._isDisposed = true;
-  }
-
-  get isDisposed(): boolean {
-    return this._isDisposed;
   }
 
   private _fitColumnWidths() {
@@ -101,6 +119,17 @@ export class Table implements IDisposable {
     if (this._isInBody(row, column)) {
       this._options.contextMenu.open(rawEvent.clientX, rawEvent.clientY);
       rawEvent.preventDefault();
+    }
+  }
+
+  private _onDoubleClick(event: DataGridExtensions.GridMouseEvent) {
+    const { row, column } = event;
+    if (this._isInBody(row, column)) {
+      const cellIndex = {
+        rowIndex: row.index,
+        columnIndex: column.index
+      }
+      this._dblclickSignal.emit(cellIndex)
     }
   }
 
@@ -170,7 +199,9 @@ export class Table implements IDisposable {
   private readonly _selectionManager: DataGridExtensions.SelectionManager;
   private readonly _clickEventHandler: IDisposable;
   private readonly _contextMenuEventHandler: IDisposable;
+  private readonly _dblclickEventHandler: IDisposable;
   private readonly _options: Table.IOptions;
+  private readonly _dblclickSignal: Signal<this, DataGridExtensions.BodyCellIndex> = new Signal(this);
   private _isDisposed: boolean = false;
 }
 
