@@ -3,7 +3,7 @@
     padding-right: 10px;
 }
 
-.p-Sql-Toolbar {
+.p-Sql-ConnectionInformation-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;

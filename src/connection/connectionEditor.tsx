@@ -62,13 +62,11 @@ export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
     } else {
       const connectionUrl = this.model.connectionUrl
       return (
-        <div className="p-Sql-Toolbar">
-          <ConnectionInformationEdit
-            initialConnectionUrl={connectionUrl}
-            onConnectionUrlChanged={newConnectionUrl => this.model.connectionUrl = newConnectionUrl}
-            onFinishEdit={currentConnectionUrl => this.model.tryConnect(currentConnectionUrl)}
-          />
-        </div>
+         <ConnectionInformationEdit
+           initialConnectionUrl={connectionUrl}
+           onConnectionUrlChanged={newConnectionUrl => this.model.connectionUrl = newConnectionUrl}
+           onFinishEdit={currentConnectionUrl => this.model.tryConnect(currentConnectionUrl)}
+         />
       );
     }
   }
@@ -144,17 +142,19 @@ class ConnectionInformationEdit extends React.Component<
       { 'p-mod-focused': focused }
     );
     return (
-      <div className={inputWrapperClass}>
-        <input
-          className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
-          value={connectionUrl}
-          ref={this.inputRef}
-          autoFocus={true}
-          onChange={event => this.onChange(event)}
-          onKeyDown={event => this.onKeyDown(event)}
-          onBlur={() => this.onInputBlur()}
-          onFocus={() => this.onInputFocus()}
-        />
+      <div className="p-Sql-ConnectionInformation-wrapper">
+        <div className={inputWrapperClass}>
+          <input
+            className="p-Sql-ConnectionInformation-text p-Sql-ConnectionInformation-input"
+            value={connectionUrl}
+            ref={this.inputRef}
+            autoFocus={true}
+            onChange={event => this.onChange(event)}
+            onKeyDown={event => this.onKeyDown(event)}
+            onBlur={() => this.onInputBlur()}
+            onFocus={() => this.onInputFocus()}
+          />
+        </div>
       </div>
     );
   }
