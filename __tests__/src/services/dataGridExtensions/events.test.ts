@@ -193,7 +193,7 @@ describe('addMouseEventListener', () => {
     expect(mockListener.mock.calls.length).toBe(0);
   });
 
-  it('support adding doubleclick event listeners', () => {
+  it('support adding dblclick event listeners', () => {
     const grid = Fixtures.grid();
     const event = Fixtures.dblClickEvent({ clientX: 10, clientY: 5 });
     const mockListener = jest.fn();
@@ -205,5 +205,15 @@ describe('addMouseEventListener', () => {
     const { row, column } = args[0];
     expect(row).toEqual({ section: 'column-header', index: null });
     expect(column).toEqual({ section: 'row-header', index: null });
+  })
+
+  it('support removing dblclick event listeners', () => {
+    const grid = Fixtures.grid();
+    const event = Fixtures.dblClickEvent({ clientX: 10, clientY: 5 });
+    const mockListener = jest.fn();
+    const disposable = addMouseEventListener('dblclick', grid, mockListener);
+    disposable.dispose();
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(0);
   })
 });
