@@ -6,6 +6,7 @@ import { DataModel, DataGrid, TextRenderer, CellRenderer } from '@phosphor/datag
 
 import * as DataGridExtensions from '../services/dataGridExtensions'
 
+// TODO: unit tests for Table component
 export namespace Table {
   export interface IOptions {
     contextMenu: Menu;
