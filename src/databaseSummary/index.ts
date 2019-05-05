@@ -174,6 +174,7 @@ class ResponseWidget extends SingletonPanel {
 
   private _disposeTable(): void {
     if (this._table) {
+      Signal.disconnectBetween(this._table, this);
       this._table.dispose()
     }
     this._table = null;
