@@ -158,9 +158,9 @@ class ResponseWidget extends SingletonPanel {
       response,
       tables => {
         this._tableList = new TableListContainer(tables)
-        // this._tableList.navigateToTable.connect((_, tableName) => {
-        //   this._navigateToTable.emit(tableName)
-        // })
+        this._tableList.navigateToTable.connect((_, tableName) => {
+          this._navigateToTable.emit(tableName)
+        })
         this.widget = this._tableList;
       },
       () => {
@@ -192,9 +192,10 @@ class TableListContainer extends BoxPanel {
     super();
     this.addClass('p-Sql-TableList-container')
     const title = new TitleWidget();
-    const tableList = TableListWidget.withModel(new TableListModel(tables))
+    const tableListModel: TableListModel = new TableListModel(tables);
+    const tableList = TableListWidget.withModel(tableListModel)
     // this._table = new DatabaseSummaryTable(tables)
-    // this._navigateToTable = proxyFor(this._table.navigateToTable, this)
+    this._navigateToTable = proxyFor(tableListModel.navigateToTable, this)
     this.addWidget(title);
     this.addWidget(tableList);
     BoxPanel.setSizeBasis(title, 50);

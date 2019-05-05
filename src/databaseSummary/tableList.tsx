@@ -1,16 +1,27 @@
 
 import * as React from 'react';
 
+import { Signal, ISignal } from '@phosphor/signaling';
+
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
 export class TableListModel extends VDomModel {
-
   constructor(tables: Array<string>) {
     super();
     this.tables = tables;
+    this.onNavigateToTable = this.onNavigateToTable.bind(this)
+  }
+
+  get navigateToTable(): ISignal<this, string> {
+    return this._navigateToTable;
+  }
+
+  onNavigateToTable(tableName: string) {
+    this._navigateToTable.emit(tableName)
   }
 
   readonly tables: Array<string>
+  private readonly _navigateToTable = new Signal<this, string>(this);
 }
 
 export class TableListWidget extends VDomRenderer<TableListModel> {
@@ -24,16 +35,28 @@ export class TableListWidget extends VDomRenderer<TableListModel> {
     if (!this.model) {
       return null;
     } else {
-      return <TableList tableNames={this.model.tables} />
+      const { tables, onNavigateToTable } = this.model
+      return <TableList tableNames={tables} onNavigateToTable={onNavigateToTable} />
     }
   }
 }
 
-class TableList extends React.Component<{ tableNames: Array<string> }> {
+namespace TableList {
+  export interface Props {
+    tableNames: Array<string>;
+    onNavigateToTable: (tableName: string) => void;
+  }
+}
+
+class TableList extends React.Component<TableList.Props> {
   render() {
-    const { tableNames } = this.props
+    const { tableNames, onNavigateToTable } = this.props
     const items = tableNames.map((tableName, i) =>
-      <TableListItem tableName={tableName} key={i} />
+      <TableListItem
+        tableName={tableName}
+        key={i}
+        onClick={() => onNavigateToTable(tableName)}
+      />
     )
     return (
       <ul>{items}</ul>
@@ -41,9 +64,16 @@ class TableList extends React.Component<{ tableNames: Array<string> }> {
   }
 }
 
-class TableListItem extends React.Component<{ tableName: string }> {
+namespace TableListItem {
+  export interface Props {
+    tableName: string;
+    onClick: () => void;
+  }
+}
+
+class TableListItem extends React.Component<TableListItem.Props> {
   render() {
-    const { tableName } = this.props
-    return <li>{tableName}</li>;
+    const { tableName, onClick } = this.props
+    return <li onClick={onClick}>{tableName}</li>;
   }
 }
