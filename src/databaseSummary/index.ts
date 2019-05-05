@@ -1,23 +1,23 @@
 
-import { Menu, Widget, BoxPanel } from '@phosphor/widgets';
+import { Widget, BoxPanel } from '@phosphor/widgets';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
-import { IDisposable, DisposableSet } from '@phosphor/disposable';
+import { DisposableSet } from '@phosphor/disposable';
 
-import { CommandRegistry } from '@phosphor/commands';
+import { Toolbar } from '@jupyterlab/apputils';
 
-import { Clipboard, Toolbar } from '@jupyterlab/apputils';
-
-import { PreWidget, SingletonPanel, Table, ToolbarItems } from '../components';
+import { PreWidget, SingletonPanel } from '../components';
 
 import * as Api from '../api'
 
 import { proxyFor } from '../services';
 
-import * as DataGridExtensions from '../services/dataGridExtensions';
-
 import { JupyterLabSqlPage, PageName } from '../page';
+
+import { DatabaseSummaryToolbar } from './toolbar';
+
+import { DatabaseSummaryTable } from './table';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
@@ -183,118 +183,3 @@ class ResponseWidget extends SingletonPanel {
   private readonly _navigateToTable = new Signal<this, string>(this);
 }
 
-class DatabaseSummaryTable implements IDisposable {
-  constructor(tables: Array<string>) {
-    const contextMenu = this._createContextMenu()
-    const data = tables.map(table => { return [table] });
-    this._table = Table.fromKeysRows(['tables'], data, { contextMenu })
-    this._table.dblclickSignal.connect(this._onDoubleClick.bind(this))
-  }
-
-  dispose(): void {
-    this._table.dispose();
-    this._isDisposed = true;
-  }
-
-  get widget(): Widget {
-    return this._table.widget;
-  }
-
-  get isDisposed(): boolean {
-    return this._isDisposed;
-  }
-
-  get navigateToTable(): ISignal<this, string> {
-    return this._navigateToTable;
-  }
-
-  // TODO: Icons for context menu
-  private _createContextMenu(): Menu {
-    const commands = new CommandRegistry();
-    commands.addCommand(DatabaseSummaryTable.CommandIds.viewTable, {
-      label: 'View table',
-      execute: () => this._navigateToSelectedTable()
-    })
-    commands.addCommand(DatabaseSummaryTable.CommandIds.copyToClipboard, {
-      label: 'Copy cell',
-      execute: () => this._copySelectionToClipboard()
-    })
-    const menu = new Menu({ commands });
-    menu.addItem({ command: DatabaseSummaryTable.CommandIds.viewTable })
-    menu.addItem({ command: DatabaseSummaryTable.CommandIds.copyToClipboard })
-    return menu
-  }
-
-  private _copySelectionToClipboard(): void {
-    const selectionValue = this._table.selectionValue;
-    if (selectionValue !== null) {
-      Clipboard.copyToSystem(selectionValue)
-    }
-  }
-
-  private _navigateToSelectedTable(): void {
-    const selectionValue = this._table.selectionValue;
-    if (selectionValue !== null) {
-      this._navigateToTable.emit(selectionValue);
-    }
-  }
-
-  private _onDoubleClick(_: any, cellIndex: DataGridExtensions.BodyCellIndex): void {
-    const value = this._table.getCellValue(cellIndex)
-    this._navigateToTable.emit(value);
-  }
-
-  private readonly _table: Table;
-  private readonly _navigateToTable = new Signal<this, string>(this)
-  private _isDisposed: boolean = false;
-}
-
-namespace DatabaseSummaryTable {
-  export namespace CommandIds {
-    export const copyToClipboard = 'copy-selection-to-clipboard';
-    export const viewTable = 'view-table';
-  }
-}
-
-class DatabaseSummaryToolbar extends Toolbar {
-  constructor(connectionUrl: string) {
-    super()
-    this._onBackButtonClicked = this._onBackButtonClicked.bind(this)
-    this._onRefreshButtonClicked = this._onRefreshButtonClicked.bind(this)
-    this.addItem(
-      'back',
-      new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
-    )
-    this.addItem(
-      'refresh',
-      new ToolbarItems.RefreshButton({ onClick: this._onRefreshButtonClicked })
-    )
-    this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
-    this.addItem('loading', this._loadingIcon)
-  }
-
-  get backButtonClicked(): ISignal<this, void> {
-    return this._backButtonClicked;
-  }
-
-  get refreshButtonClicked(): ISignal<this, void> {
-    return this._refreshButtonClicked;
-  }
-
-  setLoading(isLoading: boolean) {
-    this._loadingIcon.setLoading(isLoading);
-  }
-
-  private _onBackButtonClicked(): void {
-    this._backButtonClicked.emit(void 0);
-  }
-
-  private _onRefreshButtonClicked(): void {
-    this._refreshButtonClicked.emit(void 0);
-  }
-
-  private readonly _loadingIcon: ToolbarItems.LoadingIcon = new ToolbarItems.LoadingIcon();
-  private readonly _backButtonClicked: Signal<this, void> = new Signal(this);
-  private readonly _refreshButtonClicked: Signal<this, void> = new Signal(this);
-}
