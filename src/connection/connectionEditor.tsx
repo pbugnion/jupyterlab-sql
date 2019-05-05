@@ -182,12 +182,17 @@ class ConnectionInformationHelper extends React.Component<{}> {
       <details className="jp-RenderedHTMLCommon">
         <summary>Help</summary>
         <p>
+          Press <code>Enter</code> to connect to the database.
+        </p>
+        <p>
           The URL must be a database URL. Follow the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls" target="_blank">SQLAlchemy guide</a> on URLs.
           For instance:
         </p>
         <ul>
           <li><pre>postgres://localhost:5432/postgres</pre></li>
+          <li><pre>postgres://username:password@localhost:5432/postgres</pre></li>
           <li><pre>sqlite://</pre></li>
+          <li><pre>sqlite:///myfile.db</pre></li>
         </ul>
       </details>
     );
