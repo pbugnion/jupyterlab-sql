@@ -208,20 +208,20 @@ class DatabaseSummaryTable implements IDisposable {
     return this._navigateToTable;
   }
 
+  // TODO: Icons for context menu
   private _createContextMenu(): Menu {
     const commands = new CommandRegistry();
-    commands.addCommand(DatabaseSummaryTable.CommandIds.copyToClipboard, {
-      label: 'Copy cell',
-      iconClass: 'jp-MaterialIcon jp-CopyIcon',
-      execute: () => this._copySelectionToClipboard()
-    })
     commands.addCommand(DatabaseSummaryTable.CommandIds.viewTable, {
       label: 'View table',
       execute: () => this._navigateToSelectedTable()
     })
+    commands.addCommand(DatabaseSummaryTable.CommandIds.copyToClipboard, {
+      label: 'Copy cell',
+      execute: () => this._copySelectionToClipboard()
+    })
     const menu = new Menu({ commands });
-    menu.addItem({ command: DatabaseSummaryTable.CommandIds.copyToClipboard })
     menu.addItem({ command: DatabaseSummaryTable.CommandIds.viewTable })
+    menu.addItem({ command: DatabaseSummaryTable.CommandIds.copyToClipboard })
     return menu
   }
 
