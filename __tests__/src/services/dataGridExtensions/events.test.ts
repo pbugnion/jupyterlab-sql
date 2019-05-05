@@ -199,5 +199,11 @@ describe('addMouseEventListener', () => {
     const mockListener = jest.fn();
     addMouseEventListener('dblclick', grid, mockListener);
     grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(1);
+    const [args] = mockListener.mock.calls;
+    expect(args.length).toBe(1);
+    const { row, column } = args[0];
+    expect(row).toEqual({ section: 'column-header', index: null });
+    expect(column).toEqual({ section: 'row-header', index: null });
   })
 });
