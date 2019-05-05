@@ -21,6 +21,10 @@ namespace Fixtures {
     return new MouseEvent('contextmenu', args);
   }
 
+  export function dblClickEvent(args: MouseEventInit): MouseEvent {
+    return new MouseEvent('dblclick', args);
+  }
+
   class TestDataModel extends DataModel {
     rowCount(region: DataModel.RowRegion): number {
       return region === 'body' ? 100 : 1;
@@ -188,4 +192,12 @@ describe('addMouseEventListener', () => {
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(0);
   });
+
+  it('support adding doubleclick event listeners', () => {
+    const grid = Fixtures.grid();
+    const event = Fixtures.dblClickEvent({ clientX: 10, clientY: 5 });
+    const mockListener = jest.fn();
+    addMouseEventListener('dblclick', grid, mockListener);
+    grid.node.dispatchEvent(event);
+  })
 });
