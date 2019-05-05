@@ -74,3 +74,8 @@
 .p-Sql-DatabaseIcon {
     background-image: url('./icons/database.svg');
 }
+
+.p-Sql-TableList-container {
+    padding-left: 10px;
+    padding-right: 10px;
+}

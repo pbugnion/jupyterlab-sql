@@ -90,7 +90,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
 
 class Content extends BoxPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
-    super();
+    super({ direction: 'left-to-right' });
     this._connectionUrl = options.connectionUrl;
     this._responseWidget = new ResponseWidget()
     this._responseWidget.navigateToTable.connect((_, tableName) => {
@@ -100,7 +100,7 @@ class Content extends BoxPanel {
     customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
     this.addWidget(customQueryWidget);
     this.addWidget(this._responseWidget);
-    BoxPanel.setSizeBasis(customQueryWidget, 30);
+    BoxPanel.setSizeBasis(customQueryWidget, 150);
     BoxPanel.setStretch(this._responseWidget, 1)
   }
 
@@ -155,11 +155,11 @@ class ResponseWidget extends SingletonPanel {
     Api.StructureResponse.match(
       response,
       tables => {
-        this._table = new DatabaseSummaryTable(tables)
-        this._table.navigateToTable.connect((_, tableName) => {
+        this._tableList = new TableListContainer(tables)
+        this._tableList.navigateToTable.connect((_, tableName) => {
           this._navigateToTable.emit(tableName)
         })
-        this.widget = this._table.widget
+        this.widget = this._tableList;
       },
       () => {
         // TODO handle error
@@ -173,14 +173,51 @@ class ResponseWidget extends SingletonPanel {
   }
 
   private _disposeTable(): void {
-    if (this._table) {
-      Signal.disconnectBetween(this._table, this);
-      this._table.dispose()
+    if (this._tableList) {
+      Signal.disconnectBetween(this._tableList, this);
+      this._tableList.dispose()
     }
-    this._table = null;
+    this._tableList = null;
   }
 
-  private _table: DatabaseSummaryTable | null = null;
+  private _tableList: TableListContainer | null = null;
   private readonly _navigateToTable = new Signal<this, string>(this);
 }
 
+
+class TableListContainer extends BoxPanel {
+  constructor(tables: Array<string>) {
+    super();
+    this.addClass('p-Sql-TableList-container')
+    const title = new TitleWidget();
+    this._table = new DatabaseSummaryTable(tables)
+    this._navigateToTable = proxyFor(this._table.navigateToTable, this)
+    this.addWidget(title);
+    this.addWidget(this._table.widget);
+    BoxPanel.setSizeBasis(title, 50);
+    BoxPanel.setStretch(this._table.widget, 1);
+  }
+
+  get navigateToTable(): ISignal<this, string> {
+    return this._navigateToTable;
+  }
+
+  dispose(): void {
+    this._table.dispose();
+    super.dispose();
+  }
+
+  private readonly _table: DatabaseSummaryTable;
+  private readonly _navigateToTable: Signal<this, string>;
+}
+
+
+class TitleWidget extends Widget {
+  constructor() {
+    super();
+    this.addClass('jp-RenderedHTMLCommon');
+    const title = document.createElement('h2');
+    title.innerHTML = 'Tables'
+    this.node.appendChild(title)
+  }
+}
