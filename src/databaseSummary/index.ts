@@ -17,7 +17,7 @@ import { JupyterLabSqlPage, PageName } from '../page';
 
 import { DatabaseSummaryToolbar } from './toolbar';
 
-import { DatabaseSummaryModel, DatabaseSummaryWidget } from './tableList';
+import { DatabaseSummaryIModel, DatabaseSummaryModel, DatabaseSummaryWidget } from './tableList';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
@@ -136,6 +136,7 @@ class ResponseWidget extends SingletonPanel {
         model.navigateToTable.connect((_, tableName) => {
           this._navigateToTable.emit(tableName);
         })
+        this._databaseSummaryModel = model
       },
       () => {
         // TODO handle error
@@ -159,7 +160,7 @@ class ResponseWidget extends SingletonPanel {
     }
   }
 
-  private _databaseSummaryModel: DatabaseSummaryModel | null;
+  private _databaseSummaryModel: DatabaseSummaryIModel | null;
   private readonly _navigateToTable = new Signal<this, string>(this);
   private readonly _navigateToCustomQuery = new Signal<this, void>(this);
 }

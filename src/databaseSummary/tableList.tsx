@@ -3,11 +3,19 @@ import * as React from 'react';
 
 import classNames from 'classNames'
 
+import { IDisposable } from '@phosphor/disposable';
+
 import { Signal, ISignal } from '@phosphor/signaling';
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
-export class DatabaseSummaryModel extends VDomModel {
+export interface DatabaseSummaryIModel extends IDisposable {
+  navigateToTable: ISignal<this, string>;
+  navigateToCustomQuery: ISignal<this, void>;
+}
+
+// TODO: what if the list of table overflows?
+export class DatabaseSummaryModel extends VDomModel implements DatabaseSummaryIModel {
   constructor(tables: Array<string>) {
     super();
     this.tables = tables;
@@ -77,9 +85,10 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
     this.state = {
       selectedItem: null
     }
+    this.onTableItemClick = this.onTableItemClick.bind(this)
   }
 
-  onItemClick(itemNumber: number) {
+  onTableItemClick(itemNumber: number) {
     this.setState({ selectedItem: itemNumber })
   }
 
@@ -90,7 +99,7 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
       <TableListItem
         tableName={tableName}
         key={i}
-        onClick={() => this.onItemClick(i)}
+        onClick={() => this.onTableItemClick(i)}
         onDoubleClick={() => onNavigateToTable(tableName)}
         selected={i === selectedItem}
       />
