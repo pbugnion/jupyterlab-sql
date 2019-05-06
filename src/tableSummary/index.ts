@@ -136,8 +136,7 @@ class TableSummaryToolbar extends Toolbar {
       new ToolbarItems.RefreshButton({ onClick: this._onRefreshButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
-    this.addItem('tableName', new ToolbarItems.TextItem(tableName))
+    this.addItem('url', new ToolbarItems.TextItem(`${connectionUrl} ❯ ${tableName}`))
     this.addItem('loading', this._loadingIcon)
   }
 
