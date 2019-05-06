@@ -100,9 +100,9 @@ class Content extends BoxPanel {
     })
     const customQueryWidget = new CustomQueryWidget()
     customQueryWidget.clicked.connect(() => this._customQueryClicked.emit(void 0))
-    this.addWidget(customQueryWidget);
+    // this.addWidget(customQueryWidget);
     this.addWidget(this._responseWidget);
-    BoxPanel.setSizeBasis(customQueryWidget, 150);
+    // BoxPanel.setSizeBasis(customQueryWidget, 150);
     BoxPanel.setStretch(this._responseWidget, 1)
   }
 
