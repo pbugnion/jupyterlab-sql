@@ -12,6 +12,7 @@ export class DatabaseSummaryModel extends VDomModel {
     super();
     this.tables = tables;
     this.onNavigateToTable = this.onNavigateToTable.bind(this)
+    this.onNavigateToCustomQuery = this.onNavigateToCustomQuery.bind(this);
   }
 
   get navigateToTable(): ISignal<this, string> {
@@ -74,7 +75,7 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
   constructor(props: TableList.Props) {
     super(props);
     this.state = {
-      selectedItem: 2
+      selectedItem: null
     }
   }
 

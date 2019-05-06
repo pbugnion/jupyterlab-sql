@@ -1,5 +1,5 @@
 
-import { Widget, BoxPanel } from '@phosphor/widgets';
+import { Widget } from '@phosphor/widgets';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
@@ -16,8 +16,6 @@ import { proxyFor } from '../services';
 import { JupyterLabSqlPage, PageName } from '../page';
 
 import { DatabaseSummaryToolbar } from './toolbar';
-
-// import { DatabaseSummaryTable } from './table';
 
 import { DatabaseSummaryModel, DatabaseSummaryWidget } from './tableList';
 
@@ -95,9 +93,8 @@ class Content extends SingletonPanel {
     super();
     this._connectionUrl = options.connectionUrl;
     this._responseWidget = new ResponseWidget()
-    this._responseWidget.navigateToTable.connect((_, tableName) => {
-      this._navigateToTable.emit(tableName)
-    })
+    this._navigateToTable = proxyFor(this._responseWidget.navigateToTable, this);
+    this._customQueryClicked = proxyFor(this._responseWidget.navigateToCustomQuery, this);
     this.widget = this._responseWidget;
   }
 
@@ -116,29 +113,29 @@ class Content extends SingletonPanel {
 
   private readonly _connectionUrl: string;
   private readonly _responseWidget: ResponseWidget
-  private readonly _customQueryClicked = new Signal<this, void>(this);
-  private readonly _navigateToTable = new Signal<this, string>(this);
+  private readonly _customQueryClicked: Signal<this, void>;
+  private readonly _navigateToTable: Signal<this, string>;
 }
 
 class ResponseWidget extends SingletonPanel {
-
-  // TODO: Dispose of signals
-
   dispose(): void {
-    this._disposeTable();
+    this._disposeWidgets();
     super.dispose();
   }
 
   setResponse(response: Api.StructureResponse.Type) {
-    this._disposeTable();
+    this._disposeWidgets();
     Api.StructureResponse.match(
       response,
       tables => {
-        this._tableList = new SuccessfulResponseContent(tables)
-        // this._tableList.navigateToTable.connect((_, tableName) => {
-        //   this._navigateToTable.emit(tableName)
-        // })
-        this.widget = this._tableList;
+        const model = new DatabaseSummaryModel(tables);
+        this.widget = DatabaseSummaryWidget.withModel(model);
+        model.navigateToCustomQuery.connect(() => {
+          this._navigateToCustomQuery.emit(void 0)
+        })
+        model.navigateToTable.connect((_, tableName) => {
+          this._navigateToTable.emit(tableName);
+        })
       },
       () => {
         // TODO handle error
@@ -151,87 +148,18 @@ class ResponseWidget extends SingletonPanel {
     return this._navigateToTable;
   }
 
-  private _disposeTable(): void {
-    if (this._tableList) {
-      Signal.disconnectBetween(this._tableList, this);
-      this._tableList.dispose()
-    }
-    this._tableList = null;
-  }
-
-  private _tableList: SuccessfulResponseContent | null = null;
-  private readonly _navigateToTable = new Signal<this, string>(this);
-}
-
-
-class SuccessfulResponseContent extends BoxPanel {
-  constructor(tables: Array<string>) {
-    super({ direction: 'left-to-right' })
-    const tableListModel = new DatabaseSummaryModel(tables);
-    const tableList = DatabaseSummaryWidget.withModel(tableListModel)
-    this.addWidget(tableList)
-    BoxPanel.setStretch(tableList, 1);
-  }
-
-  get navigateToTable(): ISignal<this, string> {
-    return this._navigateToTable;
-  }
-
   get navigateToCustomQuery(): ISignal<this, void> {
     return this._navigateToCustomQuery;
   }
 
-  private readonly _navigateToTable: Signal<this, string>;
-  private readonly _navigateToCustomQuery: Signal<this, void>;
+  private _disposeWidgets(): void {
+    if (this._databaseSummaryModel) {
+      Signal.disconnectBetween(this._databaseSummaryModel, this);
+      this._databaseSummaryModel.dispose()
+    }
+  }
+
+  private _databaseSummaryModel: DatabaseSummaryModel | null;
+  private readonly _navigateToTable = new Signal<this, string>(this);
+  private readonly _navigateToCustomQuery = new Signal<this, void>(this);
 }
-
-// class CustomQueryWidget extends Widget {
-//   constructor() {
-//     super();
-//     const element = document.createElement('div');
-//     const button = document.createElement('button');
-//     button.innerHTML = 'Custom query';
-//     button.onclick = () => this._clicked.emit(void 0);
-//     element.appendChild(button);
-//     this.node.appendChild(element);
-//   }
-
-//   get clicked(): ISignal<this, void> {
-//     return this._clicked;
-//   }
-
-//   private readonly _clicked = new Signal<this, void>(this);
-// }
-
-// class TableListContainer extends BoxPanel {
-//   constructor(tables: Array<string>) {
-//     super();
-//     // this._table = new DatabaseSummaryTable(tables)
-//     this._navigateToTable = proxyFor(tableListModel.navigateToTable, this)
-//     this.addWidget(tableList);
-//     BoxPanel.setStretch(tableList, 1);
-//   }
-
-//   get navigateToTable(): ISignal<this, string> {
-//     return this._navigateToTable;
-//   }
-
-//   dispose(): void {
-//     // this._table.dispose();
-//     super.dispose();
-//   }
-
-//   // private readonly _table: DatabaseSummaryTable;
-//   private readonly _navigateToTable: Signal<this, string>;
-// }
-
-
-// class TitleWidget extends Widget {
-//   constructor() {
-//     super();
-//     this.addClass('jp-RenderedHTMLCommon');
-//     const title = document.createElement('h2');
-//     title.innerHTML = 'Tables'
-//     this.node.appendChild(title)
-//   }
-// }
