@@ -138,9 +138,8 @@ class ResponseWidget extends SingletonPanel {
         })
         this._databaseSummaryModel = model
       },
-      () => {
-        // TODO handle error
-        this.widget = new PreWidget('oops')
+      ({ message }) => {
+        this.widget = new PreWidget(message)
       }
     )
   }
