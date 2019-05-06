@@ -67,13 +67,14 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
   }
 
   render() {
-    const { tableNames } = this.props
+    const { tableNames, onNavigateToTable } = this.props
     const { selectedItem } = this.state;
     const items = tableNames.map((tableName, i) =>
       <TableListItem
         tableName={tableName}
         key={i}
         onClick={() => this.onItemClick(i)}
+        onDoubleClick={() => onNavigateToTable(tableName)}
         selected={i === selectedItem}
       />
     )
@@ -89,18 +90,19 @@ namespace TableListItem {
     tableName: string;
     selected: boolean;
     onClick: () => void;
+    onDoubleClick: () => void;
   }
 }
 
 class TableListItem extends React.Component<TableListItem.Props> {
   render() {
-    const { tableName, onClick, selected } = this.props
+    const { tableName, onClick, onDoubleClick, selected } = this.props
     const classes = classNames(
       "jp-DirListing-item",
       { "jp-mod-selected": selected }
     )
     return (
-      <li onClick={onClick} className={classes} title={tableName}>
+      <li onClick={onClick} onDoubleClick={onDoubleClick} className={classes} title={tableName}>
         <span className="jp-DirListing-itemText">{tableName}</span>
       </li>
     );
