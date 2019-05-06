@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import className from 'classNames'
+import classNames from 'classNames'
 
 import { Signal, ISignal } from '@phosphor/signaling';
 
@@ -48,19 +48,36 @@ namespace TableList {
     tableNames: Array<string>;
     onNavigateToTable: (tableName: string) => void;
   }
+
+  export interface State {
+    selectedItem: number | null;
+  }
 }
 
-class TableList extends React.Component<TableList.Props> {
+class TableList extends React.Component<TableList.Props, TableList.State> {
+  constructor(props: TableList.Props) {
+    super(props);
+    this.state = {
+      selectedItem: 2
+    }
+  }
+
+  onItemClick(itemNumber: number) {
+    this.setState({ selectedItem: itemNumber })
+  }
+
   render() {
-    const { tableNames, onNavigateToTable } = this.props
+    const { tableNames } = this.props
+    const { selectedItem } = this.state;
     const items = tableNames.map((tableName, i) =>
       <TableListItem
         tableName={tableName}
         key={i}
-        onClick={() => onNavigateToTable(tableName)}
+        onClick={() => this.onItemClick(i)}
+        selected={i === selectedItem}
       />
     )
-    const classes = className("jp-DirListing-content", "p-Sql-TableList-content")
+    const classes = classNames("jp-DirListing-content", "p-Sql-TableList-content")
     return (
       <ul className={classes}>{items}</ul>
     );
@@ -70,15 +87,20 @@ class TableList extends React.Component<TableList.Props> {
 namespace TableListItem {
   export interface Props {
     tableName: string;
+    selected: boolean;
     onClick: () => void;
   }
 }
 
 class TableListItem extends React.Component<TableListItem.Props> {
   render() {
-    const { tableName, onClick } = this.props
+    const { tableName, onClick, selected } = this.props
+    const classes = classNames(
+      "jp-DirListing-item",
+      { "jp-mod-selected": selected }
+    )
     return (
-      <li onClick={onClick} className="jp-DirListing-item" title={tableName}>
+      <li onClick={onClick} className={classes} title={tableName}>
         <span className="jp-DirListing-itemText">{tableName}</span>
       </li>
     );
