@@ -17,7 +17,7 @@ import { JupyterLabSqlPage, PageName } from '../page';
 
 import { DatabaseSummaryToolbar } from './toolbar';
 
-import { DatabaseSummaryIModel, DatabaseSummaryModel, DatabaseSummaryWidget } from './tableList';
+import { DatabaseSummaryIModel, DatabaseSummaryModel, DatabaseSummaryWidget } from './content';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
