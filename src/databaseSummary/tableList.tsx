@@ -85,7 +85,7 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
   render() {
     const { tableNames, onNavigateToTable, onNavigateToCustomQuery } = this.props
     const { selectedItem } = this.state;
-    const items = tableNames.map((tableName, i) =>
+    const tableItems = tableNames.map((tableName, i) =>
       <TableListItem
         tableName={tableName}
         key={i}
@@ -97,14 +97,10 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
     return (
       <div className="p-Sql-TableList-container">
         <ul className="p-Sql-TableList-content">
-          <li className="p-Sql-TableList-header">
-            Actions
-          </li>
+          <ListHeader headerText="Actions" />
           <CustomQueryItem onClick={onNavigateToCustomQuery} />
-          <li className="p-Sql-TableList-header">
-            Tables
-          </li>
-          {items}
+          <ListHeader headerText="Tables" />
+          {tableItems}
         </ul>
       </div>
     );
@@ -151,5 +147,22 @@ class CustomQueryItem extends React.Component<CustomQueryItem.Props> {
         <span className="jp-DirListing-itemText">Custom SQL query</span>
       </li>
     )
+  }
+}
+
+namespace ListHeader {
+  export interface Props {
+    headerText: string
+  }
+}
+
+class ListHeader extends React.Component<ListHeader.Props> {
+  render() {
+    const { headerText } = this.props;
+    return (
+      <li className="p-Sql-TableList-header">
+        {headerText}
+      </li>
+    );
   }
 }
