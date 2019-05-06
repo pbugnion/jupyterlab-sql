@@ -101,3 +101,8 @@
     border-bottom: solid var(--jp-border-width) var(--jp-border-color2);
     letter-spacing: 1px;
 }
+
+.jp-Toolbar-item.p-Sql-Toolbar-text {
+    line-height: 24px;
+    text-align: center;
+}

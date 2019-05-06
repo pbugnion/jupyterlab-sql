@@ -6,6 +6,7 @@ export namespace ToolbarItems {
   export class TextItem extends Widget {
     constructor(value: string) {
       super();
+      this.addClass('p-Sql-Toolbar-text')
       this.node.innerText = value;
     }
   }
