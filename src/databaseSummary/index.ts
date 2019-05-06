@@ -167,7 +167,6 @@ class ResponseWidget extends SingletonPanel {
 class SuccessfulResponseContent extends BoxPanel {
   constructor(tables: Array<string>) {
     super({ direction: 'left-to-right' })
-    this.addClass('p-Sql-TableList-container')
     const tableListModel: TableListModel = new TableListModel(tables);
     const tableList = TableListWidget.withModel(tableListModel)
     const customQueryWidget = new CustomQueryWidget()
@@ -201,8 +200,6 @@ class CustomQueryWidget extends Widget {
 
   private readonly _clicked = new Signal<this, void>(this);
 }
-
-
 
 // class TableListContainer extends BoxPanel {
 //   constructor(tables: Array<string>) {

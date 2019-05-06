@@ -78,6 +78,8 @@
 .p-Sql-TableList-container {
     padding-left: 10px;
     padding-right: 10px;
+    height: 100%;
+    border-left: solid var(--jp-border-width) var(--jp-border-color2);
 }
 
 .p-Sql-TableList-content {
