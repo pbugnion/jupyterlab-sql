@@ -78,9 +78,8 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
         selected={i === selectedItem}
       />
     )
-    const classes = classNames("jp-DirListing-content", "p-Sql-TableList-content")
     return (
-      <ul className={classes}>{items}</ul>
+      <ul className="p-Sql-TableList-content">{items}</ul>
     );
   }
 }
@@ -103,6 +102,7 @@ class TableListItem extends React.Component<TableListItem.Props> {
     )
     return (
       <li onClick={onClick} onDoubleClick={onDoubleClick} className={classes} title={tableName}>
+        <span className="jp-DirListing-itemIcon jp-MaterialIcon jp-SpreadsheetIcon" />
         <span className="jp-DirListing-itemText">{tableName}</span>
       </li>
     );
