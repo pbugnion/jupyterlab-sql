@@ -7,7 +7,7 @@ import { Signal, ISignal } from '@phosphor/signaling';
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
-export class TableListModel extends VDomModel {
+export class DatabaseSummaryModel extends VDomModel {
   constructor(tables: Array<string>) {
     super();
     this.tables = tables;
@@ -35,9 +35,9 @@ export class TableListModel extends VDomModel {
   private readonly _navigateToCustomQuery = new Signal<this, void>(this);
 }
 
-export class TableListWidget extends VDomRenderer<TableListModel> {
-  static withModel(model: TableListModel): TableListWidget {
-    const tableList = new TableListWidget();
+export class DatabaseSummaryWidget extends VDomRenderer<DatabaseSummaryModel> {
+  static withModel(model: DatabaseSummaryModel): DatabaseSummaryWidget {
+    const tableList = new DatabaseSummaryWidget();
     tableList.model = model;
     return tableList;
   }
@@ -46,8 +46,14 @@ export class TableListWidget extends VDomRenderer<TableListModel> {
     if (!this.model) {
       return null;
     } else {
-      const { tables, onNavigateToTable } = this.model
-      return <TableList tableNames={tables} onNavigateToTable={onNavigateToTable} />
+      const { tables, onNavigateToTable, onNavigateToCustomQuery } = this.model
+      return (
+        <TableList
+          tableNames={tables}
+          onNavigateToTable={onNavigateToTable}
+          onNavigateToCustomQuery={onNavigateToCustomQuery}
+        />
+      )
     }
   }
 }
@@ -56,6 +62,7 @@ namespace TableList {
   export interface Props {
     tableNames: Array<string>;
     onNavigateToTable: (tableName: string) => void;
+    onNavigateToCustomQuery: () => void;
   }
 
   export interface State {
@@ -76,7 +83,7 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
   }
 
   render() {
-    const { tableNames, onNavigateToTable } = this.props
+    const { tableNames, onNavigateToTable, onNavigateToCustomQuery } = this.props
     const { selectedItem } = this.state;
     const items = tableNames.map((tableName, i) =>
       <TableListItem
@@ -93,17 +100,11 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
           <li className="p-Sql-TableList-header">
             Actions
           </li>
-          <TableListItem
-            tableName="Custom query"
-            key="custom"
-            onClick={() => 0 }
-            onDoubleClick={() => 0 }
-            selected={false}
-          />
+          <CustomQueryItem onClick={onNavigateToCustomQuery} />
           <li className="p-Sql-TableList-header">
             Tables
           </li>
-            {items}
+          {items}
         </ul>
       </div>
     );
@@ -132,5 +133,23 @@ class TableListItem extends React.Component<TableListItem.Props> {
         <span className="jp-DirListing-itemText">{tableName}</span>
       </li>
     );
+  }
+}
+
+namespace CustomQueryItem {
+  export interface Props {
+    onClick: () => void;
+  }
+}
+
+class CustomQueryItem extends React.Component<CustomQueryItem.Props> {
+  render() {
+    const { onClick } = this.props
+    return (
+      <li onClick={onClick} className="jp-DirListing-item" title="Custom SQL query">
+        <span className="jp-DirListing-itemIcon jp-MaterialIcon jp-CodeConsoleIcon" />
+        <span className="jp-DirListing-itemText">Custom SQL query</span>
+      </li>
+    )
   }
 }

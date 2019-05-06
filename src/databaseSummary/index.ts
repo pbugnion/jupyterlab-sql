@@ -19,7 +19,7 @@ import { DatabaseSummaryToolbar } from './toolbar';
 
 // import { DatabaseSummaryTable } from './table';
 
-import { TableListWidget, TableListModel } from './tableList';
+import { DatabaseSummaryModel, DatabaseSummaryWidget } from './tableList';
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
@@ -167,8 +167,8 @@ class ResponseWidget extends SingletonPanel {
 class SuccessfulResponseContent extends BoxPanel {
   constructor(tables: Array<string>) {
     super({ direction: 'left-to-right' })
-    const tableListModel: TableListModel = new TableListModel(tables);
-    const tableList = TableListWidget.withModel(tableListModel)
+    const tableListModel = new DatabaseSummaryModel(tables);
+    const tableList = DatabaseSummaryWidget.withModel(tableListModel)
     this.addWidget(tableList)
     BoxPanel.setStretch(tableList, 1);
   }
@@ -177,7 +177,12 @@ class SuccessfulResponseContent extends BoxPanel {
     return this._navigateToTable;
   }
 
+  get navigateToCustomQuery(): ISignal<this, void> {
+    return this._navigateToCustomQuery;
+  }
+
   private readonly _navigateToTable: Signal<this, string>;
+  private readonly _navigateToCustomQuery: Signal<this, void>;
 }
 
 // class CustomQueryWidget extends Widget {
