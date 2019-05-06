@@ -89,3 +89,14 @@
     overflow: auto;
     background-color: var(--jp-layout-color1);
 }
+
+
+.p-Sql-TableList-header {
+    padding: 8px 0 8px 12px;
+    color: var(--jp-ui-font-color1);
+    font-size: var(--jp-ui-font-size0);
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom: solid var(--jp-border-width) var(--jp-border-color2);
+    letter-spacing: 1px;
+}

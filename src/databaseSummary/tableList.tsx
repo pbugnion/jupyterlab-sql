@@ -79,7 +79,12 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
       />
     )
     return (
-      <ul className="p-Sql-TableList-content">{items}</ul>
+      <ul className="p-Sql-TableList-content">
+        <li className="p-Sql-TableList-header">
+          Tables
+        </li>
+          {items}
+      </ul>
     );
   }
 }
