@@ -82,6 +82,16 @@ class TableList extends React.Component<TableList.Props, TableList.State> {
       <div className="p-Sql-TableList-container">
         <ul className="p-Sql-TableList-content">
           <li className="p-Sql-TableList-header">
+            Actions
+          </li>
+          <TableListItem
+            tableName="Custom query"
+            key="custom"
+            onClick={() => 0 }
+            onDoubleClick={() => 0 }
+            selected={false}
+          />
+          <li className="p-Sql-TableList-header">
             Tables
           </li>
             {items}

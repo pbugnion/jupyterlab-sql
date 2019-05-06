@@ -169,10 +169,7 @@ class SuccessfulResponseContent extends BoxPanel {
     super({ direction: 'left-to-right' })
     const tableListModel: TableListModel = new TableListModel(tables);
     const tableList = TableListWidget.withModel(tableListModel)
-    const customQueryWidget = new CustomQueryWidget()
-    this.addWidget(customQueryWidget)
     this.addWidget(tableList)
-    BoxPanel.setSizeBasis(customQueryWidget, 100);
     BoxPanel.setStretch(tableList, 1);
   }
 
@@ -183,23 +180,23 @@ class SuccessfulResponseContent extends BoxPanel {
   private readonly _navigateToTable: Signal<this, string>;
 }
 
-class CustomQueryWidget extends Widget {
-  constructor() {
-    super();
-    const element = document.createElement('div');
-    const button = document.createElement('button');
-    button.innerHTML = 'Custom query';
-    button.onclick = () => this._clicked.emit(void 0);
-    element.appendChild(button);
-    this.node.appendChild(element);
-  }
+// class CustomQueryWidget extends Widget {
+//   constructor() {
+//     super();
+//     const element = document.createElement('div');
+//     const button = document.createElement('button');
+//     button.innerHTML = 'Custom query';
+//     button.onclick = () => this._clicked.emit(void 0);
+//     element.appendChild(button);
+//     this.node.appendChild(element);
+//   }
 
-  get clicked(): ISignal<this, void> {
-    return this._clicked;
-  }
+//   get clicked(): ISignal<this, void> {
+//     return this._clicked;
+//   }
 
-  private readonly _clicked = new Signal<this, void>(this);
-}
+//   private readonly _clicked = new Signal<this, void>(this);
+// }
 
 // class TableListContainer extends BoxPanel {
 //   constructor(tables: Array<string>) {
