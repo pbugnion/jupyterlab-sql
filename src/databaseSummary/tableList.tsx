@@ -18,12 +18,21 @@ export class TableListModel extends VDomModel {
     return this._navigateToTable;
   }
 
+  get navigateToCustomQuery(): ISignal<this, void> {
+    return this._navigateToCustomQuery;
+  }
+
   onNavigateToTable(tableName: string) {
     this._navigateToTable.emit(tableName)
   }
 
+  onNavigateToCustomQuery() {
+    this._navigateToCustomQuery.emit(void 0);
+  }
+
   readonly tables: Array<string>
   private readonly _navigateToTable = new Signal<this, string>(this);
+  private readonly _navigateToCustomQuery = new Signal<this, void>(this);
 }
 
 export class TableListWidget extends VDomRenderer<TableListModel> {
