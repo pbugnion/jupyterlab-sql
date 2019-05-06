@@ -1,6 +1,8 @@
 
 import * as React from 'react';
 
+import className from 'classNames'
+
 import { Signal, ISignal } from '@phosphor/signaling';
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
@@ -58,8 +60,9 @@ class TableList extends React.Component<TableList.Props> {
         onClick={() => onNavigateToTable(tableName)}
       />
     )
+    const classes = className("jp-DirListing-content", "p-Sql-TableList-content")
     return (
-      <ul>{items}</ul>
+      <ul className={classes}>{items}</ul>
     );
   }
 }
@@ -74,6 +77,10 @@ namespace TableListItem {
 class TableListItem extends React.Component<TableListItem.Props> {
   render() {
     const { tableName, onClick } = this.props
-    return <li onClick={onClick}>{tableName}</li>;
+    return (
+      <li onClick={onClick} className="jp-DirListing-item" title={tableName}>
+        <span className="jp-DirListing-itemText">{tableName}</span>
+      </li>
+    );
   }
 }

@@ -79,3 +79,8 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.p-Sql-TableList-content {
+    font-family: var(--jp-ui-font-family);
+    font-size: var(--jp-ui-font-size1);
+}
