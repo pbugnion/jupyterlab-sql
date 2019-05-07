@@ -1,5 +1,5 @@
 
-import { getStructure, StructureResponse } from '../../../src/api';
+import { getDatabaseStructure, DatabaseStructureResponse } from '../../../src/api';
 
 import { ServerConnection } from '@jupyterlab/services';
 
@@ -42,7 +42,7 @@ describe('getDatabaseStructure', () => {
       () => Promise.resolve(new Response(JSON.stringify(response)))
     )
 
-    const result = await getStructure('connectionUrl');
+    const result = await getDatabaseStructure('connectionUrl');
     expect(result).toEqual(response);
     const expectedUrl = "https://example.com/jupyterlab-sql/structure";
     const expectedRequest = {
@@ -60,10 +60,10 @@ describe('getDatabaseStructure', () => {
       () => Promise.resolve(Fixtures.successResponse)
     )
 
-    const result = await getStructure('connectionUrl');
+    const result = await getDatabaseStructure('connectionUrl');
 
     const mockOnSuccess = jest.fn();
-    StructureResponse.match(
+    DatabaseStructureResponse.match(
       result,
       mockOnSuccess,
       jest.fn()
@@ -79,10 +79,10 @@ describe('getDatabaseStructure', () => {
       () => Promise.resolve(Fixtures.errorResponse)
     );
 
-    const result = await getStructure('connectionUrl');
+    const result = await getDatabaseStructure('connectionUrl');
 
     const mockOnError = jest.fn();
-    StructureResponse.match(
+    DatabaseStructureResponse.match(
       result,
       jest.fn(),
       mockOnError
@@ -97,9 +97,9 @@ describe('getDatabaseStructure', () => {
     ServerConnection.makeRequest = jest.fn(
       () => Promise.resolve(new Response('', { status: 400 }))
     )
-    const result = await getStructure('connectionUrl');
+    const result = await getDatabaseStructure('connectionUrl');
     const mockOnError = jest.fn()
-    StructureResponse.match(
+    DatabaseStructureResponse.match(
       result,
       jest.fn(),
       mockOnError

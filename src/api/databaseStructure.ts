@@ -1,8 +1,6 @@
 import { Server } from './server';
 
-// TODO: rename getStructure to getDatabaseStructure
-
-export async function getStructure(connectionUrl: string): Promise<StructureResponse.Type> {
+export async function getDatabaseStructure(connectionUrl: string): Promise<DatabaseStructureResponse.Type> {
   const request: RequestInit = {
     method: 'POST',
     body: JSON.stringify({ connectionUrl })
@@ -16,7 +14,7 @@ export async function getStructure(connectionUrl: string): Promise<StructureResp
   return data;
 }
 
-export namespace StructureResponse {
+export namespace DatabaseStructureResponse {
   export type Type = ErrorResponse | SuccessResponse;
 
   interface ErrorResponse {
@@ -69,12 +67,12 @@ export namespace StructureResponse {
 }
 
 namespace Private {
-  export function createErrorResponse(responseStatus: number): StructureResponse.Type {
+  export function createErrorResponse(responseStatus: number): DatabaseStructureResponse.Type {
     if (responseStatus === 404) {
-      return StructureResponse.createNotFoundError()
+      return DatabaseStructureResponse.createNotFoundError()
     } else {
       const errorMessage = 'Unexpected response status from server'
-      return StructureResponse.createError(errorMessage)
+      return DatabaseStructureResponse.createError(errorMessage)
     }
   }
 }

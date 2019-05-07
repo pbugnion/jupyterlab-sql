@@ -107,7 +107,7 @@ class Content extends SingletonPanel {
   }
 
   async refresh(): Promise<void> {
-    const response = await Api.getStructure(this._connectionUrl)
+    const response = await Api.getDatabaseStructure(this._connectionUrl)
     this._responseWidget.setResponse(response)
   }
 
@@ -123,9 +123,9 @@ class ResponseWidget extends SingletonPanel {
     super.dispose();
   }
 
-  setResponse(response: Api.StructureResponse.Type) {
+  setResponse(response: Api.DatabaseStructureResponse.Type) {
     this._disposeWidgets();
-    Api.StructureResponse.match(
+    Api.DatabaseStructureResponse.match(
       response,
       tables => {
         const model = new DatabaseSummaryModel(tables);
