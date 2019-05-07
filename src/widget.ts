@@ -110,13 +110,16 @@ export class JupyterLabSqlWidget extends Widget {
 
   private set page(newPage: JupyterLabSqlPage) {
     const oldPage = this._page;
-    this.content.widget = newPage.content;
-    this.toolbar = newPage.toolbar
-    this.pageName = newPage.pageName
-    this._page = newPage
-    this._pageChanged.emit(void 0)
-    if (oldPage !== null) {
-      oldPage.dispose()
+    if (oldPage !== newPage) {
+      this.content.widget = newPage.content;
+      this.toolbar = newPage.toolbar
+      this.pageName = newPage.pageName
+      this._page = newPage
+      this._pageChanged.emit(void 0)
+      if (oldPage !== null) {
+        oldPage.dispose()
+      }
+      this.content.activate();
     }
   }
 
