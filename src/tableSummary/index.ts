@@ -91,8 +91,6 @@ class Content extends BoxPanel {
 
 class ResponseWidget extends SingletonPanel {
 
-  // TODO: Proper error handling
-
   dispose(): void {
     this._disposeTable();
     super.dispose();
@@ -106,8 +104,8 @@ class ResponseWidget extends SingletonPanel {
         this._table = new ResultsTable(keys, rows);
         this.widget = this._table.widget
       },
-      () => {
-        this.widget = new PreWidget('oops')
+      ({ message }) => {
+        this.widget = new PreWidget(message)
       }
     )
   }
