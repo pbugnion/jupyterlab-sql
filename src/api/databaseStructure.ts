@@ -5,8 +5,7 @@ export async function getDatabaseStructure(connectionUrl: string): Promise<Datab
     method: 'POST',
     body: JSON.stringify({ connectionUrl })
   }
-  // TODO: use /database as endpoint
-  const response = await Server.makeRequest('/jupyterlab-sql/structure', request);
+  const response = await Server.makeRequest('/jupyterlab-sql/database', request);
   if (!response.ok) {
     return Private.createErrorResponse(response.status)
   }

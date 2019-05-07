@@ -44,7 +44,7 @@ describe('getDatabaseStructure', () => {
 
     const result = await getDatabaseStructure('connectionUrl');
     expect(result).toEqual(response);
-    const expectedUrl = "https://example.com/jupyterlab-sql/structure";
+    const expectedUrl = "https://example.com/jupyterlab-sql/database";
     const expectedRequest = {
       method: 'POST',
       body: JSON.stringify({ connectionUrl: 'connectionUrl' })

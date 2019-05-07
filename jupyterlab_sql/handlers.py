@@ -129,7 +129,7 @@ def register_handlers(nbapp):
     executor = Executor()
     handlers = [
         (form_route(web_app, "query"), SqlQueryHandler, {"executor": executor}),
-        (form_route(web_app, "structure"), StructureHandler, {"executor": executor}),
+        (form_route(web_app, "database"), StructureHandler, {"executor": executor}),
         (form_route(web_app, "table"), TableStructureHandler, {"executor": executor})
     ]
     web_app.add_handlers(host_pattern, handlers)
