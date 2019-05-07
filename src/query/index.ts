@@ -24,9 +24,6 @@ import { Editor, IEditor } from './editor';
 
 import { QueryToolbar } from './toolbar';
 
-
-// TODO: Loading indicator on toolbar
-
 namespace QueryPage {
   export interface IOptions {
     editorFactory: IEditorFactoryService,
