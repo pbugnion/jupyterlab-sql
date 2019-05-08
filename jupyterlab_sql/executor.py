@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.sql import select, text, table
 from sqlalchemy.pool import StaticPool
 
 from .serializer import make_row_serializable
@@ -36,8 +37,7 @@ class Executor:
         return QueryResult.from_sqlalchemy_result(result)
 
     def get_table_summary(self, connection_url, table_name):
-        # TODO check table_name is a valid SQL table
-        query = "select * from {} limit 10000".format(table_name)
+        query = select([text('*')]).select_from(table(table_name)).limit(10000)
         return self.execute_query(connection_url, query)
 
     def _get_engine(self, connection_url):
