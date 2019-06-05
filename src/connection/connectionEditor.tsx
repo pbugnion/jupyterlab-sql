@@ -4,7 +4,7 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
-import classNames from 'classNames';
+import classNames from 'classnames';
 
 export interface IConnectionEditorModel {
   readonly connectionUrl: string;

@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 
-import classNames from 'classNames'
+import classNames from 'classnames'
 
 import { IDisposable } from '@phosphor/disposable';
 
