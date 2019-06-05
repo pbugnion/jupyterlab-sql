@@ -21,6 +21,7 @@ import { DatabaseSummaryIModel, DatabaseSummaryModel, DatabaseSummaryWidget } fr
 
 // TODO break up into multiple source files?
 // TODO bind double click to navigating to table
+// TODO overflow when tables stretch beyond pane
 
 namespace DatabaseSummaryPage {
   export interface IOptions {
