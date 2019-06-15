@@ -9,7 +9,6 @@ from . import responses
 
 
 # TODO: Use schema to validate request
-# TODO: Centralize definition of error response
 
 class SqlQueryHandler(IPythonHandler):
     def initialize(self, executor):
@@ -29,19 +28,10 @@ class SqlQueryHandler(IPythonHandler):
                 None, self.execute_query, connection_url, query
             )
             if result.has_rows:
-                response = {
-                    "responseType": "success",
-                    "responseData": {
-                        "hasRows": True,
-                        "keys": result.keys,
-                        "rows": result.rows,
-                    },
-                }
+                response = responses.success_with_rows(
+                    result.keys, result.rows)
             else:
-                response = {
-                    "responseType": "success",
-                    "responseData": {"hasRows": False},
-                }
+                response = responses.success_no_rows()
         except Exception as e:
             response = responses.error(str(e))
         self.finish(json.dumps(response))
@@ -63,12 +53,7 @@ class StructureHandler(IPythonHandler):
         try:
             tables = await ioloop.run_in_executor(
                 None, self.get_table_names, connection_url)
-            response = {
-                "responseType": "success",
-                "responseData": {
-                    "tables": tables
-                }
-            }
+            response = responses.success_with_tables(tables)
         except Exception as e:
             response = responses.error(str(e))
         self.finish(json.dumps(response))
@@ -91,14 +76,8 @@ class TableStructureHandler(IPythonHandler):
         try:
             result = await ioloop.run_in_executor(
                 None, self.get_table_summary, connection_url, table_name)
-            response = {
-                "responseType": "success",
-                "responseData": {
-                    "hasRows": True,
-                    "keys": result.keys,
-                    "rows": result.rows
-                }
-            }
+            response = responses.success_with_rows(
+                result.keys, result.rows)
         except Exception as e:
             response = responses.error(str(e))
         self.finish(json.dumps(response))
