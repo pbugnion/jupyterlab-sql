@@ -5,6 +5,7 @@ from tornado.escape import json_decode
 import tornado.ioloop
 
 from .executor import Executor
+from . import responses
 
 
 # TODO: Use schema to validate request
@@ -17,13 +18,6 @@ class SqlQueryHandler(IPythonHandler):
     def execute_query(self, connection_url, query):
         result = self._executor.execute_query(connection_url, query)
         return result
-
-    def error_response(self, message):
-        response = {
-            "responseType": "error",
-            "responseData": {"message": message},
-        }
-        return response
 
     async def post(self):
         data = json_decode(self.request.body)
@@ -49,7 +43,7 @@ class SqlQueryHandler(IPythonHandler):
                     "responseData": {"hasRows": False},
                 }
         except Exception as e:
-            response = self.error_response(str(e))
+            response = responses.error(str(e))
         self.finish(json.dumps(response))
 
 
@@ -57,13 +51,6 @@ class StructureHandler(IPythonHandler):
 
     def initialize(self, executor):
         self._executor = executor
-
-    def error_response(self, message):
-        response = {
-            "responseType": "error",
-            "responseData": {"message": message},
-        }
-        return response
 
     def get_table_names(self, connection_url):
         result = self._executor.get_table_names(connection_url)
@@ -83,7 +70,7 @@ class StructureHandler(IPythonHandler):
                 }
             }
         except Exception as e:
-            response = self.error_response(str(e))
+            response = responses.error(str(e))
         self.finish(json.dumps(response))
 
 
@@ -113,7 +100,7 @@ class TableStructureHandler(IPythonHandler):
                 }
             }
         except Exception as e:
-            response = self.error_response(str(e))
+            response = responses.error(str(e))
         self.finish(json.dumps(response))
 
 
