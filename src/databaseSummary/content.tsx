@@ -14,7 +14,6 @@ export interface DatabaseSummaryIModel extends IDisposable {
   navigateToCustomQuery: ISignal<this, void>;
 }
 
-// TODO: what if the list of table overflows?
 export class DatabaseSummaryModel extends VDomModel implements DatabaseSummaryIModel {
   constructor(tables: Array<string>) {
     super();
@@ -45,6 +44,12 @@ export class DatabaseSummaryModel extends VDomModel implements DatabaseSummaryIM
 }
 
 export class DatabaseSummaryWidget extends VDomRenderer<DatabaseSummaryModel> {
+
+  constructor() {
+    super();
+    this.addClass('p-Sql-DatabaseSummary-Container');
+  }
+
   static withModel(model: DatabaseSummaryModel): DatabaseSummaryWidget {
     const tableList = new DatabaseSummaryWidget();
     tableList.model = model;

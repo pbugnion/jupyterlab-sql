@@ -76,6 +76,10 @@
     background-image: url('./icons/database.svg');
 }
 
+.p-Sql-DatabaseSummary-Container {
+    overflow: auto;
+}
+
 .p-Sql-TableList-container {
     padding-left: 10px;
     padding-right: 10px;
@@ -88,7 +92,6 @@
     margin: 0;
     padding: 0;
     list-style-type: none;
-    overflow: auto;
     background-color: var(--jp-layout-color1);
 }
 
