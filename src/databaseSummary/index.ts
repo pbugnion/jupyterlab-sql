@@ -20,8 +20,6 @@ import { DatabaseSummaryToolbar } from './toolbar';
 import { DatabaseSummaryIModel, DatabaseSummaryModel, DatabaseSummaryWidget } from './content';
 
 // TODO break up into multiple source files?
-// TODO bind double click to navigating to table
-// TODO overflow when tables stretch beyond pane
 
 namespace DatabaseSummaryPage {
   export interface IOptions {
@@ -76,7 +74,7 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
   private async _onRefresh(): Promise<void> {
     this._toolbar.setLoading(true)
     await this._content.refresh()
-    // TODO: what if refresh fails?
+    // TODO: what if refresh fails? -- move to issue
     this._toolbar.setLoading(false)
   }
 

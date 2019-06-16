@@ -8,7 +8,7 @@ import { ISignal, Signal } from '@phosphor/signaling';
 
 import * as DataGridExtensions from '../services/dataGridExtensions'
 
-// TODO: unit tests for Table component
+// TODO: unit tests for Table component -- move to issue
 export namespace Table {
   export interface IOptions {
     contextMenu: Menu;

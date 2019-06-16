@@ -58,7 +58,7 @@ export class TableSummaryPage implements JupyterLabSqlPage {
   private async _onRefresh(): Promise<void> {
     this._toolbar.setLoading(true)
     await this._content.refresh()
-    // TODO: what if refresh fails?
+    // TODO: what if refresh fails? -- move to issue
     this._toolbar.setLoading(false)
   }
 
