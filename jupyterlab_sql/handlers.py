@@ -87,24 +87,34 @@ class TableStructureHandler(IPythonHandler):
 
     def initialize(self, executor):
         self._executor = executor
+        self._validator = schema_loader.load("table-structure.json")
 
     def get_table_summary(self, connection_url, table_name):
         result = self._executor.get_table_summary(connection_url, table_name)
         return result
 
-    async def post(self):
-        data = json_decode(self.request.body)
-        connection_url = data["connectionUrl"]
-        table_name = data["table"]
-        ioloop = tornado.ioloop.IOLoop.current()
+    @contextmanager
+    def decoded_request(self):
         try:
-            result = await ioloop.run_in_executor(
-                None, self.get_table_summary, connection_url, table_name)
-            response = responses.success_with_rows(
-                result.keys, result.rows)
-        except Exception as e:
+            data = request_decoder.decode(self.request.body, self._validator)
+            connection_url = data["connectionUrl"]
+            table_name = data["table"]
+            yield connection_url, table_name
+        except request_decoder.RequestDecodeError as e:
             response = responses.error(str(e))
-        self.finish(json.dumps(response))
+            return self.finish(json.dumps(response))
+
+    async def post(self):
+        with self.decoded_request() as (connection_url, table_name):
+            ioloop = tornado.ioloop.IOLoop.current()
+            try:
+                result = await ioloop.run_in_executor(
+                    None, self.get_table_summary, connection_url, table_name)
+                response = responses.success_with_rows(
+                    result.keys, result.rows)
+            except Exception as e:
+                response = responses.error(str(e))
+            self.finish(json.dumps(response))
 
 
 def form_route(web_app, endpoint):
