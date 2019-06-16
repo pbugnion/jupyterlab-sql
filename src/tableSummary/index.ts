@@ -21,6 +21,8 @@ export namespace TableSummaryPage {
   }
 }
 
+// TODO button to fetch more rows -- move to issues
+
 export class TableSummaryPage implements JupyterLabSqlPage {
   constructor(options: TableSummaryPage.IOptions) {
     this._onRefresh = this._onRefresh.bind(this)
