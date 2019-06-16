@@ -1,3 +1,5 @@
+import { Message } from '@phosphor/messaging';
+
 import { Widget } from '@phosphor/widgets';
 
 import { SingletonPanel } from '../../../src/components';
@@ -50,5 +52,17 @@ describe('SingletonPanel', () => {
     })
     panel.processMessage(resizeMessage);
     expect(resizeSpy).toBeCalledWith(resizeMessage);
+  })
+
+  it('pass on activate requests', () => {
+    const panel = new SingletonPanel();
+    const widget = new Fixtures.TestWidget();
+    const activateSpy = jest.spyOn(widget, 'activate')
+    const nodeFocusSpy = jest.spyOn(widget.node, 'focus')
+    panel.widget = widget;
+    const message = new Message('activate-request')
+    panel.processMessage(message)
+    expect(activateSpy).toBeCalledWith();
+    expect(nodeFocusSpy).toBeCalledWith();
   })
 })

@@ -15,7 +15,6 @@ export class SingletonPanel extends Widget {
     }
   }
 
-  // TODO: test activate request
   onActivateRequest() {
     const widget = this.layout.widget
     if (widget) {
