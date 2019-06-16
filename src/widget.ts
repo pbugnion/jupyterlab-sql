@@ -32,12 +32,10 @@ export class JupyterLabSqlWidget extends Widget {
   constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.IOptions) {
     super()
 
-    // TODO bring out widget definition into separate methods
     // TODO: Disconnect signals on page change
     this.addClass('jp-MainAreaWidget');
     this.id = 'jupyterlab-sql';
-    this.title.label = 'SQL';
-    this.title.closable = true;
+    this._configureTitle()
 
     this.content = new SingletonPanel()
     this.layout = this._createWidgetLayout();
@@ -93,6 +91,11 @@ export class JupyterLabSqlWidget extends Widget {
     layout.addWidget(this.content);
     this.content.node.tabIndex = -1;
     return layout
+  }
+
+  private _configureTitle(): void {
+    this.title.label = 'SQL';
+    this.title.closable = true;
   }
 
   private _setInitialPage(): void {
