@@ -1,5 +1,7 @@
-from tornado.escape import json_decode
 from json.decoder import JSONDecodeError
+
+from tornado.escape import json_decode
+from jsonschema.exceptions import ValidationError
 
 
 class RequestDecodeError(Exception):
@@ -11,4 +13,10 @@ def decode(request_body, validator):
         data = json_decode(request_body)
     except JSONDecodeError:
         raise RequestDecodeError("Request was not valid JSON")
+    try:
+        validator.validate(data)
+    except ValidationError as e:
+        raise RequestDecodeError(
+            f"Request contains an invalid payload: {e.message}"
+        )
     return data
