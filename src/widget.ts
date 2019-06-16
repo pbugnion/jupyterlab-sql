@@ -38,12 +38,9 @@ export class JupyterLabSqlWidget extends Widget {
     this.id = 'jupyterlab-sql';
     this.title.label = 'SQL';
     this.title.closable = true;
-    const layout = new BoxLayout({ spacing: 0, direction: 'top-to-bottom' });
+
     this.content = new SingletonPanel()
-    BoxLayout.setStretch(this.content, 1)
-    layout.addWidget(this.content);
-    this.content.node.tabIndex = -1;
-    this.layout = layout
+    this.layout = this._createWidgetLayout();
 
     this.name = options.name;
     this.pageName = options.pageName;
@@ -88,6 +85,14 @@ export class JupyterLabSqlWidget extends Widget {
 
   onCloseRequest(): void {
     this.dispose();
+  }
+
+  private _createWidgetLayout(): BoxLayout {
+    const layout = new BoxLayout({ spacing: 0, direction: 'top-to-bottom' });
+    BoxLayout.setStretch(this.content, 1)
+    layout.addWidget(this.content);
+    this.content.node.tabIndex = -1;
+    return layout
   }
 
   private _setInitialPage(): void {
