@@ -27,15 +27,15 @@ class SqlQueryHandler(IPythonHandler):
     def decoded_request(self):
         try:
             data = request_decoder.decode(self.request.body, self._validator)
-            yield data
+            query = data["query"]
+            connection_url = data["connectionUrl"]
+            yield query, connection_url
         except request_decoder.RequestDecodeError as e:
             response = responses.error(str(e))
             return self.finish(json.dumps(response))
 
     async def post(self):
-        with self.decoded_request() as data:
-            query = data["query"]
-            connection_url = data["connectionUrl"]
+        with self.decoded_request() as (query, connection_url):
             ioloop = tornado.ioloop.IOLoop.current()
             try:
                 result = await ioloop.run_in_executor(
@@ -55,22 +55,32 @@ class StructureHandler(IPythonHandler):
 
     def initialize(self, executor):
         self._executor = executor
+        self._validator = schema_loader.load("database-structure.json")
 
     def get_table_names(self, connection_url):
         result = self._executor.get_table_names(connection_url)
         return result
 
-    async def post(self):
-        data = json_decode(self.request.body)
-        connection_url = data["connectionUrl"]
-        ioloop = tornado.ioloop.IOLoop.current()
+    @contextmanager
+    def decoded_request(self):
         try:
-            tables = await ioloop.run_in_executor(
-                None, self.get_table_names, connection_url)
-            response = responses.success_with_tables(tables)
-        except Exception as e:
+            data = request_decoder.decode(self.request.body, self._validator)
+            connection_url = data["connectionUrl"]
+            yield connection_url
+        except request_decoder.RequestDecodeError as e:
             response = responses.error(str(e))
-        self.finish(json.dumps(response))
+            return self.finish(json.dumps(response))
+
+    async def post(self):
+        with self.decoded_request() as connection_url:
+            ioloop = tornado.ioloop.IOLoop.current()
+            try:
+                tables = await ioloop.run_in_executor(
+                    None, self.get_table_names, connection_url)
+                response = responses.success_with_tables(tables)
+            except Exception as e:
+                response = responses.error(str(e))
+            return self.finish(json.dumps(response))
 
 
 class TableStructureHandler(IPythonHandler):
