@@ -4,11 +4,6 @@ import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
 import { Message } from '@phosphor/messaging';
 
 export class SingletonPanel extends Widget {
-  constructor() {
-    super();
-    this.layout = new SingletonLayout();
-  }
-
   onResize(_: Message) {
     if (this._item) {
       this._fitCurrentWidget()
@@ -39,6 +34,6 @@ export class SingletonPanel extends Widget {
     this._item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
   }
 
-  readonly layout: SingletonLayout;
+  readonly layout: SingletonLayout = new SingletonLayout();
   private _item: LayoutItem;
 }
