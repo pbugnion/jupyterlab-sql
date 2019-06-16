@@ -1,11 +1,15 @@
 import json
+from contextlib import contextmanager
+
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado.escape import json_decode
 import tornado.ioloop
 
-from .executor import Executor
 from . import responses
+from . import schema_loader
+from . import request_decoder
+from .executor import Executor
 
 
 # TODO: Use schema to validate request
@@ -13,28 +17,38 @@ from . import responses
 class SqlQueryHandler(IPythonHandler):
     def initialize(self, executor):
         self._executor = executor
+        self._validator = schema_loader.load("sql-query.json")
 
     def execute_query(self, connection_url, query):
         result = self._executor.execute_query(connection_url, query)
         return result
 
-    async def post(self):
-        data = json_decode(self.request.body)
-        query = data["query"]
-        connection_url = data["connectionUrl"]
-        ioloop = tornado.ioloop.IOLoop.current()
+    @contextmanager
+    def decoded_request(self):
         try:
-            result = await ioloop.run_in_executor(
-                None, self.execute_query, connection_url, query
-            )
-            if result.has_rows:
-                response = responses.success_with_rows(
-                    result.keys, result.rows)
-            else:
-                response = responses.success_no_rows()
-        except Exception as e:
+            data = request_decoder.decode(self.request.body, self._validator)
+            yield data
+        except request_decoder.RequestDecodeError as e:
             response = responses.error(str(e))
-        self.finish(json.dumps(response))
+            return self.finish(json.dumps(response))
+
+    async def post(self):
+        with self.decoded_request() as data:
+            query = data["query"]
+            connection_url = data["connectionUrl"]
+            ioloop = tornado.ioloop.IOLoop.current()
+            try:
+                result = await ioloop.run_in_executor(
+                    None, self.execute_query, connection_url, query
+                )
+                if result.has_rows:
+                    response = responses.success_with_rows(
+                        result.keys, result.rows)
+                else:
+                    response = responses.success_no_rows()
+            except Exception as e:
+                response = responses.error(str(e))
+            self.finish(json.dumps(response))
 
 
 class StructureHandler(IPythonHandler):
