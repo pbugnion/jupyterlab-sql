@@ -3,7 +3,6 @@ from contextlib import contextmanager
 
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
-from tornado.escape import json_decode
 import tornado.ioloop
 
 from . import responses
@@ -11,8 +10,6 @@ from . import schema_loader
 from . import request_decoder
 from .executor import Executor
 
-
-# TODO: Use schema to validate request
 
 class SqlQueryHandler(IPythonHandler):
     def initialize(self, executor):
