@@ -26,6 +26,15 @@ describe('SingletonPanel', () => {
     expect(widgetNode.innerHTML).toEqual('some text');
   })
 
+  it('set the layout to null and ignore new requests to set widget when disposed', () => {
+    const panel = new SingletonPanel();
+    panel.dispose()
+    expect(panel.layout).toBeNull();
+
+    // the following fails without the guard on disposal
+    panel.widget = new Fixtures.TestWidget()
+  })
+
   it('resize widgets based on its own size', () => {
     const panel = new SingletonPanel();
     // Set the node as having a fixed size (since jsdom does no layout)

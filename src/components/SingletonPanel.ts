@@ -25,15 +25,17 @@ export class SingletonPanel extends Widget {
   }
 
   set widget(widget: Widget) {
-    this.layout.widget = widget;
-    this._item = new LayoutItem(this.layout.widget);
-    this._fitCurrentWidget();
+    if (!this.isDisposed) {
+      this.layout.widget = widget;
+      this._item = new LayoutItem(this.layout.widget);
+      this._fitCurrentWidget();
+    }
   }
 
   private _fitCurrentWidget() {
     this._item.update(0, 0, this.node.offsetWidth, this.node.offsetHeight);
   }
 
-  readonly layout: SingletonLayout = new SingletonLayout();
+  readonly layout: SingletonLayout | null = new SingletonLayout();
   private _item: LayoutItem;
 }
