@@ -13,7 +13,7 @@ export class QueryToolbar extends Toolbar {
       new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
+    this.addItem('url', new ToolbarItems.ConnectionUrlItem(connectionUrl))
     this.addItem('loading', this._loadingIcon)
   }
 

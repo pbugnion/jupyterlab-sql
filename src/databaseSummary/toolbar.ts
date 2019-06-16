@@ -19,7 +19,7 @@ export class DatabaseSummaryToolbar extends Toolbar {
       new ToolbarItems.RefreshButton({ onClick: this._onRefreshButtonClicked })
     )
     this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', new ToolbarItems.TextItem(connectionUrl))
+    this.addItem('url', new ToolbarItems.ConnectionUrlItem(connectionUrl))
     this.addItem('loading', this._loadingIcon)
   }
 

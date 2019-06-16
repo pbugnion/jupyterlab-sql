@@ -2,12 +2,22 @@ import { Widget } from '@phosphor/widgets';
 
 import { ToolbarButton } from '@jupyterlab/apputils';
 
+import { ConnectionUrl } from '../services';
+
 export namespace ToolbarItems {
   export class TextItem extends Widget {
     constructor(value: string) {
       super();
       this.addClass('p-Sql-Toolbar-text')
       this.node.innerText = value;
+    }
+  }
+
+  export class ConnectionUrlItem extends Widget {
+    constructor(url: string) {
+      super();
+      this.addClass('p-Sql-Toolbar-text')
+      this.node.innerText = ConnectionUrl.sanitize(url);
     }
   }
 
