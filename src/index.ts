@@ -6,10 +6,7 @@ import {
   ILayoutRestorer
 } from '@jupyterlab/application';
 
-import {
-  ICommandPalette,
-  InstanceTracker,
-} from '@jupyterlab/apputils';
+import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
 
 import { IEditorServices } from '@jupyterlab/codeeditor';
 
@@ -43,15 +40,23 @@ function activate(
       initialSqlStatement: widget.sqlStatement
     }),
     name: widget => widget.name
-  })
+  });
 
   app.commands.addCommand(command, {
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
-    execute: ({ initialWidgetName, initialPageName, initialConnectionUrl, initialTableName, initialSqlStatement }) => {
+    execute: ({
+      initialWidgetName,
+      initialPageName,
+      initialConnectionUrl,
+      initialTableName,
+      initialSqlStatement
+    }) => {
       const name = <string>(initialWidgetName || uuid.v4());
       const pageName = <PageName>(initialPageName || PageName.Connection);
-      const connectionUrl = <string>(initialConnectionUrl || 'postgres://localhost:5432/postgres');
+      const connectionUrl = <string>(
+        (initialConnectionUrl || 'postgres://localhost:5432/postgres')
+      );
       const tableName = <string>(initialTableName || '');
       const sqlStatement = <string>(initialSqlStatement || '');
       const widget = new JupyterLabSqlWidget(editorServices.factoryService, {

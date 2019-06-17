@@ -1,15 +1,20 @@
 import { Server } from './server';
 
-export async function getDatabaseStructure(connectionUrl: string): Promise<DatabaseStructureResponse.Type> {
+export async function getDatabaseStructure(
+  connectionUrl: string
+): Promise<DatabaseStructureResponse.Type> {
   const request: RequestInit = {
     method: 'POST',
     body: JSON.stringify({ connectionUrl })
-  }
-  const response = await Server.makeRequest('/jupyterlab-sql/database', request);
+  };
+  const response = await Server.makeRequest(
+    '/jupyterlab-sql/database',
+    request
+  );
   if (!response.ok) {
-    return Private.createErrorResponse(response.status)
+    return Private.createErrorResponse(response.status);
   }
-  const data = await response.json()
+  const data = await response.json();
   return data;
 }
 
@@ -28,11 +33,11 @@ export namespace DatabaseStructureResponse {
 
   type SuccessResponseData = {
     tables: Array<string>;
-  }
+  };
 
   type ErrorResponseData = {
     message: string;
-  }
+  };
 
   export function createError(message: string): ErrorResponse {
     return {
@@ -44,11 +49,10 @@ export namespace DatabaseStructureResponse {
   }
 
   export function createNotFoundError(): ErrorResponse {
-    const errorMessage = (
+    const errorMessage =
       'Failed to reach server endpoints. ' +
-      'Is the server extension installed correctly?'
-    );
-    return createError(errorMessage)
+      'Is the server extension installed correctly?';
+    return createError(errorMessage);
   }
 
   export function match<U>(
@@ -66,12 +70,14 @@ export namespace DatabaseStructureResponse {
 }
 
 namespace Private {
-  export function createErrorResponse(responseStatus: number): DatabaseStructureResponse.Type {
+  export function createErrorResponse(
+    responseStatus: number
+  ): DatabaseStructureResponse.Type {
     if (responseStatus === 404) {
-      return DatabaseStructureResponse.createNotFoundError()
+      return DatabaseStructureResponse.createNotFoundError();
     } else {
-      const errorMessage = 'Unexpected response status from server'
-      return DatabaseStructureResponse.createError(errorMessage)
+      const errorMessage = 'Unexpected response status from server';
+      return DatabaseStructureResponse.createError(errorMessage);
     }
   }
 }

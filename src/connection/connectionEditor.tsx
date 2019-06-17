@@ -12,14 +12,15 @@ export interface IConnectionEditorModel {
   readonly connectionUrlChanged: ISignal<this, string>;
 }
 
-export class ConnectionEditorModel extends VDomModel implements IConnectionEditorModel {
+export class ConnectionEditorModel extends VDomModel
+  implements IConnectionEditorModel {
   constructor(initialConnectionUrl: string) {
     super();
     this._connectionUrl = initialConnectionUrl;
   }
 
   tryConnect(connectionUrl: string): void {
-    this._connect.emit(connectionUrl)
+    this._connect.emit(connectionUrl);
   }
 
   get connectionUrl(): string {
@@ -45,7 +46,6 @@ export class ConnectionEditorModel extends VDomModel implements IConnectionEdito
 }
 
 export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
-
   static withModel(model: ConnectionEditorModel): ConnectionEditor {
     const editor = new ConnectionEditor();
     editor.model = model;
@@ -60,13 +60,17 @@ export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
     if (!this.model) {
       return null;
     } else {
-      const connectionUrl = this.model.connectionUrl
+      const connectionUrl = this.model.connectionUrl;
       return (
         <div className="p-Sql-ConnectionInformation-container">
           <ConnectionInformationEdit
             initialConnectionUrl={connectionUrl}
-            onConnectionUrlChanged={newConnectionUrl => this.model.connectionUrl = newConnectionUrl}
-            onFinishEdit={currentConnectionUrl => this.model.tryConnect(currentConnectionUrl)}
+            onConnectionUrlChanged={newConnectionUrl =>
+              (this.model.connectionUrl = newConnectionUrl)
+            }
+            onFinishEdit={currentConnectionUrl =>
+              this.model.tryConnect(currentConnectionUrl)
+            }
           />
           <ConnectionInformationHelper />
         </div>
@@ -75,11 +79,10 @@ export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
   }
 }
 
-
 class ConnectionInformationEdit extends React.Component<
   ConnectionInformationEdit.Props,
   ConnectionInformationEdit.State
-  > {
+> {
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
@@ -131,7 +134,7 @@ class ConnectionInformationEdit extends React.Component<
   onInputBlur() {
     this.setState({
       focused: false
-    })
+    });
   }
 
   componentDidMount() {
@@ -185,14 +188,28 @@ class ConnectionInformationHelper extends React.Component<{}> {
           Press <code>Enter</code> to connect to the database.
         </p>
         <p>
-          The URL must be a database URL. Follow the <a href="https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls" target="_blank">SQLAlchemy guide</a> on URLs.
-          For instance:
+          The URL must be a database URL. Follow the{' '}
+          <a
+            href="https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls"
+            target="_blank"
+          >
+            SQLAlchemy guide
+          </a>{' '}
+          on URLs. For instance:
         </p>
         <ul>
-          <li><pre>postgres://localhost:5432/postgres</pre></li>
-          <li><pre>postgres://username:password@localhost:5432/postgres</pre></li>
-          <li><pre>sqlite://</pre></li>
-          <li><pre>sqlite:///myfile.db</pre></li>
+          <li>
+            <pre>postgres://localhost:5432/postgres</pre>
+          </li>
+          <li>
+            <pre>postgres://username:password@localhost:5432/postgres</pre>
+          </li>
+          <li>
+            <pre>sqlite://</pre>
+          </li>
+          <li>
+            <pre>sqlite:///myfile.db</pre>
+          </li>
         </ul>
       </details>
     );

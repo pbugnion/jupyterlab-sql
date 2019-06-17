@@ -1,4 +1,3 @@
-
 import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
@@ -6,12 +5,12 @@ import { Message } from '@phosphor/messaging';
 export class SingletonPanel extends Widget {
   onResize(_: Message) {
     if (this._item) {
-      this._fitCurrentWidget()
+      this._fitCurrentWidget();
     }
   }
 
   onActivateRequest() {
-    const widget = this.layout.widget
+    const widget = this.layout.widget;
     if (widget) {
       // Focus the content node if we aren't already focused on it or a
       // descendent.

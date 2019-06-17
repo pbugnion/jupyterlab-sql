@@ -20,16 +20,19 @@ namespace ConnectionPage {
 
 export class ConnectionPage implements JupyterLabSqlPage {
   constructor(options: ConnectionPage.IOptions) {
-    const { initialConnectionString } = options
-    this._content = new Content(initialConnectionString)
-    this._connectDatabase = proxyFor(this._content.connectDatabase, this)
-    this._connectionUrlChanged = proxyFor(this._content.connectionUrlChanged, this)
+    const { initialConnectionString } = options;
+    this._content = new Content(initialConnectionString);
+    this._connectDatabase = proxyFor(this._content.connectDatabase, this);
+    this._connectionUrlChanged = proxyFor(
+      this._content.connectionUrlChanged,
+      this
+    );
     this._toolbar = new Toolbar();
-    this._disposables = DisposableSet.from([this._content, this._toolbar])
+    this._disposables = DisposableSet.from([this._content, this._toolbar]);
   }
 
   get content(): Widget {
-    return this._content
+    return this._content;
   }
 
   get connectDatabase(): ISignal<this, string> {
@@ -64,16 +67,21 @@ class Content extends BoxPanel {
   constructor(initialConnectionString: string) {
     super();
 
-    this.addClass('p-Sql-MainContainer')
+    this.addClass('p-Sql-MainContainer');
 
-    const connectionEditorModel = new ConnectionEditorModel(initialConnectionString);
+    const connectionEditorModel = new ConnectionEditorModel(
+      initialConnectionString
+    );
     this._connectionWidget = ConnectionEditor.withModel(connectionEditorModel);
 
-    this.addWidget(this._connectionWidget)
-    BoxPanel.setStretch(this._connectionWidget, 1)
+    this.addWidget(this._connectionWidget);
+    BoxPanel.setStretch(this._connectionWidget, 1);
 
     this._connectDatabase = proxyFor(connectionEditorModel.connect, this);
-    this._connectionUrlChanged = proxyFor(connectionEditorModel.connectionUrlChanged, this);
+    this._connectionUrlChanged = proxyFor(
+      connectionEditorModel.connectionUrlChanged,
+      this
+    );
   }
 
   get connectDatabase(): ISignal<this, string> {

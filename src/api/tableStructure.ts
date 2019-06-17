@@ -1,18 +1,20 @@
-
 import { Server } from './server';
 
-export async function getTableStructure(connectionUrl: string, tableName: string): Promise<TableStructureResponse.Type> {
+export async function getTableStructure(
+  connectionUrl: string,
+  tableName: string
+): Promise<TableStructureResponse.Type> {
   const payload = {
     connectionUrl,
     table: tableName
-  }
+  };
   const request: RequestInit = {
     method: 'POST',
     body: JSON.stringify(payload)
   };
   const response = await Server.makeRequest('/jupyterlab-sql/table', request);
   if (!response.ok) {
-    return Private.createErrorResponse(response.status)
+    return Private.createErrorResponse(response.status);
   }
   const data = await response.json();
   return data;
@@ -34,7 +36,7 @@ export namespace TableStructureResponse {
   type SuccessResponseData = {
     keys: Array<string>;
     rows: Array<Array<any>>;
-  }
+  };
 
   interface ErrorResponseData {
     message: string;
@@ -50,13 +52,11 @@ export namespace TableStructureResponse {
   }
 
   export function createNotFoundError(): ErrorResponse {
-    const errorMessage = (
+    const errorMessage =
       'Failed to reach server endpoints. ' +
-      'Is the server extension installed correctly?'
-    );
-    return createError(errorMessage)
+      'Is the server extension installed correctly?';
+    return createError(errorMessage);
   }
-
 
   export function match<U>(
     response: Type,
@@ -64,21 +64,23 @@ export namespace TableStructureResponse {
     onError: (_: ErrorResponseData) => U
   ): U {
     if (response.responseType === 'error') {
-      return onError(response.responseData)
+      return onError(response.responseData);
     } else if (response.responseType === 'success') {
       const { keys, rows } = response.responseData;
-      return onSuccess(keys, rows)
+      return onSuccess(keys, rows);
     }
   }
 }
 
 namespace Private {
-  export function createErrorResponse(responseStatus: number): TableStructureResponse.Type {
+  export function createErrorResponse(
+    responseStatus: number
+  ): TableStructureResponse.Type {
     if (responseStatus === 404) {
-      return TableStructureResponse.createNotFoundError()
+      return TableStructureResponse.createNotFoundError();
     } else {
-      const errorMessage = 'Unexpected response status from server'
-      return TableStructureResponse.createError(errorMessage)
+      const errorMessage = 'Unexpected response status from server';
+      return TableStructureResponse.createError(errorMessage);
     }
   }
 }

@@ -6,7 +6,7 @@ export function proxyFor<T1, T2, U>(
 ): Signal<T2, U> {
   const destinationSignal = new Signal<T2, U>(thisArg);
   source.connect((_, arg: U) => {
-    destinationSignal.emit(arg)
-  })
+    destinationSignal.emit(arg);
+  });
   return destinationSignal;
 }

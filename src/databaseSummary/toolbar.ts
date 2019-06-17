@@ -1,4 +1,3 @@
-
 import { Toolbar } from '@jupyterlab/apputils';
 
 import { Signal, ISignal } from '@phosphor/signaling';
@@ -7,20 +6,20 @@ import { ToolbarItems } from '../components';
 
 export class DatabaseSummaryToolbar extends Toolbar {
   constructor(connectionUrl: string) {
-    super()
-    this._onBackButtonClicked = this._onBackButtonClicked.bind(this)
-    this._onRefreshButtonClicked = this._onRefreshButtonClicked.bind(this)
+    super();
+    this._onBackButtonClicked = this._onBackButtonClicked.bind(this);
+    this._onRefreshButtonClicked = this._onRefreshButtonClicked.bind(this);
     this.addItem(
       'back',
       new ToolbarItems.BackButton({ onClick: this._onBackButtonClicked })
-    )
+    );
     this.addItem(
       'refresh',
       new ToolbarItems.RefreshButton({ onClick: this._onRefreshButtonClicked })
-    )
-    this.addItem('spacer', Toolbar.createSpacerItem())
-    this.addItem('url', new ToolbarItems.ConnectionUrlItem(connectionUrl))
-    this.addItem('loading', this._loadingIcon)
+    );
+    this.addItem('spacer', Toolbar.createSpacerItem());
+    this.addItem('url', new ToolbarItems.ConnectionUrlItem(connectionUrl));
+    this.addItem('loading', this._loadingIcon);
   }
 
   get backButtonClicked(): ISignal<this, void> {

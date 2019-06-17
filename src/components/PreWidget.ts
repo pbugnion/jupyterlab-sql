@@ -1,4 +1,3 @@
-
 import { Widget } from '@phosphor/widgets';
 
 export class PreWidget extends Widget {

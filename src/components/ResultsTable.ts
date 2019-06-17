@@ -15,7 +15,7 @@ namespace CommandIds {
 export class ResultsTable implements IDisposable {
   constructor(keys: Array<string>, data: Array<Array<any>>) {
     const contextMenu = this._createContextMenu();
-    this._table = Table.fromKeysRows(keys, data, { contextMenu })
+    this._table = Table.fromKeysRows(keys, data, { contextMenu });
   }
 
   get widget(): Widget {
@@ -46,10 +46,10 @@ export class ResultsTable implements IDisposable {
   private _copySelectionToClipboard(): void {
     const selectionValue = this._table.selectionValue;
     if (selectionValue !== null) {
-      Clipboard.copyToSystem(selectionValue)
+      Clipboard.copyToSystem(selectionValue);
     }
   }
 
-  private readonly _table: Table
-  private _isDisposed: boolean = false
+  private readonly _table: Table;
+  private _isDisposed: boolean = false;
 }

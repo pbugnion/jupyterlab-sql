@@ -12,17 +12,17 @@ export function createTracker(): InstanceTracker<JupyterLabSqlWidget> {
   tracker.widgetAdded.connect((_, widget) => {
     widget.pageChanged.connect(() => {
       tracker.save(widget);
-    })
+    });
     widget.connectionUrlChanged.connect(() => {
       tracker.save(widget);
-    })
+    });
     widget.tableNameChanged.connect(() => {
       tracker.save(widget);
-    })
+    });
     widget.sqlStatementChanged.connect(() => {
       tracker.save(widget);
-    })
-  })
+    });
+  });
 
   return tracker;
 }

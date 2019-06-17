@@ -26,7 +26,7 @@ import { QueryToolbar } from './toolbar';
 
 namespace QueryPage {
   export interface IOptions {
-    editorFactory: IEditorFactoryService,
+    editorFactory: IEditorFactoryService;
     connectionUrl: string;
     initialSqlStatement: string;
   }
@@ -34,23 +34,26 @@ namespace QueryPage {
 
 export class QueryPage implements JupyterLabSqlPage {
   constructor(options: QueryPage.IOptions) {
-    this._onExecutionStarted = this._onExecutionStarted.bind(this)
-    this._onExecutionFinished = this._onExecutionFinished.bind(this)
-    this._content = new Content(options)
-    this._toolbar = new QueryToolbar(options.connectionUrl)
-    this._backButtonClicked = proxyFor(this._toolbar.backButtonClicked, this)
-    this._sqlStatementChanged = proxyFor(this._content.sqlStatementChanged, this)
-    this._content.executionStarted.connect(this._onExecutionStarted)
-    this._content.executionFinished.connect(this._onExecutionFinished)
-    this._disposables = DisposableSet.from([this._content, this._toolbar])
+    this._onExecutionStarted = this._onExecutionStarted.bind(this);
+    this._onExecutionFinished = this._onExecutionFinished.bind(this);
+    this._content = new Content(options);
+    this._toolbar = new QueryToolbar(options.connectionUrl);
+    this._backButtonClicked = proxyFor(this._toolbar.backButtonClicked, this);
+    this._sqlStatementChanged = proxyFor(
+      this._content.sqlStatementChanged,
+      this
+    );
+    this._content.executionStarted.connect(this._onExecutionStarted);
+    this._content.executionFinished.connect(this._onExecutionFinished);
+    this._disposables = DisposableSet.from([this._content, this._toolbar]);
   }
 
   get toolbar(): Toolbar {
-    return this._toolbar
+    return this._toolbar;
   }
 
   get content(): Widget {
-    return this._content
+    return this._content;
   }
 
   get backButtonClicked(): ISignal<this, void> {
@@ -70,15 +73,15 @@ export class QueryPage implements JupyterLabSqlPage {
   }
 
   private _onExecutionStarted(): void {
-    this._toolbar.setLoading(true)
+    this._toolbar.setLoading(true);
   }
 
   private _onExecutionFinished(): void {
-    this._toolbar.setLoading(false)
+    this._toolbar.setLoading(false);
   }
 
-  readonly pageName = PageName.CustomQuery
-  private readonly _content: Content
+  readonly pageName = PageName.CustomQuery;
+  private readonly _content: Content;
   private readonly _toolbar: QueryToolbar;
   private readonly _disposables: DisposableSet;
   private readonly _backButtonClicked: Signal<this, void>;
@@ -89,9 +92,12 @@ class Content extends BoxPanel {
   constructor(options: QueryPage.IOptions) {
     super();
 
-    this.addClass('p-Sql-MainContainer')
+    this.addClass('p-Sql-MainContainer');
 
-    this.editor = new Editor(options.initialSqlStatement, options.editorFactory);
+    this.editor = new Editor(
+      options.initialSqlStatement,
+      options.editorFactory
+    );
     this.response = new Response();
 
     this.editor.execute.connect((_, value: string) => {
@@ -137,7 +143,6 @@ class Content extends BoxPanel {
       this._executionFinished.emit(void 0);
     }
   }
-
 
   readonly editor: IEditor;
   readonly response: IResponse;

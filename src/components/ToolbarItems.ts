@@ -8,7 +8,7 @@ export namespace ToolbarItems {
   export class TextItem extends Widget {
     constructor(value: string) {
       super();
-      this.addClass('p-Sql-Toolbar-text')
+      this.addClass('p-Sql-Toolbar-text');
       this.node.innerText = value;
     }
   }
@@ -16,7 +16,7 @@ export namespace ToolbarItems {
   export class ConnectionUrlItem extends Widget {
     constructor(url: string) {
       super();
-      this.addClass('p-Sql-Toolbar-text')
+      this.addClass('p-Sql-Toolbar-text');
       this.node.innerText = ConnectionUrl.sanitize(url);
     }
   }
@@ -56,17 +56,17 @@ export namespace ToolbarItems {
       super();
       ['jp-Toolbar-kernelStatus', 'jp-Icon', 'jp-Icon-16'].forEach(className =>
         this.addClass(className)
-      )
+      );
       this.setLoading(false);
     }
 
     setLoading(isLoading: boolean) {
       if (isLoading) {
-        this.removeClass('jp-CircleIcon')
-        this.addClass('jp-FilledCircleIcon')
+        this.removeClass('jp-CircleIcon');
+        this.addClass('jp-FilledCircleIcon');
       } else {
-        this.removeClass('jp-FilledCircleIcon')
-        this.addClass('jp-CircleIcon')
+        this.removeClass('jp-FilledCircleIcon');
+        this.addClass('jp-CircleIcon');
       }
     }
   }

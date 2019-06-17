@@ -10,10 +10,10 @@ export async function getForQuery(
   };
   const response = await Server.makeRequest('/jupyterlab-sql/query', request);
   if (!response.ok) {
-    return Private.createErrorResponse(response.status)
+    return Private.createErrorResponse(response.status);
   }
   const data = await response.json();
-  const validatedData = Private.validateBody(data)
+  const validatedData = Private.validateBody(data);
   return validatedData;
 }
 
@@ -36,13 +36,13 @@ export namespace ResponseModel {
 
   type SuccessResponseData =
     | {
-      hasRows: false;
-    }
+        hasRows: false;
+      }
     | {
-      hasRows: true;
-      keys: Array<string>;
-      rows: Array<Array<any>>;
-    };
+        hasRows: true;
+        keys: Array<string>;
+        rows: Array<Array<any>>;
+      };
 
   export function createError(message: string): ErrorResponse {
     return {
@@ -54,11 +54,10 @@ export namespace ResponseModel {
   }
 
   export function createNotFoundError(): ErrorResponse {
-    const errorMessage = (
+    const errorMessage =
       'Failed to reach server endpoints. ' +
-      'Is the server extension installed correctly?'
-    );
-    return createError(errorMessage)
+      'Is the server extension installed correctly?';
+    return createError(errorMessage);
   }
 
   export function match<U>(
@@ -82,16 +81,18 @@ export namespace ResponseModel {
 }
 
 namespace Private {
-  export function createErrorResponse(responseStatus: number): ResponseModel.Type {
+  export function createErrorResponse(
+    responseStatus: number
+  ): ResponseModel.Type {
     if (responseStatus === 404) {
-      return ResponseModel.createNotFoundError()
+      return ResponseModel.createNotFoundError();
     } else {
-      const errorMessage = 'Unexpected response status from server'
-      return ResponseModel.createError(errorMessage)
+      const errorMessage = 'Unexpected response status from server';
+      return ResponseModel.createError(errorMessage);
     }
   }
 
   export function validateBody(responseBody: any): ResponseModel.Type {
-    return responseBody
+    return responseBody;
   }
 }

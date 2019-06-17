@@ -29,14 +29,17 @@ namespace JupyterLabSqlWidget {
 }
 
 export class JupyterLabSqlWidget extends Widget {
-  constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.IOptions) {
-    super()
+  constructor(
+    editorFactory: IEditorFactoryService,
+    options: JupyterLabSqlWidget.IOptions
+  ) {
+    super();
 
     this.addClass('jp-MainAreaWidget');
     this.id = 'jupyterlab-sql';
-    this._configureTitle()
+    this._configureTitle();
 
-    this.content = new SingletonPanel()
+    this.content = new SingletonPanel();
     this.layout = this._createWidgetLayout();
 
     this.name = options.name;
@@ -45,7 +48,7 @@ export class JupyterLabSqlWidget extends Widget {
     this._tableName = options.tableName;
     this._sqlStatement = options.sqlStatement;
     this.editorFactory = editorFactory;
-    this._setInitialPage()
+    this._setInitialPage();
   }
 
   get connectionUrl(): string {
@@ -57,7 +60,7 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   get sqlStatement(): string {
-    return this._sqlStatement
+    return this._sqlStatement;
   }
 
   get pageChanged(): ISignal<this, void> {
@@ -77,7 +80,7 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   onActivateRequest(): void {
-    this._focusContent()
+    this._focusContent();
   }
 
   onCloseRequest(): void {
@@ -86,10 +89,10 @@ export class JupyterLabSqlWidget extends Widget {
 
   private _createWidgetLayout(): BoxLayout {
     const layout = new BoxLayout({ spacing: 0, direction: 'top-to-bottom' });
-    BoxLayout.setStretch(this.content, 1)
+    BoxLayout.setStretch(this.content, 1);
     layout.addWidget(this.content);
     this.content.node.tabIndex = -1;
-    return layout
+    return layout;
   }
 
   private _configureTitle(): void {
@@ -99,32 +102,32 @@ export class JupyterLabSqlWidget extends Widget {
 
   private _setInitialPage(): void {
     if (this.pageName === PageName.Connection) {
-      this._loadConnectionPage()
+      this._loadConnectionPage();
     } else if (this.pageName === PageName.DatabaseSummary) {
-      this._loadSummaryPage()
+      this._loadSummaryPage();
     } else if (this.pageName === PageName.TableSummary) {
-      this._loadTableSummaryPage()
+      this._loadTableSummaryPage();
     } else {
-      this._loadQueryPage()
+      this._loadQueryPage();
     }
   }
 
   private set toolbar(newToolbar: Toolbar) {
     this._toolbar = newToolbar;
     BoxLayout.setStretch(this._toolbar, 0);
-    (<BoxLayout>this.layout).insertWidget(0, this._toolbar)
+    (<BoxLayout>this.layout).insertWidget(0, this._toolbar);
   }
 
   private set page(newPage: JupyterLabSqlPage) {
     const oldPage = this._page;
     if (oldPage !== newPage) {
       this.content.widget = newPage.content;
-      this.toolbar = newPage.toolbar
-      this.pageName = newPage.pageName
-      this._page = newPage
-      this._pageChanged.emit(void 0)
+      this.toolbar = newPage.toolbar;
+      this.pageName = newPage.pageName;
+      this._page = newPage;
+      this._pageChanged.emit(void 0);
       if (oldPage !== null) {
-        oldPage.dispose()
+        oldPage.dispose();
       }
       this.content.activate();
     }
@@ -152,33 +155,33 @@ export class JupyterLabSqlWidget extends Widget {
   }
 
   private _loadConnectionPage(): void {
-    const initialConnectionString = this._connectionUrl
+    const initialConnectionString = this._connectionUrl;
     const page = new ConnectionPage({
       initialConnectionString
     });
     page.connectDatabase.connect((_, connectionUrl) => {
-      this._setConnectionUrl(connectionUrl)
-      this._loadSummaryPage()
-    })
+      this._setConnectionUrl(connectionUrl);
+      this._loadSummaryPage();
+    });
     page.connectionUrlChanged.connect((_, connectionUrl) => {
-      this._setConnectionUrl(connectionUrl)
-    })
-    this.page = page
+      this._setConnectionUrl(connectionUrl);
+    });
+    this.page = page;
   }
 
   private _loadSummaryPage() {
     const connectionUrl: string = this._connectionUrl;
     const page = new DatabaseSummaryPage({ connectionUrl });
     page.customQueryClicked.connect(() => {
-      this._loadQueryPage()
-    })
+      this._loadQueryPage();
+    });
     page.navigateToTable.connect((_, tableName) => {
       this._setTableName(tableName);
-      this._loadTableSummaryPage()
-    })
+      this._loadTableSummaryPage();
+    });
     page.navigateBack.connect(() => {
-      this._loadConnectionPage()
-    })
+      this._loadConnectionPage();
+    });
     this.page = page;
   }
 
@@ -187,15 +190,15 @@ export class JupyterLabSqlWidget extends Widget {
       connectionUrl: this._connectionUrl,
       initialSqlStatement: this._sqlStatement,
       editorFactory: this.editorFactory
-    }
+    };
     const page = new QueryPage(options);
     page.backButtonClicked.connect(() => {
-      this._loadSummaryPage()
-    })
+      this._loadSummaryPage();
+    });
     page.sqlStatementChanged.connect((_, newStatement) => {
-      this._setSqlStatement(newStatement)
-    })
-    this.page = page
+      this._setSqlStatement(newStatement);
+    });
+    this.page = page;
   }
 
   private _loadTableSummaryPage() {
@@ -204,8 +207,8 @@ export class JupyterLabSqlWidget extends Widget {
     const page = new TableSummaryPage({ connectionUrl, tableName });
     page.navigateBack.connect(() => {
       this._loadSummaryPage();
-    })
-    this.page = page
+    });
+    this.page = page;
   }
 
   /**
@@ -231,10 +234,14 @@ export class JupyterLabSqlWidget extends Widget {
   private _toolbar: Toolbar | null = null;
   private _sqlStatement: string = '';
   private _page: JupyterLabSqlPage | null = null;
-  private readonly content: SingletonPanel
+  private readonly content: SingletonPanel;
 
   private readonly _pageChanged: Signal<this, void> = new Signal(this);
-  private readonly _connectionUrlChanged: Signal<this, string> = new Signal(this);
+  private readonly _connectionUrlChanged: Signal<this, string> = new Signal(
+    this
+  );
   private readonly _tableNameChanged: Signal<this, string> = new Signal(this);
-  private readonly _sqlStatementChanged: Signal<this, string> = new Signal(this);
+  private readonly _sqlStatementChanged: Signal<this, string> = new Signal(
+    this
+  );
 }

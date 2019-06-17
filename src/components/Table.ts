@@ -2,11 +2,16 @@ import { IDisposable } from '@phosphor/disposable';
 
 import { Menu, Widget } from '@phosphor/widgets';
 
-import { DataModel, DataGrid, TextRenderer, CellRenderer } from '@phosphor/datagrid';
+import {
+  DataModel,
+  DataGrid,
+  TextRenderer,
+  CellRenderer
+} from '@phosphor/datagrid';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 
-import * as DataGridExtensions from '../services/dataGridExtensions'
+import * as DataGridExtensions from '../services/dataGridExtensions';
 
 // TODO: unit tests for Table component -- move to issue
 export namespace Table {
@@ -52,7 +57,7 @@ export class Table implements IDisposable {
       'dblclick',
       this._grid,
       this._onDoubleClick
-    )
+    );
 
     this._fitColumnWidths();
   }
@@ -128,8 +133,8 @@ export class Table implements IDisposable {
       const cellIndex = {
         rowIndex: row.index,
         columnIndex: column.index
-      }
-      this._dblclickSignal.emit(cellIndex)
+      };
+      this._dblclickSignal.emit(cellIndex);
     }
   }
 
@@ -201,7 +206,10 @@ export class Table implements IDisposable {
   private readonly _contextMenuEventHandler: IDisposable;
   private readonly _dblclickEventHandler: IDisposable;
   private readonly _options: Table.IOptions;
-  private readonly _dblclickSignal: Signal<this, DataGridExtensions.BodyCellIndex> = new Signal(this);
+  private readonly _dblclickSignal: Signal<
+    this,
+    DataGridExtensions.BodyCellIndex
+  > = new Signal(this);
   private _isDisposed: boolean = false;
 }
 

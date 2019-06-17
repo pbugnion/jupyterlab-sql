@@ -205,7 +205,7 @@ describe('addMouseEventListener', () => {
     const { row, column } = args[0];
     expect(row).toEqual({ section: 'column-header', index: null });
     expect(column).toEqual({ section: 'row-header', index: null });
-  })
+  });
 
   it('support removing dblclick event listeners', () => {
     const grid = Fixtures.grid();
@@ -215,5 +215,5 @@ describe('addMouseEventListener', () => {
     disposable.dispose();
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(0);
-  })
+  });
 });

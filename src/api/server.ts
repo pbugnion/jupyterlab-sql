@@ -9,7 +9,7 @@ export namespace Server {
     endpoint: string,
     request: RequestInit
   ): Promise<Response> {
-    const url = URLExt.join(settings.baseUrl, endpoint)
-    return await ServerConnection.makeRequest(url, request, settings)
+    const url = URLExt.join(settings.baseUrl, endpoint);
+    return await ServerConnection.makeRequest(url, request, settings);
   }
 }
