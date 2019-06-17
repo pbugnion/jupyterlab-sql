@@ -28,7 +28,6 @@ namespace DatabaseSummaryPage {
   }
 }
 
-// TODO dispose of toolbar
 export class DatabaseSummaryPage implements JupyterLabSqlPage {
   constructor(options: DatabaseSummaryPage.IOptions) {
     this._onRefresh = this._onRefresh.bind(this)
@@ -63,7 +62,6 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
     return this._navigateToTable
   }
 
-  // TODO: Correct disposal implementation
   get isDisposed() {
     return this._disposables.isDisposed;
   }
