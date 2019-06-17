@@ -19,7 +19,6 @@ import { DatabaseSummaryToolbar } from './toolbar';
 
 import { DatabaseSummaryIModel, DatabaseSummaryModel, DatabaseSummaryWidget } from './content';
 
-// TODO break up into multiple source files?
 // TODO loading state until db connection established -- move to issues
 
 namespace DatabaseSummaryPage {
