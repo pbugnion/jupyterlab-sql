@@ -32,7 +32,6 @@ export class JupyterLabSqlWidget extends Widget {
   constructor(editorFactory: IEditorFactoryService, options: JupyterLabSqlWidget.IOptions) {
     super()
 
-    // TODO: Disconnect signals on page change
     this.addClass('jp-MainAreaWidget');
     this.id = 'jupyterlab-sql';
     this._configureTitle()
