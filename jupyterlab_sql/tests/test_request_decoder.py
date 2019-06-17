@@ -9,10 +9,8 @@ from jupyterlab_sql.request_decoder import decode, RequestDecodeError
 
 test_schema = {
     "type": "object",
-    "properties": {
-        "prop": {"type": "string"}
-    },
-    "required": ["prop"]
+    "properties": {"prop": {"type": "string"}},
+    "required": ["prop"],
 }
 
 test_body = {"prop": "value"}

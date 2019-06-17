@@ -40,7 +40,8 @@ class SqlQueryHandler(IPythonHandler):
                 )
                 if result.has_rows:
                     response = responses.success_with_rows(
-                        result.keys, result.rows)
+                        result.keys, result.rows
+                    )
                 else:
                     response = responses.success_no_rows()
             except Exception as e:
@@ -49,7 +50,6 @@ class SqlQueryHandler(IPythonHandler):
 
 
 class StructureHandler(IPythonHandler):
-
     def initialize(self, executor):
         self._executor = executor
         self._validator = schema_loader.load("database-structure.json")
@@ -73,7 +73,8 @@ class StructureHandler(IPythonHandler):
             ioloop = tornado.ioloop.IOLoop.current()
             try:
                 tables = await ioloop.run_in_executor(
-                    None, self.get_table_names, connection_url)
+                    None, self.get_table_names, connection_url
+                )
                 response = responses.success_with_tables(tables)
             except Exception as e:
                 response = responses.error(str(e))
@@ -81,7 +82,6 @@ class StructureHandler(IPythonHandler):
 
 
 class TableStructureHandler(IPythonHandler):
-
     def initialize(self, executor):
         self._executor = executor
         self._validator = schema_loader.load("table-structure.json")
@@ -106,9 +106,11 @@ class TableStructureHandler(IPythonHandler):
             ioloop = tornado.ioloop.IOLoop.current()
             try:
                 result = await ioloop.run_in_executor(
-                    None, self.get_table_summary, connection_url, table_name)
+                    None, self.get_table_summary, connection_url, table_name
+                )
                 response = responses.success_with_rows(
-                    result.keys, result.rows)
+                    result.keys, result.rows
+                )
             except Exception as e:
                 response = responses.error(str(e))
             self.finish(json.dumps(response))
@@ -125,8 +127,20 @@ def register_handlers(nbapp):
     host_pattern = ".*$"
     executor = Executor()
     handlers = [
-        (form_route(web_app, "query"), SqlQueryHandler, {"executor": executor}),
-        (form_route(web_app, "database"), StructureHandler, {"executor": executor}),
-        (form_route(web_app, "table"), TableStructureHandler, {"executor": executor})
+        (
+            form_route(web_app, "query"),
+            SqlQueryHandler,
+            {"executor": executor},
+        ),
+        (
+            form_route(web_app, "database"),
+            StructureHandler,
+            {"executor": executor},
+        ),
+        (
+            form_route(web_app, "table"),
+            TableStructureHandler,
+            {"executor": executor},
+        ),
     ]
     web_app.add_handlers(host_pattern, handlers)

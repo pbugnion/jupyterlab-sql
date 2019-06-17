@@ -39,7 +39,7 @@ class Executor:
         return QueryResult.from_sqlalchemy_result(result)
 
     def get_table_summary(self, connection_url, table_name):
-        query = select([text('*')]).select_from(table(table_name)).limit(1000)
+        query = select([text("*")]).select_from(table(table_name)).limit(1000)
         return self.execute_query(connection_url, query)
 
     def _get_engine(self, connection_url):
