@@ -90,10 +90,6 @@ class Content extends SingletonPanel {
   constructor(options: DatabaseSummaryPage.IOptions) {
     super();
     this._connectionUrl = options.connectionUrl;
-    this._responseWidget = new ResponseWidget()
-    this._navigateToTable = proxyFor(this._responseWidget.navigateToTable, this);
-    this._customQueryClicked = proxyFor(this._responseWidget.navigateToCustomQuery, this);
-    this.widget = this._responseWidget;
   }
 
   get customQueryClicked(): ISignal<this, void> {
@@ -106,22 +102,15 @@ class Content extends SingletonPanel {
 
   async refresh(): Promise<void> {
     const response = await Api.getDatabaseStructure(this._connectionUrl)
-    this._responseWidget.setResponse(response)
+    this._setResponse(response)
   }
 
-  private readonly _connectionUrl: string;
-  private readonly _responseWidget: ResponseWidget
-  private readonly _customQueryClicked: Signal<this, void>;
-  private readonly _navigateToTable: Signal<this, string>;
-}
-
-class ResponseWidget extends SingletonPanel {
   dispose(): void {
     this._disposeWidgets();
     super.dispose();
   }
 
-  setResponse(response: Api.DatabaseStructureResponse.Type) {
+  private _setResponse(response: Api.DatabaseStructureResponse.Type) {
     this._disposeWidgets();
     Api.DatabaseStructureResponse.match(
       response,
@@ -129,7 +118,7 @@ class ResponseWidget extends SingletonPanel {
         const model = new DatabaseSummaryModel(tables);
         this.widget = DatabaseSummaryWidget.withModel(model);
         model.navigateToCustomQuery.connect(() => {
-          this._navigateToCustomQuery.emit(void 0)
+          this._customQueryClicked.emit(void 0)
         })
         model.navigateToTable.connect((_, tableName) => {
           this._navigateToTable.emit(tableName);
@@ -142,14 +131,6 @@ class ResponseWidget extends SingletonPanel {
     )
   }
 
-  get navigateToTable(): ISignal<this, string> {
-    return this._navigateToTable;
-  }
-
-  get navigateToCustomQuery(): ISignal<this, void> {
-    return this._navigateToCustomQuery;
-  }
-
   private _disposeWidgets(): void {
     if (this._databaseSummaryModel) {
       Signal.disconnectBetween(this._databaseSummaryModel, this);
@@ -157,7 +138,8 @@ class ResponseWidget extends SingletonPanel {
     }
   }
 
+  private readonly _connectionUrl: string;
   private _databaseSummaryModel: DatabaseSummaryIModel | null;
-  private readonly _navigateToTable = new Signal<this, string>(this);
-  private readonly _navigateToCustomQuery = new Signal<this, void>(this);
+  private readonly _customQueryClicked: Signal<this, void> = new Signal<this, void>(this);
+  private readonly _navigateToTable: Signal<this, string> = new Signal<this, string>(this);
 }
