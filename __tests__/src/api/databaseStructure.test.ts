@@ -35,28 +35,30 @@ namespace Fixtures {
 }
 
 describe('getDatabaseStructure', () => {
-  it.each([['success', Fixtures.success], ['error', Fixtures.error]])(
-    'valid %#: %s',
-    async (_, response) => {
-      ServerConnection.makeRequest = jest.fn(() =>
-        Promise.resolve(new Response(JSON.stringify(response)))
-      );
+  const testCases: Array<Array<any>> = [
+    ['success', Fixtures.success],
+    ['error', Fixtures.error]
+  ];
 
-      const result = await getDatabaseStructure('connectionUrl');
-      expect(result).toEqual(response);
-      const expectedUrl = 'https://example.com/jupyterlab-sql/database';
-      const expectedRequest = {
-        method: 'POST',
-        body: JSON.stringify({ connectionUrl: 'connectionUrl' })
-      };
+  it.each(testCases)('valid %#: %s', async (_, response) => {
+    ServerConnection.makeRequest = jest.fn(() =>
+      Promise.resolve(new Response(JSON.stringify(response)))
+    );
 
-      expect(ServerConnection.makeRequest).toHaveBeenCalledWith(
-        expectedUrl,
-        expectedRequest,
-        ServerConnection.defaultSettings
-      );
-    }
-  );
+    const result = await getDatabaseStructure('connectionUrl');
+    expect(result).toEqual(response);
+    const expectedUrl = 'https://example.com/jupyterlab-sql/database';
+    const expectedRequest = {
+      method: 'POST',
+      body: JSON.stringify({ connectionUrl: 'connectionUrl' })
+    };
+
+    expect(ServerConnection.makeRequest).toHaveBeenCalledWith(
+      expectedUrl,
+      expectedRequest,
+      ServerConnection.defaultSettings
+    );
+  });
 
   it('matching on success', async () => {
     ServerConnection.makeRequest = jest.fn(() =>

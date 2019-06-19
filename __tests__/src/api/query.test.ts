@@ -37,11 +37,13 @@ namespace Fixtures {
 }
 
 describe('getForQuery', () => {
-  it.each([
+  const testCases: Array<Array<any>> = [
     ['success with data', Fixtures.successWithData],
     ['success with no data', Fixtures.successNoData],
     ['error', Fixtures.error]
-  ])('valid %#: %s', async (_, response) => {
+  ];
+
+  it.each(testCases)('valid %#: %s', async (_, response) => {
     ServerConnection.makeRequest = jest.fn(() =>
       Promise.resolve(new Response(JSON.stringify(response)))
     );
