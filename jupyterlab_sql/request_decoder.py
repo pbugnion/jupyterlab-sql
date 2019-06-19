@@ -17,6 +17,6 @@ def decode(request_body, validator):
         validator.validate(data)
     except ValidationError as e:
         raise RequestDecodeError(
-            f"Request contains an invalid payload: {e.message}"
+            "Request contains an invalid payload: {}".format(e.message)
         )
     return data
