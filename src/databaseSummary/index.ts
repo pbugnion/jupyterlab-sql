@@ -22,8 +22,6 @@ import {
   DatabaseSummaryWidget
 } from './content';
 
-// TODO loading state until db connection established -- move to issues
-
 namespace DatabaseSummaryPage {
   export interface IOptions {
     connectionUrl: string;
@@ -75,7 +73,6 @@ export class DatabaseSummaryPage implements JupyterLabSqlPage {
   private async _onRefresh(): Promise<void> {
     this._toolbar.setLoading(true);
     await this._content.refresh();
-    // TODO: what if refresh fails? -- move to issue
     this._toolbar.setLoading(false);
   }
 

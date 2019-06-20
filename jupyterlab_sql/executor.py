@@ -6,8 +6,6 @@ from .serializer import make_row_serializable
 from .cache import Cache
 from .connection_url import is_sqlite
 
-# TODO: Test executor and query result -- move to issue
-
 
 class QueryResult:
     def __init__(self, keys, rows):
