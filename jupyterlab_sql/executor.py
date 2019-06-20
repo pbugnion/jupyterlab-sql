@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.sql import select, text, table
 from sqlalchemy.pool import StaticPool
 
 from .serializer import make_row_serializable
@@ -22,14 +23,22 @@ class QueryResult:
             return cls(None, None)
 
 
-class QueryExecutor:
+class Executor:
     def __init__(self):
         self._sqlite_engine_cache = Cache()
+
+    def get_table_names(self, connection_url):
+        engine = self._get_engine(connection_url)
+        return engine.table_names()
 
     def execute_query(self, connection_url, query):
         engine = self._get_engine(connection_url)
         result = self._execute_with_engine(engine, query)
         return QueryResult.from_sqlalchemy_result(result)
+
+    def get_table_summary(self, connection_url, table_name):
+        query = select([text("*")]).select_from(table(table_name)).limit(1000)
+        return self.execute_query(connection_url, query)
 
     def _get_engine(self, connection_url):
         if is_sqlite(connection_url):

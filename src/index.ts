@@ -6,11 +6,7 @@ import {
   ILayoutRestorer
 } from '@jupyterlab/application';
 
-import {
-  ICommandPalette,
-  MainAreaWidget,
-  InstanceTracker
-} from '@jupyterlab/apputils';
+import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
 
 import { IEditorServices } from '@jupyterlab/codeeditor';
 
@@ -19,6 +15,8 @@ import { ILauncher } from '@jupyterlab/launcher';
 import { JupyterLabSqlWidget } from './widget';
 
 import { createTracker } from './tracker';
+
+import { PageName } from './page';
 
 import '../style/index.css';
 
@@ -29,38 +27,47 @@ function activate(
   editorServices: IEditorServices,
   restorer: ILayoutRestorer
 ) {
-  const tracker: InstanceTracker<
-    MainAreaWidget<JupyterLabSqlWidget>
-  > = createTracker();
+  const tracker: InstanceTracker<JupyterLabSqlWidget> = createTracker();
   const command: string = 'jupyterlab-sql:open';
 
   restorer.restore(tracker, {
-    command: command,
+    command,
     args: widget => ({
-      name: widget.content.name,
-      connectionString: widget.content.toolbarModel.connectionString,
-      sqlStatement: widget.content.sqlStatementValue
+      initialWidgetName: widget.name,
+      initialPageName: widget.pageName,
+      initialConnectionUrl: widget.connectionUrl,
+      initialTableName: widget.tableName,
+      initialSqlStatement: widget.sqlStatement
     }),
-    name: widget => widget.content.name
+    name: widget => widget.name
   });
 
   app.commands.addCommand(command, {
     label: ({ isPalette }) => (isPalette ? 'New SQL session' : 'SQL'),
     iconClass: 'p-Sql-DatabaseIcon',
-    execute: ({ name, connectionString, sqlStatement }) => {
-      const widgetName = <string>(name || uuid.v4());
-      const initialConnectionString = <string>(
-        (connectionString || 'postgres://localhost:5432/postgres')
+    execute: ({
+      initialWidgetName,
+      initialPageName,
+      initialConnectionUrl,
+      initialTableName,
+      initialSqlStatement
+    }) => {
+      const name = <string>(initialWidgetName || uuid.v4());
+      const pageName = <PageName>(initialPageName || PageName.Connection);
+      const connectionUrl = <string>(
+        (initialConnectionUrl || 'postgres://localhost:5432/postgres')
       );
-      const initialSqlStatement = <string>(sqlStatement || '');
+      const tableName = <string>(initialTableName || '');
+      const sqlStatement = <string>(initialSqlStatement || '');
       const widget = new JupyterLabSqlWidget(editorServices.factoryService, {
-        name: widgetName,
-        initialConnectionString,
-        initialSqlStatement
+        name,
+        pageName,
+        connectionUrl,
+        tableName,
+        sqlStatement
       });
-      const main = new MainAreaWidget({ content: widget });
-      app.shell.addToMainArea(main);
-      tracker.add(main);
+      app.shell.addToMainArea(widget);
+      tracker.add(widget);
     }
   });
 

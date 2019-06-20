@@ -1,5 +1,3 @@
-import 'jest-canvas-mock';
-
 import { DataGrid, DataModel } from '@phosphor/datagrid';
 
 import {
@@ -21,6 +19,10 @@ namespace Fixtures {
 
   export function contextmenuEvent(args: MouseEventInit): MouseEvent {
     return new MouseEvent('contextmenu', args);
+  }
+
+  export function dblClickEvent(args: MouseEventInit): MouseEvent {
+    return new MouseEvent('dblclick', args);
   }
 
   class TestDataModel extends DataModel {
@@ -186,6 +188,30 @@ describe('addMouseEventListener', () => {
     const event = Fixtures.contextmenuEvent({ clientX: 10, clientY: 5 });
     const mockListener = jest.fn();
     const disposable = addMouseEventListener('contextmenu', grid, mockListener);
+    disposable.dispose();
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(0);
+  });
+
+  it('support adding dblclick event listeners', () => {
+    const grid = Fixtures.grid();
+    const event = Fixtures.dblClickEvent({ clientX: 10, clientY: 5 });
+    const mockListener = jest.fn();
+    addMouseEventListener('dblclick', grid, mockListener);
+    grid.node.dispatchEvent(event);
+    expect(mockListener.mock.calls.length).toBe(1);
+    const [args] = mockListener.mock.calls;
+    expect(args.length).toBe(1);
+    const { row, column } = args[0];
+    expect(row).toEqual({ section: 'column-header', index: null });
+    expect(column).toEqual({ section: 'row-header', index: null });
+  });
+
+  it('support removing dblclick event listeners', () => {
+    const grid = Fixtures.grid();
+    const event = Fixtures.dblClickEvent({ clientX: 10, clientY: 5 });
+    const mockListener = jest.fn();
+    const disposable = addMouseEventListener('dblclick', grid, mockListener);
     disposable.dispose();
     grid.node.dispatchEvent(event);
     expect(mockListener.mock.calls.length).toBe(0);

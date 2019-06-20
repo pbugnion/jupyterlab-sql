@@ -1,21 +1,25 @@
-import { MainAreaWidget, InstanceTracker } from '@jupyterlab/apputils';
+import { InstanceTracker } from '@jupyterlab/apputils';
 
 import { JupyterLabSqlWidget } from './widget';
 
-export function createTracker(): InstanceTracker<
-  MainAreaWidget<JupyterLabSqlWidget>
-> {
+export function createTracker(): InstanceTracker<JupyterLabSqlWidget> {
   const namespace: string = 'jupyterlab-sql';
 
-  const tracker = new InstanceTracker<MainAreaWidget<JupyterLabSqlWidget>>({
+  const tracker = new InstanceTracker<JupyterLabSqlWidget>({
     namespace
   });
 
   tracker.widgetAdded.connect((_, widget) => {
-    widget.content.connectionStringChanged.connect(() => {
+    widget.pageChanged.connect(() => {
       tracker.save(widget);
     });
-    widget.content.sqlStatementChanged.connect(() => {
+    widget.connectionUrlChanged.connect(() => {
+      tracker.save(widget);
+    });
+    widget.tableNameChanged.connect(() => {
+      tracker.save(widget);
+    });
+    widget.sqlStatementChanged.connect(() => {
       tracker.save(widget);
     });
   });

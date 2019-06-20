@@ -1,59 +1,20 @@
 .p-Sql-MainContainer {
     padding-left: 10px;
     padding-right: 10px;
+    padding-top: 10px;
 }
 
-.p-Sql-Toolbar {
+.p-Sql-ConnectionInformation-container {
+    top: 20%;
+    position: absolute;
+    width: 100%;
+}
+
+.p-Sql-ConnectionInformation-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 50px;
-}
-
-.p-Sql-LoadingIcon {
-    border: 1px solid var(--jp-border-color0);
-    width: 30px;
-    height: 30px;
-    margin-left: 2px;
-    flex: 0 0 auto;
-}
-
-.p-Sql-LoadingIcon-Spinner {
-    /* Animated loading icon */
-    width: 16px;
-    height: 16px;
-    margin: 5px;
-    border: 2px solid white;
-    border-top: 2px solid var(--jp-ui-font-color1);
-    border-radius: 50%;
-
-    -webkit-transition-property: -webkit-transform;
-    -webkit-transition-duration: 1.2s;
-    -webkit-animation-name: rotate;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-timing-function: linear;
-
-    -moz-transition-property: -moz-transform;
-    -moz-animation-name: rotate;
-    -moz-animation-duration: 1.2s;
-    -moz-animation-iteration-count: infinite;
-    -moz-animation-timing-function: linear;
-
-    transition-property: transform;
-    animation-name: rotate;
-    animation-duration: 1.2s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-@-webkit-keyframes rotate {
-    from {-webkit-transform: rotate(0deg);}
-    to {-webkit-transform: rotate(360deg);}
-}
-
-@-moz-keyframes rotate {
-    from {-moz-transform: rotate(0deg);}
-    to {-moz-transform: rotate(360deg);}
 }
 
 .p-Sql-ConnectionInformation-input-wrapper {
@@ -91,6 +52,10 @@
     outline: none;
 }
 
+.p-Sql-ConnectionInformation-container summary:focus {
+    outline: none;
+}
+
 .p-Sql-Editor {
     border: var(--jp-border-width) solid var(--jp-cell-editor-border-color);
     border-radius: 0px;
@@ -109,4 +74,39 @@
 
 .p-Sql-DatabaseIcon {
     background-image: url('./icons/database.svg');
+}
+
+.p-Sql-DatabaseSummary-Container {
+    overflow: auto;
+}
+
+.p-Sql-TableList-container {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+}
+
+.p-Sql-TableList-content {
+    font-family: var(--jp-ui-font-family);
+    font-size: var(--jp-ui-font-size1);
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    background-color: var(--jp-layout-color1);
+}
+
+
+.p-Sql-TableList-header {
+    padding: 8px 0 8px 12px;
+    color: var(--jp-ui-font-color1);
+    font-size: var(--jp-ui-font-size0);
+    font-weight: 600;
+    text-transform: uppercase;
+    border-bottom: solid var(--jp-border-width) var(--jp-border-color2);
+    letter-spacing: 1px;
+}
+
+.jp-Toolbar-item.p-Sql-Toolbar-text {
+    line-height: 24px;
+    text-align: center;
 }

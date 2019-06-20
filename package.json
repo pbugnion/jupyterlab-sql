@@ -54,6 +54,7 @@
     "@types/uuid": "^3.4.4",
     "jest": "^24.1.0",
     "jest-canvas-mock": "^2.0.0-beta.1",
+    "jest-fetch-mock": "^2.1.2",
     "mkdirp": "^0.5.1",
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",

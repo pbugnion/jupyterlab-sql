@@ -21,7 +21,7 @@ export interface Column {
 }
 
 export function addMouseEventListener(
-  eventType: 'click' | 'contextmenu',
+  eventType: 'click' | 'contextmenu' | 'dblclick',
   grid: DataGrid,
   listener: (event: GridMouseEvent) => void
 ): IDisposable {

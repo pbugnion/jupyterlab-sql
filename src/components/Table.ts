@@ -1,47 +1,44 @@
-import { Clipboard } from '@jupyterlab/apputils';
+import { IDisposable } from '@phosphor/disposable';
 
 import { Menu, Widget } from '@phosphor/widgets';
 
-import { IDisposable } from '@phosphor/disposable';
-
 import {
-  DataGrid,
   DataModel,
+  DataGrid,
   TextRenderer,
   CellRenderer
 } from '@phosphor/datagrid';
 
-import { CommandRegistry } from '@phosphor/commands';
+import { ISignal, Signal } from '@phosphor/signaling';
 
-import * as DataGridExtensions from './services/dataGridExtensions';
+import * as DataGridExtensions from '../services/dataGridExtensions';
 
-namespace Options {
+export namespace Table {
+  export interface IOptions {
+    contextMenu: Menu;
+  }
+}
+
+namespace Colors {
   export const unselectedBackgroundColor = 'white';
   export const selectedBackgroundColor = '#2196f3';
   export const unselectedTextColor = 'black';
   export const selectedTextColor = 'white';
 }
 
-namespace CommandIds {
-  export const copyToClipboard = 'copy-selection-to-clipboard';
-}
-
-export class ResponseTable implements IDisposable {
-  constructor(model: DataModel) {
+export class Table implements IDisposable {
+  constructor(model: TableDataModel, options: Table.IOptions) {
     this._grid = new DataGrid();
     this._grid.model = model;
+    this._options = options;
     this._selectionManager = new DataGridExtensions.SelectionManager(model);
     this._onClick = this._onClick.bind(this);
     this._onContextMenu = this._onContextMenu.bind(this);
-    this._copySelectionToClipboard = this._copySelectionToClipboard.bind(this);
-    this._updateRenderers();
-    this._fitColumnWidths();
+    this._onDoubleClick = this._onDoubleClick.bind(this);
 
     this._selectionManager.selectionChanged.connect(() => {
       this._updateRenderers();
     });
-
-    this._menu = this._createContextMenu();
 
     this._clickEventHandler = DataGridExtensions.addMouseEventListener(
       'click',
@@ -54,30 +51,61 @@ export class ResponseTable implements IDisposable {
       this._grid,
       this._onContextMenu
     );
+
+    this._dblclickEventHandler = DataGridExtensions.addMouseEventListener(
+      'dblclick',
+      this._grid,
+      this._onDoubleClick
+    );
+
+    this._fitColumnWidths();
   }
 
   static fromKeysRows(
     keys: Array<string>,
-    data: Array<Array<any>>
-  ): ResponseTable {
-    const model = new ResponseTableDataModel(keys, data);
-    return new ResponseTable(model);
+    data: Array<Array<any>>,
+    options: Table.IOptions
+  ): Table {
+    const model = new TableDataModel(keys, data);
+    return new Table(model, options);
   }
 
   get widget(): Widget {
     return this._grid;
   }
 
-  dispose(): void {
-    this._clickEventHandler.dispose();
-    this._contextMenuEventHandler.dispose();
-    this._grid.dispose();
-    this._menu.dispose();
-    this._isDisposed = true;
+  get selection(): DataGridExtensions.BodyCellIndex | null {
+    return this._selectionManager.selection;
+  }
+
+  get selectionValue(): any | null {
+    const selection = this.selection;
+    if (selection !== null) {
+      return this.getCellValue(selection);
+    }
+    return null;
   }
 
   get isDisposed(): boolean {
     return this._isDisposed;
+  }
+
+  get dblclickSignal(): ISignal<this, DataGridExtensions.BodyCellIndex> {
+    return this._dblclickSignal;
+  }
+
+  getCellValue(cellIndex: DataGridExtensions.BodyCellIndex): any {
+    const { rowIndex, columnIndex } = cellIndex;
+    const value = this._grid.model.data('body', rowIndex, columnIndex);
+    return value;
+  }
+
+  dispose(): void {
+    this._clickEventHandler.dispose();
+    this._contextMenuEventHandler.dispose();
+    this._dblclickEventHandler.dispose();
+    this._grid.dispose();
+    this._isDisposed = true;
   }
 
   private _fitColumnWidths() {
@@ -93,8 +121,19 @@ export class ResponseTable implements IDisposable {
     const { row, column, rawEvent } = event;
     this._updateSelection(row, column);
     if (this._isInBody(row, column)) {
-      this._menu.open(rawEvent.clientX, rawEvent.clientY);
+      this._options.contextMenu.open(rawEvent.clientX, rawEvent.clientY);
       rawEvent.preventDefault();
+    }
+  }
+
+  private _onDoubleClick(event: DataGridExtensions.GridMouseEvent) {
+    const { row, column } = event;
+    if (this._isInBody(row, column)) {
+      const cellIndex = {
+        rowIndex: row.index,
+        columnIndex: column.index
+      };
+      this._dblclickSignal.emit(cellIndex);
     }
   }
 
@@ -137,59 +176,43 @@ export class ResponseTable implements IDisposable {
     let backgroundColor;
     let textColor;
     if (selectedCell === null) {
-      backgroundColor = Options.unselectedBackgroundColor;
-      textColor = Options.unselectedTextColor;
+      backgroundColor = Colors.unselectedBackgroundColor;
+      textColor = Colors.unselectedTextColor;
     } else {
       const selectedRow = selectedCell.rowIndex;
       const selectedColumn = selectedCell.columnIndex;
       backgroundColor = ({ row, column }: CellRenderer.ICellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
-          return Options.selectedBackgroundColor;
+          return Colors.selectedBackgroundColor;
         } else {
-          return Options.unselectedBackgroundColor;
+          return Colors.unselectedBackgroundColor;
         }
       };
       textColor = ({ row, column }: CellRenderer.ICellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
-          return Options.selectedTextColor;
+          return Colors.selectedTextColor;
         } else {
-          return Options.unselectedTextColor;
+          return Colors.unselectedTextColor;
         }
       };
     }
     return new TextRenderer({ backgroundColor, textColor });
   }
 
-  private _createContextMenu(): Menu {
-    const commands = new CommandRegistry();
-    commands.addCommand(CommandIds.copyToClipboard, {
-      label: 'Copy cell',
-      iconClass: 'jp-MaterialIcon jp-CopyIcon',
-      execute: this._copySelectionToClipboard
-    });
-    const menu = new Menu({ commands });
-    menu.addItem({ command: CommandIds.copyToClipboard });
-    return menu;
-  }
-
-  private _copySelectionToClipboard(): void {
-    const selection = this._selectionManager.selection;
-    if (selection !== null) {
-      const { rowIndex, columnIndex } = selection;
-      const value = this._grid.model.data('body', rowIndex, columnIndex);
-      Clipboard.copyToSystem(value);
-    }
-  }
-
   private readonly _grid: DataGrid;
   private readonly _selectionManager: DataGridExtensions.SelectionManager;
-  private readonly _menu: Menu;
   private readonly _clickEventHandler: IDisposable;
   private readonly _contextMenuEventHandler: IDisposable;
+  private readonly _dblclickEventHandler: IDisposable;
+  private readonly _options: Table.IOptions;
+  private readonly _dblclickSignal: Signal<
+    this,
+    DataGridExtensions.BodyCellIndex
+  > = new Signal(this);
   private _isDisposed: boolean = false;
 }
 
-class ResponseTableDataModel extends DataModel {
+class TableDataModel extends DataModel {
   constructor(keys: Array<string>, data: Array<Array<any>>) {
     super();
     this._data = data;
