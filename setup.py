@@ -188,5 +188,6 @@ setuptools.setup(
         "set_version": SetVersion,
     },
     data_files=[("share/jupyter/lab/extensions", [str(JS_EXTENSION)])],
+    package_data={"jupyterlab_sql": ["schemas/*.json"]},
     python_requires=">=3.5",
 )
