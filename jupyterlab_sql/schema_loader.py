@@ -10,5 +10,5 @@ SCHEMAS_PATH = Path("schemas")
 
 def load(name):
     path = SCHEMAS_PATH / name
-    schema_string = resource_string(__name__, str(path))
+    schema_string = resource_string(__name__, str(path)).decode('utf-8')
     return Validator(json.loads(schema_string))
