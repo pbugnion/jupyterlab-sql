@@ -205,6 +205,9 @@ class ConnectionInformationHelper extends React.Component<{}> {
             <pre>postgres://username:password@localhost:5432/postgres</pre>
           </li>
           <li>
+            <pre>mysql://localhost/employees</pre>
+          </li>
+          <li>
             <pre>sqlite://</pre>
           </li>
           <li>
