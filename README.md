@@ -5,7 +5,7 @@
 
 JupyterLab extension for interacting with SQL databases.
 
-![](./readme-images/screenshot.png)
+![](./readme-images/intro.gif)
 
 ## Installation
 
