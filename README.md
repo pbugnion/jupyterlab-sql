@@ -3,14 +3,13 @@
 
 # jupyterlab-sql
 
-JupyterLab extension for interacting with SQL databases.
-
-![](./readme-images/intro.gif)
-
 *jupyterlab-sql* adds a SQL user interface to JupyterLab:
 
 - explore your tables with a point-and-click interface
 - read and modify your database with custom queries
+
+![](./readme-images/intro.gif)
+
 
 ## Installation
 
