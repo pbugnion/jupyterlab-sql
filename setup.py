@@ -179,7 +179,11 @@ setuptools.setup(
     name="jupyterlab_sql",
     version=VERSION,
     packages=setuptools.find_packages(),
-    install_requires=["jupyterlab", "sqlalchemy", "jsonschema"],
+    install_requires=[
+        "jupyterlab",
+        "sqlalchemy",
+        "jsonschema>=3"
+    ],
     cmdclass={
         "jsextension": BuildJsExtension,
         "build_py": build_js_extension(build_py),
