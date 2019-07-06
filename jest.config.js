@@ -2,9 +2,10 @@ module.exports = {
   "roots": [
     "<rootDir>"
   ],
-  "transform": {
-    "^.+\\.tsx?$": "ts-jest"
-  },
+  "preset": "ts-jest/presets/js-with-babel",
+  "transformIgnorePatterns": [
+     "/node_modules/(?!@jupyterlab).+\\.js$"
+  ],
   "testRegex": "(/__tests__/src/.*|(\\.|/)(test|spec))\\.tsx?$",
   "testPathIgnorePatterns": ["<rootDir>/node_modules/"],
   "moduleFileExtensions": [
