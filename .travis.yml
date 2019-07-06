@@ -20,11 +20,11 @@ matrix:
 install:
   - "if [[ \"$GROUP\" == python-lint ]] ; then pip install flake8 black ; fi"
   - "if [[ \"$GROUP\" == python ]] ; then pip install tox ; fi"
-  - "if [[ \"$INSTALL_GROUP\" == js ]] ; then npm install ; fi"
+  - "if [[ \"$INSTALL_GROUP\" == js ]] ; then yarn ; fi"
 
 script:
   - "if [[ \"$GROUP\" == python-lint ]] ; then black --check setup.py jupyterlab_sql ; fi"
   - "if [[ \"$GROUP\" == python-lint ]] ; then flake8 setup.py jupyterlab_sql ; fi"
   - "if [[ \"$GROUP\" == python ]] ; then tox ; fi"
-  - "if [[ \"$GROUP\" == js-lint ]] ; then npm run prettier:check ; fi"
-  - "if [[ \"$GROUP\" == js ]] ; then npm run test ; fi"
+  - "if [[ \"$GROUP\" == js-lint ]] ; then yarn run prettier:check ; fi"
+  - "if [[ \"$GROUP\" == js ]] ; then yarn run test ; fi"
