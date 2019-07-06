@@ -13,6 +13,8 @@
 
 ## Installation
 
+### Installing on JupyterLab 1.x
+
 To install *jupyterlab-sql*, run the following commands:
 
 ```
@@ -24,6 +26,16 @@ jupyter lab build
 You will then need to restart any running Jupyter servers.
 
 *jupyterlab-sql* only works with Python 3.5 and above.
+
+### JupyterLab legacy
+
+To install jupyterlab-sql on versions of JupyterLab pre 1.0, run:
+
+```
+pip install jupyterlab_sql==0.2.1
+jupyter serverextension enable jupyterlab_sql --py --sys-prefix
+jupyter lab build
+```
 
 ## Usage
 
