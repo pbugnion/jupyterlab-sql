@@ -42,8 +42,8 @@
     "@phosphor/messaging": "^1.2.3",
     "@phosphor/widgets": "^1.8.0",
     "classnames": "^2.2.6",
-    "react": "~16.4.2",
-    "react-dom": "~16.4.2",
+    "react": "~16.8.4",
+    "react-dom": "~16.8.4",
     "url-parse": "^1.4.4",
     "uuid": "^3.3.2"
   },
