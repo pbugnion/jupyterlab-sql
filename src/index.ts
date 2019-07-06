@@ -1,12 +1,12 @@
 import * as uuid from 'uuid';
 
 import {
-  JupyterLab,
-  JupyterLabPlugin,
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin,
   ILayoutRestorer
 } from '@jupyterlab/application';
 
-import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
+import { ICommandPalette, WidgetTracker } from '@jupyterlab/apputils';
 
 import { IEditorServices } from '@jupyterlab/codeeditor';
 
@@ -21,13 +21,13 @@ import { PageName } from './page';
 import '../style/index.css';
 
 function activate(
-  app: JupyterLab,
+  app: JupyterFrontEnd,
   palette: ICommandPalette,
   launcher: ILauncher | null,
   editorServices: IEditorServices,
   restorer: ILayoutRestorer
 ) {
-  const tracker: InstanceTracker<JupyterLabSqlWidget> = createTracker();
+  const tracker: WidgetTracker<JupyterLabSqlWidget> = createTracker();
   const command: string = 'jupyterlab-sql:open';
 
   restorer.restore(tracker, {
@@ -66,7 +66,7 @@ function activate(
         tableName,
         sqlStatement
       });
-      app.shell.addToMainArea(widget);
+      app.shell.add(widget);
       tracker.add(widget);
     }
   });
@@ -81,7 +81,7 @@ function activate(
 /**
  * Initialization data for the jupyterlab-sql extension.
  */
-const extension: JupyterLabPlugin<void> = {
+const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-sql',
   autoStart: true,
   requires: [ICommandPalette, ILauncher, IEditorServices, ILayoutRestorer],
