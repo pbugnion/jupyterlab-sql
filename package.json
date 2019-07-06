@@ -59,7 +59,7 @@
     "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
     "ts-jest": "^24.0.0",
-    "typescript": "~3.1.1"
+    "typescript": "~3.5.2"
   },
   "jupyterlab": {
     "extension": true
