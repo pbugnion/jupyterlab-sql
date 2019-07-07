@@ -8,6 +8,7 @@ import { VDomModel, VDomRenderer } from '@jupyterlab/apputils'
 
 
 // TODO: factor out common CSS classes
+// TODO: factor out common components
 
 export interface ConnectionsIModel extends IDisposable {
 }
@@ -52,6 +53,8 @@ class PresetList extends React.Component<PresetList.Props> {
     ));
     return (
       <ul className="p-Sql-TableList-content">
+        <ListHeader headerText="Custom URL" />
+        <ListHeader headerText="Presets" />
         {presetItems}
       </ul>
     );
@@ -83,3 +86,15 @@ class PresetListItem extends React.Component<PresetListItem.Props> {
   }
 }
 
+namespace ListHeader {
+  export interface Props {
+    headerText: string;
+  }
+}
+
+class ListHeader extends React.Component<ListHeader.Props> {
+  render() {
+    const { headerText } = this.props;
+    return <li className="p-Sql-TableList-header">{headerText}</li>;
+  }
+}
