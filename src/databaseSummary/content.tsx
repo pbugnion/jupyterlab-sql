@@ -50,9 +50,9 @@ export class DatabaseSummaryWidget extends VDomRenderer<DatabaseSummaryModel> {
   }
 
   static withModel(model: DatabaseSummaryModel): DatabaseSummaryWidget {
-    const tableList = new DatabaseSummaryWidget();
-    tableList.model = model;
-    return tableList;
+    const widget = new DatabaseSummaryWidget();
+    widget.model = model;
+    return widget;
   }
 
   render() {
