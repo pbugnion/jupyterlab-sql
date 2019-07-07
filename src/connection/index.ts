@@ -6,11 +6,11 @@ import { DisposableSet } from '@phosphor/disposable';
 
 import { Toolbar } from '@jupyterlab/apputils';
 
-import { ConnectionEditor, ConnectionEditorModel } from './connectionEditor';
-
 import { JupyterLabSqlPage, PageName } from '../page';
 
 import { proxyFor } from '../services';
+
+import { ConnectionsWidget, ConnectionsModel } from './content';
 
 namespace ConnectionPage {
   export interface IOptions {
@@ -69,19 +69,11 @@ class Content extends BoxPanel {
 
     this.addClass('p-Sql-MainContainer');
 
-    const connectionEditorModel = new ConnectionEditorModel(
-      initialConnectionString
-    );
-    this._connectionWidget = ConnectionEditor.withModel(connectionEditorModel);
+    const connectionsModel = new ConnectionsModel(['d1', 'd2']);
+    this._connectionsWidget = ConnectionsWidget.withModel(connectionsModel);
 
-    this.addWidget(this._connectionWidget);
-    BoxPanel.setStretch(this._connectionWidget, 1);
-
-    this._connectDatabase = proxyFor(connectionEditorModel.connect, this);
-    this._connectionUrlChanged = proxyFor(
-      connectionEditorModel.connectionUrlChanged,
-      this
-    );
+    this.addWidget(this._connectionsWidget);
+    BoxPanel.setStretch(this._connectionsWidget, 1);
   }
 
   get connectDatabase(): ISignal<this, string> {
@@ -93,10 +85,10 @@ class Content extends BoxPanel {
   }
 
   onActivateRequest() {
-    this._connectionWidget.activate();
+    this._connectionsWidget.activate();
   }
 
-  private readonly _connectionWidget: ConnectionEditor;
-  private readonly _connectDatabase: ISignal<this, string>;
-  private readonly _connectionUrlChanged: ISignal<this, string>;
+  private readonly _connectionsWidget: ConnectionsWidget;
+  private readonly _connectDatabase: ISignal<this, string> = new Signal<this, string>(this);
+  private readonly _connectionUrlChanged: ISignal<this, string> = new Signal<this, string>(this);
 }
