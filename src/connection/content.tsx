@@ -62,7 +62,6 @@ class PresetList extends React.Component<PresetList.Props> {
             onConnectionUrlChanged={() => { }}
             onFinishEdit={() => { }}
           />
-          <ConnectionInformationHelper />
         </li>
         <ListHeader headerText="Presets" />
         {presetItems}
@@ -105,6 +104,16 @@ namespace ListHeader {
 class ListHeader extends React.Component<ListHeader.Props> {
   render() {
     const { headerText } = this.props;
-    return <li className="p-Sql-TableList-header">{headerText}</li>;
+    return (
+      <React.Fragment>
+        <li className="p-Sql-TableList-header">
+          <div className="p-Sql-TableList-HelpHeader-container">
+            <span>{headerText}</span>
+            <span>?</span>
+          </div >
+        </li >
+        <ConnectionInformationHelper />
+      </React.Fragment>
+    );
   }
 }

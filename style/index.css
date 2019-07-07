@@ -110,3 +110,8 @@
     line-height: 24px;
     text-align: center;
 }
+
+.p-Sql-TableList-HelpHeader-container {
+    display: flex;
+    justify-content: space-between;
+}
