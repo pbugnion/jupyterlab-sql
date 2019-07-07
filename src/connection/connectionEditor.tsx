@@ -6,6 +6,8 @@ import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
 import classNames from 'classnames';
 
+// TODO: remove unnused classes
+
 export interface IConnectionEditorModel {
   readonly connectionUrl: string;
   readonly connect: ISignal<this, string>;
@@ -79,10 +81,10 @@ export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
   }
 }
 
-class ConnectionInformationEdit extends React.Component<
+export class ConnectionInformationEdit extends React.Component<
   ConnectionInformationEdit.Props,
   ConnectionInformationEdit.State
-> {
+  > {
   constructor(props: ConnectionInformationEdit.Props) {
     super(props);
     this.state = {
@@ -179,7 +181,7 @@ namespace ConnectionInformationEdit {
   }
 }
 
-class ConnectionInformationHelper extends React.Component<{}> {
+export class ConnectionInformationHelper extends React.Component<{}> {
   render() {
     return (
       <details className="jp-RenderedHTMLCommon">

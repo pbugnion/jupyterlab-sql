@@ -6,6 +6,8 @@ import { IDisposable } from '@phosphor/disposable'
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils'
 
+import { ConnectionInformationEdit, ConnectionInformationHelper } from './connectionEditor'
+
 
 // TODO: factor out common CSS classes
 // TODO: factor out common components
@@ -54,6 +56,14 @@ class PresetList extends React.Component<PresetList.Props> {
     return (
       <ul className="p-Sql-TableList-content">
         <ListHeader headerText="Custom URL" />
+        <li>
+          <ConnectionInformationEdit
+            initialConnectionUrl="hello"
+            onConnectionUrlChanged={() => { }}
+            onFinishEdit={() => { }}
+          />
+          <ConnectionInformationHelper />
+        </li>
         <ListHeader headerText="Presets" />
         {presetItems}
       </ul>
