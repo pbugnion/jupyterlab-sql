@@ -1,8 +1,13 @@
 import * as React from 'react'
 
+import classNames from 'classnames';
+
 import { IDisposable } from '@phosphor/disposable'
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils'
+
+
+// TODO: factor out common CSS classes
 
 export interface ConnectionsIModel extends IDisposable {
 }
@@ -42,10 +47,8 @@ namespace PresetList {
 class PresetList extends React.Component<PresetList.Props> {
   render() {
     const { presets } = this.props;
-    const presetItems = presets.map(presetName => (
-      <li>
-        <span className="jp-DirListing-itemText">{presetName}</span>
-      </li>
+    const presetItems = presets.map((presetName, i) => (
+      <PresetListItem presetName={presetName} selected={false} key={i} />
     ));
     return (
       <ul className="p-Sql-TableList-content">
@@ -54,3 +57,29 @@ class PresetList extends React.Component<PresetList.Props> {
     );
   }
 }
+
+namespace PresetListItem {
+  export interface Props {
+    presetName: string;
+    selected: boolean;
+  }
+}
+
+
+class PresetListItem extends React.Component<PresetListItem.Props> {
+  render() {
+    const { presetName, selected } = this.props;
+    const classes = classNames('jp-DirListing-item', {
+      'jp-mod-selected': selected
+    });
+    return (
+      <li
+        className={classes}
+        title={presetName}
+      >
+        <span className="jp-DirListing-itemText">{presetName}</span>
+      </li>
+    )
+  }
+}
+
