@@ -28,7 +28,29 @@ export class ConnectionsWidget extends VDomRenderer<ConnectionsModel> {
     if (!this.model) {
       return null;
     } else {
-      return <p>Hello</p>;
+      return <PresetList presets={this.model.presets} />;
     }
+  }
+}
+
+namespace PresetList {
+  export interface Props {
+    presets: Array<string>;
+  }
+}
+
+class PresetList extends React.Component<PresetList.Props> {
+  render() {
+    const { presets } = this.props;
+    const presetItems = presets.map(presetName => (
+      <li>
+        <span className="jp-DirListing-itemText">{presetName}</span>
+      </li>
+    ));
+    return (
+      <ul className="p-Sql-TableList-content">
+        {presetItems}
+      </ul>
+    );
   }
 }
