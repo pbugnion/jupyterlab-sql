@@ -115,3 +115,25 @@
     display: flex;
     justify-content: space-between;
 }
+
+.p-Sql-Listing-Item {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.p-Sql-Listing-itemElement {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+.p-Sql-Listing-Item:hover:not(.jp-mod-selected) {
+  background: var(--jp-layout-color2);
+}

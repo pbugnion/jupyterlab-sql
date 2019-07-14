@@ -87,16 +87,33 @@ namespace PresetListItem {
 class PresetListItem extends React.Component<PresetListItem.Props> {
   render() {
     const { preset, selected } = this.props;
-    const { name } = preset;
-    const classes = classNames('jp-DirListing-item', {
+    const { name, description, url } = preset;
+    return (
+      <MultiElementListItem title={url} selected={selected}>
+        <div className="p-Sql-Listing-itemElement">{name}: {url}</div>
+        {description && <div className="p-Sql-Listing-itemElement">{description}</div>}
+      </MultiElementListItem>
+    )
+  }
+}
+
+namespace MultiElementListItem {
+  export interface Props {
+    selected: boolean;
+    title: string;
+    children: React.ReactNode;
+  }
+}
+
+class MultiElementListItem extends React.Component<MultiElementListItem.Props> {
+  render() {
+    const { selected, title, children } = this.props;
+    const classes = classNames('p-Sql-Listing-Item', {
       'jp-mod-selected': selected
     });
     return (
-      <li
-        className={classes}
-        title={name}
-      >
-        <span className="jp-DirListing-itemText">{name}</span>
+      <li className={classes} title={title}>
+        {children}
       </li>
     )
   }
