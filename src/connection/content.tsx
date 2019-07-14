@@ -11,6 +11,9 @@ import { ConnectionInformationEdit, ConnectionInformationHelper } from './connec
 
 // TODO: factor out common CSS classes
 // TODO: factor out common components
+// TODO: style around help toggle
+// TODO: style around rendered help
+// TODO: help message for preset
 
 export interface ConnectionsIModel extends IDisposable {
 }
