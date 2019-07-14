@@ -8,6 +8,8 @@ import { VDomModel, VDomRenderer } from '@jupyterlab/apputils'
 
 import { ConnectionInformationEdit, ConnectionInformationHelper } from './connectionEditor'
 
+import { Preset } from '../api'
+
 
 // TODO: factor out common CSS classes
 // TODO: factor out common components
@@ -15,16 +17,17 @@ import { ConnectionInformationEdit, ConnectionInformationHelper } from './connec
 // TODO: style around rendered help
 // TODO: help message for preset
 
+
 export interface ConnectionsIModel extends IDisposable {
 }
 
 export class ConnectionsModel extends VDomModel implements ConnectionsIModel {
-  constructor(presets: Array<string>) {
+  constructor(presets: Array<Preset>) {
     super();
     this.presets = presets;
   }
 
-  readonly presets: Array<string>;
+  readonly presets: Array<Preset>;
 }
 
 export class ConnectionsWidget extends VDomRenderer<ConnectionsModel> {
@@ -46,15 +49,15 @@ export class ConnectionsWidget extends VDomRenderer<ConnectionsModel> {
 
 namespace PresetList {
   export interface Props {
-    presets: Array<string>;
+    presets: Array<Preset>;
   }
 }
 
 class PresetList extends React.Component<PresetList.Props> {
   render() {
     const { presets } = this.props;
-    const presetItems = presets.map((presetName, i) => (
-      <PresetListItem presetName={presetName} selected={false} key={i} />
+    const presetItems = presets.map((preset, i) => (
+      <PresetListItem preset={preset} selected={false} key={i} />
     ));
     return (
       <ul className="p-Sql-TableList-content">
@@ -75,7 +78,7 @@ class PresetList extends React.Component<PresetList.Props> {
 
 namespace PresetListItem {
   export interface Props {
-    presetName: string;
+    preset: Preset;
     selected: boolean;
   }
 }
@@ -83,16 +86,17 @@ namespace PresetListItem {
 
 class PresetListItem extends React.Component<PresetListItem.Props> {
   render() {
-    const { presetName, selected } = this.props;
+    const { preset, selected } = this.props;
+    const { name } = preset;
     const classes = classNames('jp-DirListing-item', {
       'jp-mod-selected': selected
     });
     return (
       <li
         className={classes}
-        title={presetName}
+        title={name}
       >
-        <span className="jp-DirListing-itemText">{presetName}</span>
+        <span className="jp-DirListing-itemText">{name}</span>
       </li>
     )
   }

@@ -10,6 +10,8 @@ import { JupyterLabSqlPage, PageName } from '../page';
 
 import { proxyFor } from '../services';
 
+import { Preset } from '../api';
+
 import { ConnectionsWidget, ConnectionsModel } from './content';
 
 namespace ConnectionPage {
@@ -69,7 +71,18 @@ class Content extends BoxPanel {
 
     this.addClass('p-Sql-MainContainer');
 
-    const connectionsModel = new ConnectionsModel(['d1', 'd2']);
+    const presets: Array<Preset> = [
+      {
+        name: 'd1',
+        description: 'some long description',
+        url: 'hello world'
+      },
+      {
+        name: 'd2',
+        url: 'bye'
+      }
+    ]
+    const connectionsModel = new ConnectionsModel(presets);
     this._connectionsWidget = ConnectionsWidget.withModel(connectionsModel);
 
     this.addWidget(this._connectionsWidget);
