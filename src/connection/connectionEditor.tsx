@@ -184,8 +184,7 @@ namespace ConnectionInformationEdit {
 export class ConnectionInformationHelper extends React.Component<{}> {
   render() {
     return (
-      <details className="jp-RenderedHTMLCommon">
-        <summary>Help</summary>
+      <div className="jp-RenderedHTMLCommon">
         <p>
           Press <code>Enter</code> to connect to the database.
         </p>
@@ -216,7 +215,7 @@ export class ConnectionInformationHelper extends React.Component<{}> {
             <pre>sqlite:///myfile.db</pre>
           </li>
         </ul>
-      </details>
+      </div>
     );
   }
 }

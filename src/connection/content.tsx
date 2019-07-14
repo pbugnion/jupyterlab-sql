@@ -99,9 +99,27 @@ namespace ListHeader {
   export interface Props {
     headerText: string;
   }
+
+  export interface State {
+    helpMenuDisplayed: boolean
+  }
 }
 
-class ListHeader extends React.Component<ListHeader.Props> {
+class ListHeader extends React.Component<ListHeader.Props, ListHeader.State> {
+  constructor(props: ListHeader.Props) {
+    super(props);
+    this.state = {
+      helpMenuDisplayed: false
+    }
+    this.onHelpToggleClick = this.onHelpToggleClick.bind(this)
+  }
+
+  onHelpToggleClick() {
+    this.setState({
+      helpMenuDisplayed: !this.state.helpMenuDisplayed
+    })
+  }
+
   render() {
     const { headerText } = this.props;
     return (
@@ -109,11 +127,26 @@ class ListHeader extends React.Component<ListHeader.Props> {
         <li className="p-Sql-TableList-header">
           <div className="p-Sql-TableList-HelpHeader-container">
             <span>{headerText}</span>
-            <span>?</span>
+            <HelpToggle onClick={this.onHelpToggleClick} />
           </div >
         </li >
-        <ConnectionInformationHelper />
+        {this.state.helpMenuDisplayed && <ConnectionInformationHelper />}
       </React.Fragment>
     );
+  }
+}
+
+
+namespace HelpToggle {
+  export interface Props {
+    onClick: () => void;
+  }
+}
+
+
+class HelpToggle extends React.Component<HelpToggle.Props> {
+  render() {
+    const { onClick } = this.props;
+    return <span onClick={onClick}>?</span>;
   }
 }
