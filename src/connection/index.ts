@@ -75,11 +75,15 @@ class Content extends BoxPanel {
       {
         name: 'd1',
         description: 'some long description',
-        url: 'hello world'
+        url: 'postgres://localhost:5432/postgres'
       },
       {
         name: 'd2',
-        url: 'bye'
+        url: 'sqlite:///myfile.db'
+      },
+      {
+        name: 'some long name',
+        url: 'sqlite:///myfile.db'
       }
     ]
     const connectionsModel = new ConnectionsModel(presets);

@@ -88,10 +88,10 @@ class PresetListItem extends React.Component<PresetListItem.Props> {
   render() {
     const { preset, selected } = this.props;
     const { name, description, url } = preset;
+    const title = description || url;
     return (
-      <MultiElementListItem title={url} selected={selected}>
-        <div className="p-Sql-Listing-itemElement">{name}: {url}</div>
-        {description && <div className="p-Sql-Listing-itemElement">{description}</div>}
+      <MultiElementListItem title={title} selected={selected}>
+        <div className="p-Sql-Listing-itemElement"><span className="c52">{name}</span><code className="c54">{url}</code></div>
       </MultiElementListItem>
     )
   }
@@ -113,7 +113,10 @@ class MultiElementListItem extends React.Component<MultiElementListItem.Props> {
     });
     return (
       <li className={classes} title={title}>
-        {children}
+        <div className="jp-DirListing-itemIcon p-Sql-DatabaseIcon mod-in-listing" />
+        <div className="p-Sql-Listing-Item-ElementContainer">
+          {children}
+        </div>
       </li>
     )
   }

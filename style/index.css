@@ -76,6 +76,15 @@
     background-image: url('./icons/database.svg');
 }
 
+.p-Sql-DatabaseIcon.mod-in-listing {
+    background-size: 13px;
+    min-width: 16px;
+    min-height: 16px;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .p-Sql-DatabaseSummary-Container {
     overflow: auto;
 }
@@ -113,17 +122,20 @@
 
 .p-Sql-TableList-HelpHeader-container {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 
 .p-Sql-Listing-Item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   padding: 4px 12px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  /* padding-top: 10px; */
+  /* padding-bottom: 10px; */
 }
 
 .p-Sql-Listing-itemElement {
@@ -136,4 +148,23 @@
 
 .p-Sql-Listing-Item:hover:not(.jp-mod-selected) {
   background: var(--jp-layout-color2);
+}
+
+.p-Sql-Listing-Item-ElementContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.c52 {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: var(--jp-ui-font-size0);
+    color: var(--jp-ui-font-color1);
+    padding-right: 2em;
+    padding-left: 1em;
+}
+
+code.c54 {
+    font-size: var(--jp-ui-font-size0);
+    color: var(--jp-ui-font-color1);
 }
