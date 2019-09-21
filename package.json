@@ -1,6 +1,6 @@
 {
   "name": "jupyterlab-sql",
-  "version": "0.3.1-rc4",
+  "version": "0.3.1",
   "description": "JupyterLab extension for interacting with SQL databases",
   "keywords": [
     "jupyter",
