@@ -25,6 +25,7 @@ module.exports = {
     "<rootDir>/__tests__/setupJest.ts"
   ],
   "moduleNameMapper": {
-    "\\.(css|less)$": "<rootDir>/__tests__/styleMock.js"
+    "\\.(css|less)$": "<rootDir>/__tests__/styleMock.js",
+    "\\.svg$": "<rootDir>/__tests__/fileMock.js"
   }
 }
