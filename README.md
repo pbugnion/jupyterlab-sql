@@ -37,6 +37,14 @@ jupyter serverextension enable jupyterlab_sql --py --sys-prefix
 jupyter lab build
 ```
 
+Note: if you use the system Python do not use `--sys-prefix` and run:
+
+```
+pip install jupyterlab_sql==0.2.1
+jupyter serverextension enable jupyterlab_sql --py
+jupyter lab build
+```
+
 ## Usage
 
 ### Starting a new SQL session
