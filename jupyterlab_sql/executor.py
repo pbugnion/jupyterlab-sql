@@ -1,10 +1,10 @@
-from sqlalchemy import create_engine
-from sqlalchemy.sql import select, text, table
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.sql import select, table, text
 
-from .serializer import make_row_serializable
 from .cache import Cache
 from .connection_url import is_sqlite
+from .serializer import make_row_serializable
 
 
 class QueryResult:
@@ -29,7 +29,8 @@ class Executor:
 
     def get_table_names(self, connection_url):
         engine = self._get_engine(connection_url)
-        return engine.table_names()
+        inspector = inspect(engine)
+        return engine.table_names() + inspector.get_view_names()
 
     def execute_query(self, connection_url, query):
         engine = self._get_engine(connection_url)
