@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from pkg_resources import resource_string
 
-from jsonschema import Draft7Validator as Validator
+from jsonschema import Draft4Validator as Validator
 
 
 SCHEMAS_PATH = Path("schemas")

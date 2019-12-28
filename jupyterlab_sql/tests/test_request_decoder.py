@@ -1,6 +1,6 @@
 import json
 
-from jsonschema import Draft7Validator as Validator
+from jsonschema import Draft4Validator as Validator
 
 import pytest
 
