@@ -3,8 +3,12 @@ from sqlalchemy.pool import StaticPool
 from sqlalchemy.sql import select, table, text
 
 from .cache import Cache
-from .connection_url import is_sqlite
 from .serializer import make_row_serializable
+from .connection_url import is_sqlite, is_mysql, has_database
+
+
+class InvalidConnectionUrl(Exception):
+    pass
 
 
 class QueryResult:
@@ -28,6 +32,12 @@ class Executor:
         self._sqlite_engine_cache = Cache()
 
     def get_table_names(self, connection_url):
+        if is_mysql(connection_url) and not has_database(connection_url):
+            raise InvalidConnectionUrl(
+                "You need to specify a database name in the connection "
+                "URL for MySQL databases. Use, for instance, "
+                "`mysql://localhost/employees`."
+            )
         engine = self._get_engine(connection_url)
         inspector = inspect(engine)
         return engine.table_names() + inspector.get_view_names()
