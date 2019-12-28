@@ -42,3 +42,27 @@ def test_mysql(url):
 )
 def test_not_mysql(url):
     assert not connection_url.is_mysql(url)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "mysql:///employees",
+        "mysql://localhost/employees",
+        "sqlite:///foo.db"
+    ]
+)
+def test_has_database(url):
+    assert connection_url.has_database(url)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "mysql://",
+        "mysql://localhost/",
+        "sqlite://"
+    ]
+)
+def test_not_has_database(url):
+    assert not connection_url.has_database(url)
