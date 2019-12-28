@@ -22,3 +22,23 @@ def test_sqlite(url):
 )
 def test_not_sqlite(url):
     assert not connection_url.is_sqlite(url)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "mysql:///employees",
+        "mysql://localhost/employees",
+        "mysql+mysqldb:///employees",
+        "mysql+pymysql:///employees"
+    ]
+)
+def test_mysql(url):
+    assert connection_url.is_mysql(url)
+
+
+@pytest.mark.parametrize(
+    "url", ["postgres://localhost:5432/postgres", "sqlite://"]
+)
+def test_not_mysql(url):
+    assert not connection_url.is_mysql(url)
