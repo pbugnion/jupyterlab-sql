@@ -40,7 +40,7 @@ class Executor:
             )
         engine = self._get_engine(connection_url)
         inspector = inspect(engine)
-        return engine.table_names() + inspector.get_view_names()
+        return inspector.get_table_names() + inspector.get_view_names()
 
     def execute_query(self, connection_url, query):
         engine = self._get_engine(connection_url)
