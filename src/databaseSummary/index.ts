@@ -113,8 +113,8 @@ class Content extends SingletonPanel {
     this._disposeWidgets();
     Api.DatabaseStructureResponse.match(
       response,
-      tables => {
-        const model = new DatabaseSummaryModel(tables);
+      ({ tables, views }) => {
+        const model = new DatabaseSummaryModel([...tables, ...views]);
         this.widget = DatabaseSummaryWidget.withModel(model);
         model.navigateToCustomQuery.connect(() => {
           this._customQueryClicked.emit(void 0);
