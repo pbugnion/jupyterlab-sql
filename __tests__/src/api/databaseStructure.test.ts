@@ -18,7 +18,8 @@ namespace Fixtures {
   export const success = {
     responseType: 'success',
     responseData: {
-      tables: ['t1', 't2']
+      tables: ['t1', 't2'],
+      views: ['v1', 'v2']
     }
   };
 
@@ -71,7 +72,7 @@ describe('getDatabaseStructure', () => {
     DatabaseStructureResponse.match(result, mockOnSuccess, jest.fn());
 
     expect(mockOnSuccess).toHaveBeenCalledWith(
-      Fixtures.success.responseData.tables
+      Fixtures.success.responseData
     );
   });
 
