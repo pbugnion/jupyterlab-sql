@@ -18,6 +18,11 @@ export async function getDatabaseStructure(
   return data;
 }
 
+export interface DatabaseObjects {
+  tables: Array<string>;
+  views: Array<string>
+};
+
 export namespace DatabaseStructureResponse {
   export type Type = ErrorResponse | SuccessResponse;
 
@@ -34,11 +39,6 @@ export namespace DatabaseStructureResponse {
   type SuccessResponseData = {
     tables: Array<string>;
     views?: Array<string>
-  };
-
-  type DatabaseObjects = {
-    tables: Array<string>;
-    views: Array<string>
   };
 
   type ErrorResponseData = {
