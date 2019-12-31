@@ -18,6 +18,11 @@ export async function getDatabaseStructure(
   return data;
 }
 
+export interface DatabaseObjects {
+  tables: Array<string>;
+  views: Array<string>;
+}
+
 export namespace DatabaseStructureResponse {
   export type Type = ErrorResponse | SuccessResponse;
 
@@ -33,6 +38,7 @@ export namespace DatabaseStructureResponse {
 
   type SuccessResponseData = {
     tables: Array<string>;
+    views?: Array<string>;
   };
 
   type ErrorResponseData = {
@@ -57,14 +63,22 @@ export namespace DatabaseStructureResponse {
 
   export function match<U>(
     response: Type,
-    onSuccess: (tables: Array<string>) => U,
+    onSuccess: (_: DatabaseObjects) => U,
     onError: (_: ErrorResponseData) => U
   ) {
     if (response.responseType === 'error') {
       return onError(response.responseData);
     } else if (response.responseType === 'success') {
-      const { tables } = response.responseData;
-      return onSuccess(tables);
+      const { responseData } = response;
+      const tables = responseData.tables;
+      // Backwards compatibility with server: views can be null or undefined.
+      // Remove in versions 4.x.
+      const views = responseData.views || [];
+      const databaseObjects: DatabaseObjects = {
+        tables,
+        views
+      };
+      return onSuccess(databaseObjects);
     }
   }
 }

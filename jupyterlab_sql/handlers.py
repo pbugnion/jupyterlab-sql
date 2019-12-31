@@ -72,10 +72,12 @@ class StructureHandler(IPythonHandler):
         with self.decoded_request() as connection_url:
             ioloop = tornado.ioloop.IOLoop.current()
             try:
-                tables = await ioloop.run_in_executor(
-                    None, self.get_table_names, connection_url
+                database_objects = await ioloop.run_in_executor(
+                    None, self._executor.get_database_objects, connection_url
                 )
-                response = responses.success_with_tables(tables)
+                response = responses.success_with_database_objects(
+                    database_objects
+                )
             except Exception as e:
                 response = responses.error(str(e))
             return self.finish(json.dumps(response))

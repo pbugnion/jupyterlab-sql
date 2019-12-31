@@ -1,10 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.sql import select, text, table
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.sql import select, table, text
 
-from .serializer import make_row_serializable
 from .cache import Cache
 from .connection_url import is_sqlite, is_mysql, has_database
+from .serializer import make_row_serializable
+from .models import DatabaseObjects
 
 
 class InvalidConnectionUrl(Exception):
@@ -31,7 +32,7 @@ class Executor:
     def __init__(self):
         self._sqlite_engine_cache = Cache()
 
-    def get_table_names(self, connection_url):
+    def get_database_objects(self, connection_url):
         if is_mysql(connection_url) and not has_database(connection_url):
             raise InvalidConnectionUrl(
                 "You need to specify a database name in the connection "
@@ -39,7 +40,12 @@ class Executor:
                 "`mysql://localhost/employees`."
             )
         engine = self._get_engine(connection_url)
-        return engine.table_names()
+        inspector = inspect(engine)
+        database_objects = DatabaseObjects(
+            tables=inspector.get_table_names(),
+            views=inspector.get_view_names(),
+        )
+        return database_objects
 
     def execute_query(self, connection_url, query):
         engine = self._get_engine(connection_url)
