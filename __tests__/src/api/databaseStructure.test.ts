@@ -27,19 +27,19 @@ namespace Fixtures {
       tables: ['t1', 't2'],
       views: ['v1', 'v2']
     }
-  }
+  };
 
   export const databaseWithoutViews: DatabaseObjects = {
     tables: ['t1', 't2'],
     views: []
-  }
+  };
 
   export const successWithoutViewsResponseBody: DatabaseStructureResponse.Type = {
     responseType: 'success',
     responseData: {
       tables: ['t1', 't2']
     }
-  }
+  };
 
   export const successWithViewsEmptyResponseBody: DatabaseStructureResponse.Type = {
     responseType: 'success',
@@ -47,7 +47,7 @@ namespace Fixtures {
       tables: ['t1', 't2'],
       views: []
     }
-  }
+  };
 
   export const errorResponseBody = {
     responseType: 'error',
@@ -57,9 +57,9 @@ namespace Fixtures {
   };
 
   export const mockServerWithResponse = (responseBody: Object) => {
-    const response: Response = new Response(JSON.stringify(responseBody))
-    return jest.fn(() => Promise.resolve(response))
-  }
+    const response: Response = new Response(JSON.stringify(responseBody));
+    return jest.fn(() => Promise.resolve(response));
+  };
 }
 
 describe('getDatabaseStructure', () => {
@@ -69,7 +69,9 @@ describe('getDatabaseStructure', () => {
   ];
 
   it.each(testCases)('valid %#: %s', async (_, responseBody) => {
-    ServerConnection.makeRequest = Fixtures.mockServerWithResponse(responseBody)
+    ServerConnection.makeRequest = Fixtures.mockServerWithResponse(
+      responseBody
+    );
 
     const result = await getDatabaseStructure('connectionUrl');
     expect(result).toEqual(responseBody);
@@ -88,29 +90,46 @@ describe('getDatabaseStructure', () => {
 
   const successTestCases: Array<Array<any>> = [
     ['with views', Fixtures.databaseWithViews, Fixtures.successResponseBody],
-    ['no views', Fixtures.databaseWithoutViews, Fixtures.successWithoutViewsResponseBody],
-    ['empty views', Fixtures.databaseWithoutViews, Fixtures.successWithViewsEmptyResponseBody]
-  ]
-  it.each(successTestCases)('matching on success %#: %s', async (_, expected, responseBody) => {
-    ServerConnection.makeRequest = Fixtures.mockServerWithResponse(responseBody);
+    [
+      'no views',
+      Fixtures.databaseWithoutViews,
+      Fixtures.successWithoutViewsResponseBody
+    ],
+    [
+      'empty views',
+      Fixtures.databaseWithoutViews,
+      Fixtures.successWithViewsEmptyResponseBody
+    ]
+  ];
+  it.each(successTestCases)(
+    'matching on success %#: %s',
+    async (_, expected, responseBody) => {
+      ServerConnection.makeRequest = Fixtures.mockServerWithResponse(
+        responseBody
+      );
 
-    const result = await getDatabaseStructure('connectionUrl');
+      const result = await getDatabaseStructure('connectionUrl');
 
-    const mockOnSuccess = jest.fn();
-    DatabaseStructureResponse.match(result, mockOnSuccess, jest.fn());
+      const mockOnSuccess = jest.fn();
+      DatabaseStructureResponse.match(result, mockOnSuccess, jest.fn());
 
-    expect(mockOnSuccess).toHaveBeenCalledWith(expected);
-  });
+      expect(mockOnSuccess).toHaveBeenCalledWith(expected);
+    }
+  );
 
   it('matching on error', async () => {
-    ServerConnection.makeRequest = Fixtures.mockServerWithResponse(Fixtures.errorResponseBody);
+    ServerConnection.makeRequest = Fixtures.mockServerWithResponse(
+      Fixtures.errorResponseBody
+    );
 
     const result = await getDatabaseStructure('connectionUrl');
 
     const mockOnError = jest.fn();
     DatabaseStructureResponse.match(result, jest.fn(), mockOnError);
 
-    expect(mockOnError).toHaveBeenCalledWith(Fixtures.errorResponseBody.responseData);
+    expect(mockOnError).toHaveBeenCalledWith(
+      Fixtures.errorResponseBody.responseData
+    );
   });
 
   it('bad http status code', async () => {

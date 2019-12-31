@@ -43,7 +43,7 @@ class Executor:
         inspector = inspect(engine)
         database_objects = DatabaseObjects(
             tables=inspector.get_table_names(),
-            views=inspector.get_view_names()
+            views=inspector.get_view_names(),
         )
         return database_objects
 

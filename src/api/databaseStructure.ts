@@ -20,8 +20,8 @@ export async function getDatabaseStructure(
 
 export interface DatabaseObjects {
   tables: Array<string>;
-  views: Array<string>
-};
+  views: Array<string>;
+}
 
 export namespace DatabaseStructureResponse {
   export type Type = ErrorResponse | SuccessResponse;
@@ -38,7 +38,7 @@ export namespace DatabaseStructureResponse {
 
   type SuccessResponseData = {
     tables: Array<string>;
-    views?: Array<string>
+    views?: Array<string>;
   };
 
   type ErrorResponseData = {
@@ -75,8 +75,9 @@ export namespace DatabaseStructureResponse {
       // Remove in versions 4.x.
       const views = responseData.views || [];
       const databaseObjects: DatabaseObjects = {
-        tables, views
-      }
+        tables,
+        views
+      };
       return onSuccess(databaseObjects);
     }
   }
