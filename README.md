@@ -82,3 +82,19 @@ tracker](https://github.com/pbugnion/jupyterlab-sql/issues).
 Contributions are welcome. If you have not developed JupyterLab
 extensions before, I recommend following [this
 tutorial](https://jupyterlab.readthedocs.io/en/stable/developer/xkcd_extension_tutorial.html).
+
+## Contributors
+
+*jupyterlab-sql* is maintained by Pascal Bugnion ([@pbugnion](https://github.com/pbugnion)) with
+ contributions from:
+
+- Ashwin Chopra ([@shwinnn](https://github.com/shwinnn))
+
+*jupyterlab-sql* is built and maintained by people who give their time (in many cases, their free time) to the project.
+
+### I would like to join this list. How can I help?
+
+We are currently looking for contributions of:
+
+- code: if you are unsure how to start, open an issue or email [Pascal Bugnion](https://pascalbugnion.net/contact.html).
+- additional database support: see [issue #113](https://github.com/pbugnion/jupyterlab-sql/issues/113).
