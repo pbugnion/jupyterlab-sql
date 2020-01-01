@@ -60,10 +60,13 @@ area to dispatch the statement.
 
 ### Database support
 
-*jupyterlab-sql* has been extensively tested against SQLite,
+*jupyterlab-sql* is tested against SQLite,
 PostgreSQL, and MySQL databases.
 
 Other databases supported by sqlalchemy may also work.
+
+If you need support for other types of databases, see [issue
+#113](https://github.com/pbugnion/jupyterlab-sql/issues/113).
 
 ### In-memory SQLite and persistence
 
