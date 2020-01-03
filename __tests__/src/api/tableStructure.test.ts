@@ -17,7 +17,10 @@ namespace Fixtures {
     responseData: {
       hasRows: true,
       keys: ['key1', 'key2'],
-      rows: [['a', 'b'], ['c', 'd']]
+      rows: [
+        ['a', 'b'],
+        ['c', 'd']
+      ]
     }
   };
 
