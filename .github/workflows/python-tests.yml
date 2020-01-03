@@ -1,16 +1,14 @@
-name: Python linting and tests
-
+name: Linting and tests
 on: [push]
 
 jobs:
-  build:
 
+  test-python:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
-
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -23,3 +21,18 @@ jobs:
         pip install tox tox-gh-actions
     - name: Test with tox
       run: tox
+
+  test-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Install package
+        run: npm install
+      - name: Lint
+        run: npm run prettier:check
+      - name: Test
+        run: npm run test
