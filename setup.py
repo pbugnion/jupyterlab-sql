@@ -177,6 +177,7 @@ def build_js_extension(command):
 
 setuptools.setup(
     name="jupyterlab_sql",
+    license="MIT License",
     description="JupyterLab plugin for visualizing SQL databases",
     version=VERSION,
     packages=setuptools.find_packages(),
