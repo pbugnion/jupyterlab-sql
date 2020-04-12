@@ -63,6 +63,16 @@
     "@babel/preset-env": "^7.4.3"
   },
   "jupyterlab": {
-    "extension": true
+    "extension": true,
+    "discovery": {
+      "server": {
+        "base": {
+          "name": "jupyterlab_sql"
+        },
+        "managers": [
+          "pip"
+        ]
+      }
+    }
   }
 }
