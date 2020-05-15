@@ -1,4 +1,4 @@
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 import { PreWidget, SingletonPanel, ResultsTable } from '../components';
 

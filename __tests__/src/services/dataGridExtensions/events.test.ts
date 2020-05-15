@@ -1,4 +1,4 @@
-import { DataGrid, DataModel } from '@phosphor/datagrid';
+import { DataGrid, DataModel } from '@lumino/datagrid';
 
 import {
   addMouseEventListener,
@@ -9,7 +9,7 @@ namespace Fixtures {
   export function grid(): DataGrid {
     const model = new TestDataModel();
     const grid = new DataGrid();
-    grid.model = model;
+    grid.dataModel = model;
     return grid;
   }
 
@@ -98,7 +98,7 @@ describe('addMouseEventListener', () => {
 
   it('take row resizes into account', () => {
     const grid = Fixtures.grid();
-    grid.resizeSection('row', 2, 200);
+    grid.resizeRow('body', 2, 200);
     const event = Fixtures.clickEvent({
       clientX: 5,
       clientY: 3 * 20 + 200 + 2
@@ -142,7 +142,7 @@ describe('addMouseEventListener', () => {
 
   it('take column resizes into account', () => {
     const grid = Fixtures.grid();
-    grid.resizeSection('column', 2, 200);
+    grid.resizeColumn('body', 2, 200);
     const event = Fixtures.clickEvent({
       clientX: 3 * 64 + 200 + 2,
       clientY: 5
@@ -153,7 +153,7 @@ describe('addMouseEventListener', () => {
 
   it('pass through the raw event', () => {
     const grid = Fixtures.grid();
-    grid.resizeSection('column', 2, 200);
+    grid.resizeColumn('body', 2, 200);
     const event = Fixtures.clickEvent({ clientX: 100, clientY: 60 });
     const { rawEvent } = testEvent(grid, event);
     expect(rawEvent).toEqual(event);

@@ -1,4 +1,4 @@
-import * as urlparse from 'url-parse';
+import urlparse from 'url-parse';
 
 export namespace ConnectionUrl {
   export function sanitize(url: string): string {

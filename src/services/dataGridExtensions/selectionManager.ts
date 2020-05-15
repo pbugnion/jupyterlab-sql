@@ -1,5 +1,5 @@
-import { ISignal, Signal } from '@phosphor/signaling';
-import { DataModel } from '@phosphor/datagrid';
+import { ISignal, Signal } from '@lumino/signaling';
+import { DataModel } from '@lumino/datagrid';
 
 export interface BodyCellIndex {
   rowIndex: number;

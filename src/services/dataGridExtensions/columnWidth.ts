@@ -3,7 +3,7 @@ import {
   TextRenderer,
   DataModel,
   DataGrid
-} from '@phosphor/datagrid';
+} from '@lumino/datagrid';
 
 import { getFontWidth } from './fontWidth';
 
@@ -12,14 +12,14 @@ export function fitColumnWidths(
   renderer: TextRenderer,
   options: FitColumnWidths.IOptions = {}
 ) {
-  const estimator = new ColumnWidthEstimator(grid.model, renderer, options);
+  const estimator = new ColumnWidthEstimator(grid.dataModel, renderer, options);
 
   const widths = estimator.getColumnWidths();
   widths.forEach((width, column) => {
-    grid.resizeSection('column', column, width);
+    grid.resizeColumn('body', column, width);
   });
   const headerWidth = estimator.getRowHeaderWidth();
-  grid.resizeSection('row-header', 0, headerWidth);
+  grid.resizeColumn('row-header', 0, headerWidth);
 }
 
 export namespace FitColumnWidths {
@@ -106,7 +106,7 @@ class ColumnWidthEstimator {
   }
 
   private _measureElementWidth(content: any): number {
-    const config: CellRenderer.ICellConfig = {
+    const config: CellRenderer.CellConfig = {
       x: 1,
       y: 1,
       height: 100,

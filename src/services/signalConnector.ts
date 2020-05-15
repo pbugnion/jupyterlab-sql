@@ -1,4 +1,4 @@
-import { Signal, ISignal } from '@phosphor/signaling';
+import { Signal, ISignal } from '@lumino/signaling';
 
 export function proxyFor<T1, T2, U>(
   source: ISignal<T1, U>,

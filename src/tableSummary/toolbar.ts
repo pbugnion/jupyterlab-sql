@@ -1,6 +1,6 @@
 import { Toolbar } from '@jupyterlab/apputils';
 
-import { Signal, ISignal } from '@phosphor/signaling';
+import { Signal, ISignal } from '@lumino/signaling';
 
 import { ToolbarItems } from '../components';
 

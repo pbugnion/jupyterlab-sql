@@ -1,4 +1,4 @@
-import { Signal, ISignal } from '@phosphor/signaling';
+import { Signal, ISignal } from '@lumino/signaling';
 
 import { Toolbar } from '@jupyterlab/apputils';
 

@@ -1,4 +1,4 @@
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 export class PreWidget extends Widget {
   constructor(content: string) {

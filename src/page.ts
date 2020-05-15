@@ -1,6 +1,6 @@
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
-import { IDisposable } from '@phosphor/disposable';
+import { IDisposable } from '@lumino/disposable';
 
 import { Toolbar } from '@jupyterlab/apputils';
 
