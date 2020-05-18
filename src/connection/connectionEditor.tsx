@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ISignal, Signal } from '@phosphor/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
 import { VDomModel, VDomRenderer } from '@jupyterlab/apputils';
 
@@ -47,7 +47,8 @@ export class ConnectionEditorModel extends VDomModel
 
 export class ConnectionEditor extends VDomRenderer<ConnectionEditorModel> {
   static withModel(model: ConnectionEditorModel): ConnectionEditor {
-    const editor = new ConnectionEditor();
+  /* TODO: not sure if this is correct */
+    const editor = new ConnectionEditor(undefined);
     editor.model = model;
     return editor;
   }

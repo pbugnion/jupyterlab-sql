@@ -1,6 +1,6 @@
-import { SingletonLayout, Widget, LayoutItem } from '@phosphor/widgets';
+import { SingletonLayout, Widget, LayoutItem } from '@lumino/widgets';
 
-import { Message } from '@phosphor/messaging';
+import { Message } from '@lumino/messaging';
 
 export class SingletonPanel extends Widget {
   onResize(_: Message) {

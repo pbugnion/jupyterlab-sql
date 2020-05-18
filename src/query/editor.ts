@@ -4,9 +4,9 @@ import {
   CodeEditorWrapper
 } from '@jupyterlab/codeeditor';
 
-import { ISignal, Signal } from '@phosphor/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 export interface IEditor {
   readonly widget: Widget;

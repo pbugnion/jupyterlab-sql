@@ -1,8 +1,8 @@
-import { BoxPanel, Widget } from '@phosphor/widgets';
+import { BoxPanel, Widget } from '@lumino/widgets';
 
-import { Signal, ISignal } from '@phosphor/signaling';
+import { Signal, ISignal } from '@lumino/signaling';
 
-import { DisposableSet } from '@phosphor/disposable';
+import { DisposableSet } from '@lumino/disposable';
 
 import { Toolbar } from '@jupyterlab/apputils';
 

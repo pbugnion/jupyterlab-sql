@@ -1,15 +1,15 @@
-import { IDisposable } from '@phosphor/disposable';
+import { IDisposable } from '@lumino/disposable';
 
-import { Menu, Widget } from '@phosphor/widgets';
+import { Menu, Widget } from '@lumino/widgets';
 
 import {
   DataModel,
   DataGrid,
   TextRenderer,
   CellRenderer
-} from '@phosphor/datagrid';
+} from '@lumino/datagrid';
 
-import { ISignal, Signal } from '@phosphor/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
 import * as DataGridExtensions from '../services/dataGridExtensions';
 
@@ -29,7 +29,7 @@ namespace Colors {
 export class Table implements IDisposable {
   constructor(model: TableDataModel, options: Table.IOptions) {
     this._grid = new DataGrid();
-    this._grid.model = model;
+    this._grid.dataModel = model;
     this._options = options;
     this._selectionManager = new DataGridExtensions.SelectionManager(model);
     this._onClick = this._onClick.bind(this);
@@ -96,7 +96,7 @@ export class Table implements IDisposable {
 
   getCellValue(cellIndex: DataGridExtensions.BodyCellIndex): any {
     const { rowIndex, columnIndex } = cellIndex;
-    const value = this._grid.model.data('body', rowIndex, columnIndex);
+    const value = this._grid.dataModel.data('body', rowIndex, columnIndex);
     return value;
   }
 
@@ -167,7 +167,8 @@ export class Table implements IDisposable {
     const renderer = this._textRendererForSelection(
       this._selectionManager.selection
     );
-    this._grid.cellRenderers.set('body', {}, renderer);
+    /* Not sure if this is correct */
+    this._grid.cellRenderers.update({'body' : renderer});
   }
 
   private _textRendererForSelection(
@@ -181,14 +182,14 @@ export class Table implements IDisposable {
     } else {
       const selectedRow = selectedCell.rowIndex;
       const selectedColumn = selectedCell.columnIndex;
-      backgroundColor = ({ row, column }: CellRenderer.ICellConfig) => {
+      backgroundColor = ({ row, column }: CellRenderer.CellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
           return Colors.selectedBackgroundColor;
         } else {
           return Colors.unselectedBackgroundColor;
         }
       };
-      textColor = ({ row, column }: CellRenderer.ICellConfig) => {
+      textColor = ({ row, column }: CellRenderer.CellConfig) => {
         if (row === selectedRow && column === selectedColumn) {
           return Colors.selectedTextColor;
         } else {

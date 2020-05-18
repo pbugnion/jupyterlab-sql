@@ -1,4 +1,4 @@
-import { DataModel } from '@phosphor/datagrid';
+import { DataModel } from '@lumino/datagrid';
 
 import { SelectionManager } from '../../../../src/services/dataGridExtensions';
 

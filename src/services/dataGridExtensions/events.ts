@@ -1,5 +1,5 @@
-import { IDisposable, DisposableDelegate } from '@phosphor/disposable';
-import { DataGrid } from '@phosphor/datagrid';
+import { IDisposable, DisposableDelegate } from '@lumino/disposable';
+import { DataGrid } from '@lumino/datagrid';
 
 export type RowSection = 'outside' | 'column-header' | 'row';
 export type ColumnSection = 'outside' | 'row-header' | 'column';
@@ -52,11 +52,11 @@ function getRow(grid: DataGrid, clientY: number): Row {
     const absY = y + grid.scrollY - grid.headerHeight;
     let currentRow = 0;
     let currentTop = 0;
-    let nextTop = currentTop + grid.sectionSize('row', currentRow);
+    let nextTop = currentTop + grid.rowSize('body', currentRow);
     while (absY >= nextTop) {
       currentRow++;
       currentTop = nextTop;
-      nextTop = currentTop + grid.sectionSize('row', currentRow);
+      nextTop = currentTop + grid.rowSize('body', currentRow);
     }
     index = currentRow;
     section = 'row';
@@ -79,11 +79,11 @@ function getColumn(grid: DataGrid, clientX: number): Column {
     const absX = x + grid.scrollX - grid.headerWidth;
     let currentColumn = 0;
     let currentLeft = 0;
-    let nextLeft = currentLeft + grid.sectionSize('column', currentColumn);
+    let nextLeft = currentLeft + grid.columnSize('body', currentColumn);
     while (absX >= nextLeft) {
       currentColumn++;
       currentLeft = nextLeft;
-      nextLeft = currentLeft + grid.sectionSize('column', currentColumn);
+      nextLeft = currentLeft + grid.columnSize('body', currentColumn);
     }
     index = currentColumn;
     section = 'column';

@@ -1,4 +1,4 @@
-import { TextRenderer, DataModel, DataGrid } from '@phosphor/datagrid';
+import { TextRenderer, DataModel, DataGrid } from '@lumino/datagrid';
 import {
   fitColumnWidths,
   FitColumnWidths
@@ -71,8 +71,8 @@ namespace Fixtures {
 
   export function newGrid(model: DataModel) {
     const grid = new DataGrid();
-    grid.model = model;
-    jest.spyOn(grid, 'resizeSection');
+    grid.dataModel = model;
+    jest.spyOn(grid, 'resizeColumn');
     return grid;
   }
 }
@@ -89,9 +89,9 @@ describe('ColumnWidthestimator', () => {
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 8);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 8);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(2);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 8);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 8);
   });
 
   it('use the longest width in the first 100 elements', () => {
@@ -100,9 +100,9 @@ describe('ColumnWidthestimator', () => {
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 24);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 24);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(2);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 24);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 24);
   });
 
   it('ignore values beyond the first 100', () => {
@@ -111,18 +111,18 @@ describe('ColumnWidthestimator', () => {
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 8);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 8);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(2);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 8);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 8);
   });
 
   it('set a default min value', () => {
     const model = new Fixtures.TestDataModel([[]], [''], [], '');
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 5);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 5);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(2);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 5);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 5);
   });
 
   it('include the header in the column width', () => {
@@ -130,9 +130,9 @@ describe('ColumnWidthestimator', () => {
     const model = new Fixtures.TestDataModel([column], ['aaa'], column, 'aaa');
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 24);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 24);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(2);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 24);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 24);
   });
 
   it('not use values greater than a maximum size', () => {
@@ -141,9 +141,9 @@ describe('ColumnWidthestimator', () => {
     const model = new Fixtures.TestDataModel([column], ['h'], column, '');
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(2);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 60);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 60);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(2);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 60);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 60);
   });
 
   it('work for mulitple columns', () => {
@@ -157,9 +157,9 @@ describe('ColumnWidthestimator', () => {
     );
     const grid = Fixtures.newGrid(model);
     fitColumnWidths(grid, Fixtures.renderer, Fixtures.options);
-    expect(grid.resizeSection).toHaveBeenCalledTimes(3);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 0, 8);
-    expect(grid.resizeSection).toHaveBeenCalledWith('column', 1, 16);
-    expect(grid.resizeSection).toHaveBeenCalledWith('row-header', 0, 8);
+    expect(grid.resizeColumn).toHaveBeenCalledTimes(3);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 0, 8);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('body', 1, 16);
+    expect(grid.resizeColumn).toHaveBeenCalledWith('row-header', 0, 8);
   });
 });

@@ -1,12 +1,12 @@
 import * as uuid from 'uuid';
 
-import { BoxPanel, Widget } from '@phosphor/widgets';
+import { BoxPanel, Widget } from '@lumino/widgets';
 
-import { Message } from '@phosphor/messaging';
+import { Message } from '@lumino/messaging';
 
-import { ISignal, Signal } from '@phosphor/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
-import { DisposableSet } from '@phosphor/disposable';
+import { DisposableSet } from '@lumino/disposable';
 
 import { IEditorFactoryService } from '@jupyterlab/codeeditor';
 

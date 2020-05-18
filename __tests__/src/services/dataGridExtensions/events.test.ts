@@ -1,15 +1,17 @@
-import { DataGrid, DataModel } from '@phosphor/datagrid';
+import { framePromise } from '@jupyterlab/testutils';
+import { DataGrid, DataModel } from '@lumino/datagrid';
 
 import {
   addMouseEventListener,
   GridMouseEvent
 } from '../../../../src/services/dataGridExtensions';
 
+
 namespace Fixtures {
   export function grid(): DataGrid {
     const model = new TestDataModel();
     const grid = new DataGrid();
-    grid.model = model;
+    grid.dataModel = model;
     return grid;
   }
 
@@ -96,9 +98,10 @@ describe('addMouseEventListener', () => {
     expect(row).toEqual({ section: 'column-header', index: null });
   });
 
-  it('take row resizes into account', () => {
+  it('take row resizes into account', async () => {
     const grid = Fixtures.grid();
-    grid.resizeSection('row', 2, 200);
+    grid.resizeRow('body', 2, 200);
+    await framePromise();
     const event = Fixtures.clickEvent({
       clientX: 5,
       clientY: 3 * 20 + 200 + 2
@@ -140,9 +143,10 @@ describe('addMouseEventListener', () => {
     expect(column).toEqual({ section: 'row-header', index: null });
   });
 
-  it('take column resizes into account', () => {
+  it('take column resizes into account', async () => {
     const grid = Fixtures.grid();
-    grid.resizeSection('column', 2, 200);
+    grid.resizeColumn('body', 2, 200);
+    await framePromise();
     const event = Fixtures.clickEvent({
       clientX: 3 * 64 + 200 + 2,
       clientY: 5
@@ -153,7 +157,7 @@ describe('addMouseEventListener', () => {
 
   it('pass through the raw event', () => {
     const grid = Fixtures.grid();
-    grid.resizeSection('column', 2, 200);
+    grid.resizeColumn('body', 2, 200);
     const event = Fixtures.clickEvent({ clientX: 100, clientY: 60 });
     const { rawEvent } = testEvent(grid, event);
     expect(rawEvent).toEqual(event);
