@@ -20,4 +20,11 @@ describe('sanitize', () => {
       ConnectionUrl.sanitize('postgres://awsuser@some.hostname.com/dbname')
     ).toEqual('postgres://awsuser@some.hostname.com/dbname');
   });
+
+  it('with special characters password', () => {
+    expect(
+      ConnectionUrl.sanitize('postgres://foo:b@r@host/db?foo=bar')
+    ).toEqual('postgres://foo:•••••••@host/db?foo=bar');
+  });
+
 });
