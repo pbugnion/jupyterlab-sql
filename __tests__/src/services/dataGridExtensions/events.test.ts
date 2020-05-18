@@ -1,9 +1,11 @@
+import { framePromise } from '@jupyterlab/testutils';
 import { DataGrid, DataModel } from '@lumino/datagrid';
 
 import {
   addMouseEventListener,
   GridMouseEvent
 } from '../../../../src/services/dataGridExtensions';
+
 
 namespace Fixtures {
   export function grid(): DataGrid {
@@ -96,9 +98,10 @@ describe('addMouseEventListener', () => {
     expect(row).toEqual({ section: 'column-header', index: null });
   });
 
-  it('take row resizes into account', () => {
+  it('take row resizes into account', async () => {
     const grid = Fixtures.grid();
     grid.resizeRow('body', 2, 200);
+    await framePromise();
     const event = Fixtures.clickEvent({
       clientX: 5,
       clientY: 3 * 20 + 200 + 2
@@ -140,9 +143,10 @@ describe('addMouseEventListener', () => {
     expect(column).toEqual({ section: 'row-header', index: null });
   });
 
-  it('take column resizes into account', () => {
+  it('take column resizes into account', async () => {
     const grid = Fixtures.grid();
     grid.resizeColumn('body', 2, 200);
+    await framePromise();
     const event = Fixtures.clickEvent({
       clientX: 3 * 64 + 200 + 2,
       clientY: 5
